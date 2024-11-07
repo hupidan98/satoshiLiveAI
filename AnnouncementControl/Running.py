@@ -1,6 +1,7 @@
 import sys
 import os
-sys.path.append('../DBmanipulation')
+sys.path.append('./DBmanipulation')
+sys.path.append('./AIMemory')
 
 import DBCon
 import BufferDB
@@ -8,12 +9,10 @@ import ReflectionTracerDB
 import MemStreDB
 import ReflectionDB
 import ScheduleDB
-
 import GPTProcess
 import InstToMemStre
 import InputToMemStre
 import InstructionDB
-import ProcessOnece
 
 import pandas as pd
 import numpy as np
@@ -50,11 +49,11 @@ ReflectionDB.delete_all_content(reflection_db_conne)
 MemStreDB.delete_all_content_in_buffer(memstre_db_conn)
 
 
-import ProcessOnece
+import ubuntu.data.app.game.aitown.AIModule.BehaviorControl.BehaviorProcessOnece as BehaviorProcessOnece
 
 n = 0
 while True:
     print(f"Processing step {n}")
-    ProcessOnece.processOneInputGiveOneInstruction()
+    BehaviorProcessOnece.processOneInputGiveOneInstruction()
     time.sleep(1)
     n += 1

@@ -23,7 +23,7 @@ def create_instruction_table(connection):
         cursor = connection.cursor()
         cursor.execute("USE AITown")  # Use the AITown database
         create_table_query = """
-        CREATE TABLE IF NOT EXISTS instruction_buffer (
+        CREATE TABLE IF NOT EXISTS behavior_instruction_buffer (
             time DATETIME NOT NULL,
             npcId INT NOT NULL,
             instruction LONGTEXT,
@@ -32,7 +32,7 @@ def create_instruction_table(connection):
         )
         """
         cursor.execute(create_table_query)
-        print("Table 'instruction_buffer' checked/created successfully.")
+        print("Table 'behavior_instruction_buffer' checked/created successfully.")
     except Error as e:
         print(f"Failed to create table: {e}")
 
@@ -41,7 +41,7 @@ def insert_into_instruction_table(connection, time, npcId, instruction, isProces
         cursor = connection.cursor()
         cursor.execute("USE AITown") 
         insert_query = """
-        INSERT INTO instruction_buffer (time, npcId, instruction, isProcessed)
+        INSERT INTO behavior_instruction_buffer (time, npcId, instruction, isProcessed)
         VALUES (%s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE instruction = VALUES(instruction), isProcessed = VALUES(isProcessed)
         """
@@ -55,21 +55,21 @@ def delete_instruction_table(connection):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")  # Ensure you're using the correct database
-        delete_table_query = "DROP TABLE IF EXISTS instruction_buffer"
+        delete_table_query = "DROP TABLE IF EXISTS behavior_instruction_buffer"
         cursor.execute(delete_table_query)
         connection.commit()
-        print(f"Table instruction_buffer has been deleted successfully.")
+        print(f"Table behavior_instruction_buffer has been deleted successfully.")
     except Error as e:
-        print(f"Failed to delete table instruction_buffer: {e}")
+        print(f"Failed to delete table behavior_instruction_buffer: {e}")
 
 def delete_all_instructions(connection):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")  # Ensure you're using the correct database
-        delete_query = "DELETE FROM instruction_buffer"
+        delete_query = "DELETE FROM behavior_instruction_buffer"
         cursor.execute(delete_query)
         connection.commit()
-        print("All instructions in the 'instruction_buffer' table have been deleted successfully.")
+        print("All instructions in the 'behavior_instruction_buffer' table have been deleted successfully.")
     except Error as e:
         print(f"Failed to delete instructions: {e}")
 
@@ -78,7 +78,7 @@ def get_earliest_unprocessed_instruction(connection):
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         query = """
-        SELECT * FROM instruction_buffer 
+        SELECT * FROM behavior_instruction_buffer 
         WHERE isProcessed = FALSE
         ORDER BY time ASC 
         LIMIT 1
@@ -100,7 +100,7 @@ def mark_instruction_as_processed(connection, time, npcId):
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         update_query = """
-        UPDATE instruction_buffer
+        UPDATE behavior_instruction_buffer
         SET isProcessed = TRUE
         WHERE time = %s AND npcId = %s
         """
@@ -115,7 +115,7 @@ def get_all_unprocessed_instructions(connection):
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         query = """
-        SELECT * FROM instruction_buffer 
+        SELECT * FROM behavior_instruction_buffer 
         WHERE isProcessed = FALSE
         ORDER BY time ASC
         """
@@ -135,7 +135,7 @@ def get_all_unprocessed_instructions(connection):
 
 def instruction_table_exists(connection):
     db_name = 'AITown'
-    table_name = 'instruction_buffer'
+    table_name = 'behavior_instruction_buffer'
     try:
         cursor = connection.cursor()
         cursor.execute(f"""

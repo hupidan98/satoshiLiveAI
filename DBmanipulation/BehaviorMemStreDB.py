@@ -68,7 +68,7 @@ def create_table(connection):
         cursor = connection.cursor()
         cursor.execute("USE AITown")  # Use the AITown database
         create_table_query = """
-        CREATE TABLE IF NOT EXISTS memeory_stream (
+        CREATE TABLE IF NOT EXISTS behavior_memeory_stream (
             npcID VARCHAR(255) NOT NULL,
             Time DATETIME NOT NULL,
             isInstruction BOOLEAN DEFAULT FALSE,
@@ -79,7 +79,7 @@ def create_table(connection):
         )
         """
         cursor.execute(create_table_query)
-        print("Table 'memeory_stream' checked/created successfully.")
+        print("Table 'behavior_memeory_stream' checked/created successfully.")
     except Error as e:
         print(f"Failed to create table: {e}")
 
@@ -87,16 +87,16 @@ def delete_table(connection):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        delete_table_query = "DROP TABLE IF EXISTS memeory_stream"
+        delete_table_query = "DROP TABLE IF EXISTS behavior_memeory_stream"
         cursor.execute(delete_table_query)
         connection.commit()
-        print("Table 'memeory_stream' has been deleted successfully.")
+        print("Table 'behavior_memeory_stream' has been deleted successfully.")
     except Error as e:
-        print(f"Failed to delete table 'memeory_stream': {e}")
+        print(f"Failed to delete table 'behavior_memeory_stream': {e}")
 
 def table_exists(connection):
     db_name = 'AITown'
-    table_name = 'memeory_stream'
+    table_name = 'behavior_memeory_stream'
     try:
         cursor = connection.cursor()
         cursor.execute(f"""
@@ -122,7 +122,7 @@ def insert_into_table(connection, npcID, time, isInstruction, content, importanc
         # Serialize the embedding list
         embedding_blob = pickle.dumps(embedding)
         insert_query = """
-        INSERT INTO memeory_stream (npcID, Time, isInstruction, Content, Importance, Embedding)
+        INSERT INTO behavior_memeory_stream (npcID, Time, isInstruction, Content, Importance, Embedding)
         VALUES (%s, %s, %s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE Content = VALUES(Content), Importance = VALUES(Importance), Embedding = VALUES(Embedding)
         """
@@ -136,7 +136,7 @@ def retrieve_entry(connection, npcID, time, isInstruction):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        select_query = "SELECT Content, Importance, Embedding FROM memeory_stream WHERE npcID = %s AND Time = %s AND isInstruction = %s"
+        select_query = "SELECT Content, Importance, Embedding FROM behavior_memeory_stream WHERE npcID = %s AND Time = %s AND isInstruction = %s"
         cursor.execute(select_query, (npcID, time, isInstruction))
         result = cursor.fetchone()
         if result:
@@ -156,7 +156,7 @@ def delete_entry_in_buffer(connection, npcID, time, isInstruction):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        delete_query = "DELETE FROM memeory_stream WHERE npcID = %s AND Time = %s AND isInstruction = %s"
+        delete_query = "DELETE FROM behavior_memeory_stream WHERE npcID = %s AND Time = %s AND isInstruction = %s"
         cursor.execute(delete_query, (npcID, time, isInstruction))
         connection.commit()
         print(f"Entry with npcID={npcID}, time={time}, isInstruction={isInstruction} has been deleted successfully.")
@@ -167,10 +167,10 @@ def delete_all_content_in_buffer(connection):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        delete_query = "DELETE FROM memeory_stream"
+        delete_query = "DELETE FROM behavior_memeory_stream"
         cursor.execute(delete_query)
         connection.commit()
-        print("All content in the 'memeory_stream' table has been deleted successfully.")
+        print("All content in the 'behavior_memeory_stream' table has been deleted successfully.")
     except Error as e:
         print(f"Failed to delete content: {e}")
 
@@ -181,7 +181,7 @@ def retrieve_most_recent_entries(connection, npcID, before_time, limit=300):
         cursor.execute("USE AITown")
         select_query = """
         SELECT npcID, Time, isInstruction, Content, Importance, Embedding
-        FROM memeory_stream
+        FROM behavior_memeory_stream
         WHERE npcID = %s AND Time < %s
         ORDER BY Time DESC
         LIMIT %s
@@ -216,7 +216,7 @@ def retrieve_entries_between_time(connection, npcID, start_time, end_time, limit
         cursor.execute("USE AITown")
         select_query = """
         SELECT npcID, Time, isInstruction, Content, Importance, Embedding
-        FROM memeory_stream
+        FROM behavior_memeory_stream
         WHERE npcID = %s AND Time BETWEEN %s AND %s
         ORDER BY Time ASC
         LIMIT %s

@@ -1,8 +1,11 @@
 import mysql.connector
 from mysql.connector import Error
-import pandas as pd
 
-    
+
+import configparser
+import os
+
+
 def check_connection(connection):
     if connection.is_connected():
         print("Connection is still active.")
@@ -13,58 +16,57 @@ def check_connection(connection):
             print("Reconnection successful.")
         else:
             print("Reconnection failed.")
-            
-def table_exists(connection):
-    try:
-        cursor = connection.cursor()
-        cursor.execute("USE AITown")
-        check_query = """
-        SELECT TABLE_NAME 
-        FROM INFORMATION_SCHEMA.TABLES 
-        WHERE TABLE_SCHEMA = 'AITown' AND TABLE_NAME = 'schedule_stream'
-        """
-        cursor.execute(check_query)
-        result = cursor.fetchone()
-
-        if result:
-            print("Table 'schedule_stream' exists in database 'AITown'.")
-            return True
-        else:
-            print("Table 'schedule_stream' does not exist in database 'AITown'.")
-            return False
-    except Error as e:
-        print(f"Failed to check if table exists: {e}")
-        return False
 
 def create_table(connection):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")  # Use the AITown database
         create_table_query = """
-        CREATE TABLE IF NOT EXISTS schedule_stream (
+        CREATE TABLE IF NOT EXISTS behavior_reflection_stream (
             npcID VARCHAR(255) NOT NULL,
             Time DATETIME NOT NULL,
-            Schedule LONGTEXT,
+            Content LONGTEXT,
             PRIMARY KEY (npcID, Time)
         )
         """
         cursor.execute(create_table_query)
-        print("Table 'schedule_stream' checked/created successfully.")
+        print("Table 'behavior_reflection_stream' checked/created successfully.")
     except Error as e:
         print(f"Failed to create table: {e}")
 
-def insert_into_table(connection, npcID, time, schedule):
+def table_exists(connection):
+    db_name = 'AITown'
+    table_name = 'behavior_reflection_stream'
+    try:
+        cursor = connection.cursor()
+        cursor.execute(f"""
+            SELECT TABLE_NAME 
+            FROM INFORMATION_SCHEMA.TABLES 
+            WHERE TABLE_SCHEMA = '{db_name}' AND TABLE_NAME = '{table_name}'
+        """)
+        result = cursor.fetchone()
+        if result:
+            print(f"Table '{table_name}' exists in database '{db_name}'.")
+            return True
+        else:
+            print(f"Table '{table_name}' does not exist in database '{db_name}'.")
+            return False
+    except Error as e:
+        print(f"Failed to check if table exists: {e}")
+        return False
+
+def insert_into_table(connection, npcID, time, content):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         insert_query = """
-        INSERT INTO schedule_stream (npcID, Time, Schedule)
+        INSERT INTO behavior_reflection_stream (npcID, Time, Content)
         VALUES (%s, %s, %s)
-        ON DUPLICATE KEY UPDATE Schedule = VALUES(Schedule)
+        ON DUPLICATE KEY UPDATE Content = VALUES(Content)
         """
-        cursor.execute(insert_query, (npcID, time, schedule))
+        cursor.execute(insert_query, (npcID, time, content))
         connection.commit()
-        print(f"Data inserted successfully: npcID={npcID}, time={time}, schedule length={len(schedule)}")
+        print(f"Data inserted successfully: npcID={npcID}, time={time}, content length={len(content)}")
     except Error as e:
         print(f"Failed to insert data: {e}")
 
@@ -72,13 +74,13 @@ def retrieve_entry(connection, npcID, time):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        select_query = "SELECT Schedule FROM schedule_stream WHERE npcID = %s AND Time = %s"
+        select_query = "SELECT Content FROM behavior_reflection_stream WHERE npcID = %s AND Time = %s"
         cursor.execute(select_query, (npcID, time))
         result = cursor.fetchone()
         if result:
-            schedule = result[0]
-            print(f"Retrieved entry: schedule={schedule}")
-            return schedule
+            content = result[0]
+            print(f"Retrieved entry: content={content}")
+            return content
         else:
             print(f"No entry found for npcID={npcID}, time={time}")
             return None
@@ -90,7 +92,7 @@ def delete_entry(connection, npcID, time):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        delete_query = "DELETE FROM schedule_stream WHERE npcID = %s AND Time = %s"
+        delete_query = "DELETE FROM behavior_reflection_stream WHERE npcID = %s AND Time = %s"
         cursor.execute(delete_query, (npcID, time))
         connection.commit()
         print(f"Entry with npcID={npcID}, time={time} has been deleted successfully.")
@@ -101,21 +103,22 @@ def delete_all_content(connection):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        delete_query = "DELETE FROM schedule_stream"
+        delete_query = "DELETE FROM behavior_reflection_stream"
         cursor.execute(delete_query)
         connection.commit()
-        print("All content in the 'schedule_stream' table has been deleted successfully.")
+        print("All content in the 'behavior_reflection_stream' table has been deleted successfully.")
     except Error as e:
         print(f"Failed to delete content: {e}")
 
+import pandas as pd
 
 def retrieve_entries_between_time(connection, npcID, start_time, end_time, limit=300):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         select_query = """
-        SELECT npcID, Time, Schedule
-        FROM schedule_stream
+        SELECT npcID, Time, Content
+        FROM behavior_reflection_stream
         WHERE npcID = %s AND Time BETWEEN %s AND %s
         ORDER BY Time ASC
         LIMIT %s
@@ -126,11 +129,11 @@ def retrieve_entries_between_time(connection, npcID, start_time, end_time, limit
         # Prepare data for DataFrame
         data = []
         for result in results:
-            npcID, time, schedule = result
-            data.append([npcID, time, schedule])
+            npcID, time, content = result
+            data.append([npcID, time, content])
 
         # Define DataFrame columns
-        columns = ['npcID', 'Time', 'Schedule']
+        columns = ['npcID', 'Time', 'Content']
 
         # Create DataFrame
         df = pd.DataFrame(data, columns=columns)
@@ -141,13 +144,14 @@ def retrieve_entries_between_time(connection, npcID, start_time, end_time, limit
         print(f"Failed to retrieve data: {e}")
         return None
 
+
 def retrieve_last_entry_before_time(connection, npcID, before_time):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         select_query = """
-        SELECT npcID, Time, Schedule
-        FROM schedule_stream
+        SELECT npcID, Time, Content
+        FROM behavior_reflection_stream
         WHERE npcID = %s AND Time < %s
         ORDER BY Time DESC
         LIMIT 1
@@ -156,9 +160,9 @@ def retrieve_last_entry_before_time(connection, npcID, before_time):
         result = cursor.fetchone()
 
         if result:
-            npcID, time, schedule = result
-            print(f"Retrieved last entry before {before_time}: npcID={npcID}, time={time}, schedule={schedule}")
-            return npcID, time, schedule
+            npcID, time, content = result
+            print(f"Retrieved last entry before {before_time}: npcID={npcID}, time={time}, content={content}")
+            return npcID, time, content
         else:
             print(f"No entries found for npcID={npcID} before {before_time}")
             return None

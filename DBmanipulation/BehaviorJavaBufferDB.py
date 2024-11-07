@@ -69,7 +69,7 @@ def create_table(connection):
         cursor = connection.cursor()
         cursor.execute("USE AITown")  # Use the AITown database
         create_table_query = """
-        CREATE TABLE IF NOT EXISTS java_response_buffer (
+        CREATE TABLE IF NOT EXISTS behavior_java_buffer (
             time DATETIME NOT NULL,
             npcId INT NOT NULL,
             content LONGTEXT,
@@ -78,7 +78,7 @@ def create_table(connection):
         )
         """
         cursor.execute(create_table_query)
-        print("Table 'java_response_buffer' checked/created successfully.")
+        print("Table 'behavior_java_buffer' checked/created successfully.")
     except Error as e:
         print(f"Failed to create table: {e}")
 
@@ -86,16 +86,16 @@ def delete_table(connection):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")  # Ensure you're using the correct database
-        delete_table_query = f"DROP TABLE IF EXISTS java_response_buffer"
+        delete_table_query = f"DROP TABLE IF EXISTS behavior_java_buffer"
         cursor.execute(delete_table_query)
         connection.commit()
-        print(f"Table java_response_buffer has been deleted successfully.")
+        print(f"Table behavior_java_buffer has been deleted successfully.")
     except Error as e:
-        print(f"Failed to delete table java_response_buffer: {e}")
+        print(f"Failed to delete table behavior_java_buffer: {e}")
 
 def table_exists(connection):
     db_name = 'AITown'
-    table_name = 'java_response_buffer'
+    table_name = 'behavior_java_buffer'
     try:
         cursor = connection.cursor()
         cursor.execute(f"""
@@ -119,7 +119,7 @@ def insert_into_table(connection, time, npcId, content, isProcessed=False):
         cursor = connection.cursor()
         cursor.execute("USE AITown") 
         insert_query = """
-        INSERT INTO java_response_buffer (time, npcId, content, isProcessed)
+        INSERT INTO behavior_java_buffer (time, npcId, content, isProcessed)
         VALUES (%s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE content = VALUES(content), isProcessed = VALUES(isProcessed)
         """
@@ -133,7 +133,7 @@ def delete_entry_in_buffer(connection, time, npcId):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")  # Ensure you're using the correct database
-        delete_query = "DELETE FROM java_response_buffer WHERE time = %s AND npcId = %s"
+        delete_query = "DELETE FROM behavior_java_buffer WHERE time = %s AND npcId = %s"
         cursor.execute(delete_query, (time, npcId))
         connection.commit()  # Commit the changes
         print(f"Entry with time={time} and npcId={npcId} has been deleted successfully.")
@@ -144,10 +144,10 @@ def delete_all_content_in_buffer(connection):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")  # Ensure you're using the correct database
-        delete_query = "DELETE FROM java_response_buffer"
+        delete_query = "DELETE FROM behavior_java_buffer"
         cursor.execute(delete_query)
         connection.commit()  # Commit the changes
-        print("All content in the 'java_response_buffer' table has been deleted successfully.")
+        print("All content in the 'behavior_java_buffer' table has been deleted successfully.")
     except Error as e:
         print(f"Failed to delete content: {e}")
 
@@ -157,7 +157,7 @@ def get_earliest_unprocessed_entry(connection):
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         query = """
-        SELECT * FROM java_response_buffer 
+        SELECT * FROM behavior_java_buffer 
         WHERE isProcessed = FALSE
         ORDER BY time ASC 
         LIMIT 1
@@ -182,7 +182,7 @@ def get_unprocessed_entries_of_npc(connection, npcId):
         
         # Query for all unprocessed entries for the given npcId
         query_all = """
-        SELECT * FROM java_response_buffer 
+        SELECT * FROM behavior_java_buffer 
         WHERE isProcessed = FALSE AND npcId = %s
         ORDER BY time ASC
         """
@@ -191,7 +191,7 @@ def get_unprocessed_entries_of_npc(connection, npcId):
         
         # Query for the latest unprocessed entry for the given npcId
         query_latest = """
-        SELECT * FROM java_response_buffer 
+        SELECT * FROM behavior_java_buffer 
         WHERE isProcessed = FALSE AND npcId = %s
         ORDER BY time DESC 
         LIMIT 1
@@ -222,7 +222,7 @@ def mark_entry_as_processed(connection, time, npcId):
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         update_query = """
-        UPDATE java_response_buffer
+        UPDATE behavior_java_buffer
         SET isProcessed = TRUE
         WHERE time = %s AND npcId = %s
         """
@@ -238,7 +238,7 @@ def get_all_unprocessed_entries(connection):
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         query = """
-        SELECT * FROM java_response_buffer 
+        SELECT * FROM behavior_java_buffer 
         WHERE isProcessed = FALSE
         ORDER BY time ASC
         """
@@ -262,7 +262,7 @@ def mark_entry_as_processed(connection, time, npcId):
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         update_query = """
-        UPDATE java_response_buffer
+        UPDATE behavior_java_buffer
         SET isProcessed = TRUE
         WHERE time = %s AND npcId = %s
         """

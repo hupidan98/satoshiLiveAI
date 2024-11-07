@@ -7,7 +7,9 @@ sys.path.append('../SenidngReceiving')
 import os
 
 from DBCon import establish_sql_connection
-from BufferDB import database_exists, create_database, table_exists, create_table, insert_into_table, delete_all_content_in_buffer
+import BehaviorJavaBufferDB
+import BehaviorInstructionDB 
+import CommentReplyJavaBufferDB
 
 import socket
 import struct
@@ -24,7 +26,7 @@ import datetime
 
 import threading
 import select
-import InstructionDB 
+
 
 
 def build_packet_buffer(header_data, message_data):
@@ -289,45 +291,67 @@ def receive_data(sock):
         try:
             print("Waiting to receive data...")
             input_from_java = receive_input_long(sock)
-            print()
             print("Received input from Java:", input_from_java)
-            print()
-            print()
-            print()
+
             # Parse input
             data = json.loads(input_from_java)
             print("Parsed input successfully:", data)
 
-            
-            # Save To Database
-            try:
-                npcInputSingle = data['data']
-                print(npcInputSingle)
-                print(npcInputSingle.keys())
-                
-                dt_object = datetime.datetime.fromtimestamp(npcInputSingle['world']['time'] / 1000.0)
-                time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S')  # Format to MySQL datetime format
-                npcId = npcInputSingle['npcs'][0]['npcId']
+            if data['command'] == 10101:
+                # npc behavior
+                try:
+                    npcInputSingle = data['data']
+                    print(npcInputSingle)
+                    print(npcInputSingle.keys())
+                    
+                    dt_object = datetime.datetime.fromtimestamp(npcInputSingle['world']['time'] / 1000.0)
+                    time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S')  # Format to MySQL datetime format
+                    npcId = npcInputSingle['npcs'][0]['npcId']
 
 
-                content = json.dumps(npcInputSingle)  # Convert the content to JSON format
-                db_connection = establish_sql_connection()
+                    content = json.dumps(npcInputSingle)  # Convert the content to JSON format
+                    db_connection = establish_sql_connection()
 
-                # Insert into table using formatted datetime string
-                insert_into_table(db_connection, time_stamp, int(npcId), content)
-                
-            except Exception as e:
-                print(f"Failed to insert data for npcId {npcId}: {e}")
-                traceback.print_exc()
-            else:
-                print(f"Data for npcId {npcId} inserted successfully.")
+                    # Insert into table using formatted datetime string
+                    BehaviorJavaBufferDB.insert_into_table(db_connection, time_stamp, int(npcId), content)
+                    
+                except Exception as e:
+                    print(f"Failed to insert data for npcId {npcId}: {e}")
+                    traceback.print_exc()
+                else:
+                    print(f"Data for npcId {npcId} inserted successfully.")
+            # elif data['command'] == 10101:
+            #     # npc Accouncement
+            #     try:
+            #         # do something
+            #         print(data)
+            #     except Exception as e:
+            #         print(f"Failed to insert data for npcId {npcId}: {e}")
+            #         traceback.print_exc()
+            #     else:
+            #         print(f"Data for npcId {npcId} inserted successfully.")
+            elif data['command'] == 10103:
+                # npc reply to comment from player
+                try:
+                    # do something
+                    playerCommentData = data['data']
+                    npcId = playerCommentData['npcId']
+                    requestId = data['requestId']
+                    senderId = playerCommentData['ChatData']['sender']
+                    msgId = playerCommentData['ChatData']['msgId']
+                    content = playerCommentData['ChatData']['content']
+                    dt_object = datetime.datetime.fromtimestamp(playerCommentData['ChatData']['time'] / 1000.0)
+                    time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S') 
+                    CommentReplyJavaBufferDB.insert_into_table(db_connection, time_stamp, npcId, msgId, senderId, content)
+                except Exception as e:
+                    print(f"Failed to insert data for npcId {npcId}: {e}")
+                    traceback.print_exc()
+                else:
+                    print(f"Data for npcId {npcId} inserted successfully.")
         except Exception as e:
             print(f"Error in receive_data: {e}")
             traceback.print_exc()
-            print(input_from_java)
-            print()
-            print()
-            print()
+ 
 
 
 def send_data(sock, config):
@@ -335,7 +359,7 @@ def send_data(sock, config):
         print("Checking for unprocessed instructions...")
         try:
             db_conn = establish_sql_connection()
-            instruction_from_db = InstructionDB.get_earliest_unprocessed_instruction(db_conn)
+            instruction_from_db = BehaviorInstructionDB.get_earliest_unprocessed_instruction(db_conn)
             print(f"Instruction from DB: {instruction_from_db}")
             if instruction_from_db is not None:
                 curTime, npcId, instruction_str = instruction_from_db[0], instruction_from_db[1], instruction_from_db[2]
@@ -343,7 +367,7 @@ def send_data(sock, config):
                 print('Sending instruction:', instruction_str)
                 # Execute the instruction and mark it as processed
                 execute_instruction(sock, config, instruction_str, head_num)
-                InstructionDB.mark_instruction_as_processed(db_conn, curTime, npcId)
+                BehaviorInstructionDB.mark_instruction_as_processed(db_conn, curTime, npcId)
                 print(f"Sent instruction: {instruction_str} for npcId {npcId} and marked as processed.")
             else:
                 print("No unprocessed instructions found.")

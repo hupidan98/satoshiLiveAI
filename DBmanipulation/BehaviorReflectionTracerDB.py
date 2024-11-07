@@ -66,7 +66,7 @@ def create_table(connection):
         cursor = connection.cursor()
         cursor.execute("USE AITown")  # Use the AITown database
         create_table_query = """
-        CREATE TABLE IF NOT EXISTS reflection_tracer (
+        CREATE TABLE IF NOT EXISTS behavior_reflection_tracer (
             npcID VARCHAR(255) NOT NULL,
             total_importance INT CHECK (total_importance >= 0),
             start_Time DATETIME NOT NULL,
@@ -75,7 +75,7 @@ def create_table(connection):
         )
         """
         cursor.execute(create_table_query)
-        print("Table 'reflection_tracer' checked/created successfully.")
+        print("Table 'behavior_reflection_tracer' checked/created successfully.")
     except Error as e:
         print(f"Failed to create table: {e}")
 
@@ -83,16 +83,16 @@ def delete_table(connection):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        delete_table_query = "DROP TABLE IF EXISTS reflection_tracer"
+        delete_table_query = "DROP TABLE IF EXISTS behavior_reflection_tracer"
         cursor.execute(delete_table_query)
         connection.commit()
-        print("Table 'reflection_tracer' has been deleted successfully.")
+        print("Table 'behavior_reflection_tracer' has been deleted successfully.")
     except Error as e:
-        print(f"Failed to delete table 'reflection_tracer': {e}")
+        print(f"Failed to delete table 'behavior_reflection_tracer': {e}")
 
 def table_exists(connection):
     db_name = 'AITown'
-    table_name = 'reflection_tracer'
+    table_name = 'behavior_reflection_tracer'
     try:
         cursor = connection.cursor()
         cursor.execute(f"""
@@ -116,7 +116,7 @@ def insert_into_table(connection, npcID, total_importance, start_time, end_time)
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         insert_query = """
-        INSERT INTO reflection_tracer (npcID, total_importance, start_Time, end_Time)
+        INSERT INTO behavior_reflection_tracer (npcID, total_importance, start_Time, end_Time)
         VALUES (%s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE total_importance = VALUES(total_importance), start_Time = VALUES(start_Time), end_Time = VALUES(end_Time)
         """
@@ -130,7 +130,7 @@ def retrieve_entry(connection, npcID):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        select_query = "SELECT total_importance, start_Time, end_Time FROM reflection_tracer WHERE npcID = %s"
+        select_query = "SELECT total_importance, start_Time, end_Time FROM behavior_reflection_tracer WHERE npcID = %s"
         cursor.execute(select_query, (npcID,))
         result = cursor.fetchone()
         if result:
@@ -148,7 +148,7 @@ def delete_entry_in_table(connection, npcID):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        delete_query = "DELETE FROM reflection_tracer WHERE npcID = %s"
+        delete_query = "DELETE FROM behavior_reflection_tracer WHERE npcID = %s"
         cursor.execute(delete_query, (npcID,))
         connection.commit()
         print(f"Entry with npcID={npcID} has been deleted successfully.")
@@ -159,9 +159,9 @@ def delete_all_entries(connection):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        delete_query = "DELETE FROM reflection_tracer"
+        delete_query = "DELETE FROM behavior_reflection_tracer"
         cursor.execute(delete_query)
         connection.commit()
-        print("All entries in the 'reflection_tracer' table have been deleted successfully.")
+        print("All entries in the 'behavior_reflection_tracer' table have been deleted successfully.")
     except Error as e:
         print(f"Failed to delete entries: {e}")

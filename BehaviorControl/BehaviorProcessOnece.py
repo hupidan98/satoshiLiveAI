@@ -3,17 +3,17 @@ import os
 sys.path.append('../DBmanipulation')
 
 import DBCon 
-import BufferDB
-import InstructionDB
-import ReflectionTracerDB
-import MemStreDB
-import ReflectionDB
-# import ScheduleDB
+import BehaviorJavaBufferDB
+import BehaviorInstructionDB
+import BehaviorReflectionTracerDB
+import BehaviorMemStreDB
+import BehaviorReflectionDB
+# import BehaviorScheduleDB
 
-import GPTProcess
-import ManualProcess
-import InstToMemStre
-import InputToMemStre
+import BehaviorGPTProcess
+import BehaviorManualProcess
+import BehaviorInstToMemStre
+import BehaviorInputToMemStre
 
 
 
@@ -26,7 +26,7 @@ import pickle
 
 def processOneInputGiveOneInstruction():
     instruction_db_conn = schedule_db_conn = buffer_db_conn = reflection_tracer_db_conn = reflection_db_conne = memstre_db_conn = buffer_db_conn= DBCon.establish_sql_connection()
-    input_from_java = BufferDB.get_earliest_unprocessed_entry(buffer_db_conn)
+    input_from_java = BehaviorJavaBufferDB.get_earliest_unprocessed_entry(buffer_db_conn)
     print(input_from_java)
 
     if input_from_java is None:
@@ -36,19 +36,19 @@ def processOneInputGiveOneInstruction():
         return 0
 
     npcId = input_from_java[1]
-    AllEntryOfNPC, LatestEntryOfNpc = BufferDB.get_unprocessed_entries_of_npc(buffer_db_conn, npcId)
+    AllEntryOfNPC, LatestEntryOfNpc = BehaviorJavaBufferDB.get_unprocessed_entries_of_npc(buffer_db_conn, npcId)
     input_from_java = LatestEntryOfNpc
 
 
 
     curTime = input_from_java[0]
-    inputInHumanString = ManualProcess.parse_npc_info(input_from_java[2])
+    inputInHumanString = BehaviorManualProcess.parse_npc_info(input_from_java[2])
 
 
 
   # Get Relavent Memeory from Memeory Stream
-    BufferRowEmbedding = GPTProcess.get_embedding(inputInHumanString)
-    rows_df = MemStreDB.retrieve_most_recent_entries(memstre_db_conn, npcId, curTime)
+    BufferRowEmbedding = BehaviorGPTProcess.get_embedding(inputInHumanString)
+    rows_df = BehaviorMemStreDB.retrieve_most_recent_entries(memstre_db_conn, npcId, curTime)
     if rows_df is not None:
         rows_df['Time'] = pd.to_datetime(rows_df['Time'])
         rows_df['TimeDifference'] = (rows_df['Time'] - pd.to_datetime(curTime)).dt.total_seconds()
@@ -85,7 +85,7 @@ def processOneInputGiveOneInstruction():
 
 
     #Retrive latest reflection
-    prior_reflection = ReflectionDB.retrieve_last_entry_before_time(reflection_db_conne, npcId, curTime)
+    prior_reflection = BehaviorReflectionDB.retrieve_last_entry_before_time(reflection_db_conne, npcId, curTime)
     if prior_reflection is not None:
         prior_reflection_str = str(prior_reflection[2])
     else:
@@ -93,16 +93,16 @@ def processOneInputGiveOneInstruction():
 
     
     # Process these information 
-    instruction_in_human = GPTProcess.process_all_give_conversation(memories_str, prior_reflection_str, inputInHumanString, 'Be dramatic, no emoji, under 140 characters')# Translate to instruction 
+    instruction_in_human = BehaviorGPTProcess.process_all_give_conversation(memories_str, prior_reflection_str, inputInHumanString, 'Be dramatic, no emoji, under 140 characters')# Translate to instruction 
     # Translate to instruction
-    instruction_to_give = ManualProcess.talkingInstruction(npcId, instruction_in_human)
+    instruction_to_give = BehaviorManualProcess.talkingInstruction(npcId, instruction_in_human)
 
     # Mark the buffer as processed
-    BufferDB.mark_entry_as_processed(buffer_db_conn, curTime, npcId)
+    BehaviorJavaBufferDB.mark_entry_as_processed(buffer_db_conn, curTime, npcId)
     for row in AllEntryOfNPC:
         time_to_mark = row[0]
         npcId_to_mark = row[1]
-        BufferDB.mark_entry_as_processed(buffer_db_conn, time_to_mark, npcId_to_mark)
+        BehaviorJavaBufferDB.mark_entry_as_processed(buffer_db_conn, time_to_mark, npcId_to_mark)
         
     # add to instruction db
     # print()
@@ -115,28 +115,28 @@ def processOneInputGiveOneInstruction():
     # print()
     # print()
     # print()
-    InstructionDB.insert_into_instruction_table(instruction_db_conn, curTime, npcId, instruction_to_give)
+    BehaviorInstructionDB.insert_into_instruction_table(instruction_db_conn, curTime, npcId, instruction_to_give)
     
     
 
     # insert instruction to Memory Stream
-    InstToMemStre.InstToMemStreSatoshiDB(input_from_java, instruction_in_human)
+    BehaviorInstToMemStre.InstToMemStreSatoshiDB(input_from_java, instruction_in_human)
     # add importance to Reflection Tracer
-    InstToMemStre.InstImportancetoReflectionTracer( input_from_java, instruction_to_give, instruction_in_human)
+    BehaviorInstToMemStre.InstImportancetoReflectionTracer( input_from_java, instruction_to_give, instruction_in_human)
     print(instruction_to_give)
 
     # Generate Reflection if needed
     npcId = input_from_java[1]
     curTime = input_from_java[0]
-    output = ReflectionTracerDB.retrieve_entry(reflection_tracer_db_conn, npcId)
+    output = BehaviorReflectionTracerDB.retrieve_entry(reflection_tracer_db_conn, npcId)
     if output:
         output_importance, output_starttime, output_endtime = output[0], output[1], output[2]
         if output_importance > 30:
             #TODO: Generate reflection, and add to DB
             memstrm_db_conn = DBCon.establish_sql_connection()
-            memories = MemStreDB.retrieve_entries_between_time(memstrm_db_conn, npcId, output_starttime, output_endtime)
+            memories = BehaviorMemStreDB.retrieve_entries_between_time(memstrm_db_conn, npcId, output_starttime, output_endtime)
             reflection_db_con = DBCon.establish_sql_connection()
-            prior_reflection = ReflectionDB.retrieve_last_entry_before_time(reflection_db_con, npcId, output_endtime)
+            prior_reflection = BehaviorReflectionDB.retrieve_last_entry_before_time(reflection_db_con, npcId, output_endtime)
             if prior_reflection is not None:
                 prior_reflection_str = prior_reflection[2]
             else:
@@ -145,10 +145,10 @@ def processOneInputGiveOneInstruction():
                 memories_str = str(memories['Content'])
             else:
                 memories_str = ''
-            new_reflection = GPTProcess.generate_reflection(prior_reflection_str, memories_str,inputInHumanString)
-            ReflectionDB.insert_into_table(reflection_db_con, npcId, curTime, new_reflection)
+            new_reflection = BehaviorGPTProcess.generate_reflection(prior_reflection_str, memories_str,inputInHumanString)
+            BehaviorReflectionDB.insert_into_table(reflection_db_con, npcId, curTime, new_reflection)
             #Reset the importance tracer
-            ReflectionTracerDB.insert_into_table(reflection_tracer_db_conn, npcId, 0, curTime, curTime)
+            BehaviorReflectionTracerDB.insert_into_table(reflection_tracer_db_conn, npcId, 0, curTime, curTime)
     
 
     return 1
