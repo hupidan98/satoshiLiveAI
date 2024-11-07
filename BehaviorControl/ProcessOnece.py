@@ -1,9 +1,6 @@
 import sys
 import os
-sys.path.append('./DBmanipulation')
 sys.path.append('../DBmanipulation')
-sys.path.append('./AIMemory')
-sys.path.append('../AIMemory')
 
 import DBCon 
 import BufferDB

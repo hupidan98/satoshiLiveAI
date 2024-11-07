@@ -1,7 +1,6 @@
 import sys
 import os
-sys.path.append('./DBmanipulation')
-sys.path.append('./AIMemory')
+sys.path.append('../DBmanipulation')
 
 import DBCon
 import BufferDB
@@ -9,10 +8,12 @@ import ReflectionTracerDB
 import MemStreDB
 import ReflectionDB
 import ScheduleDB
+
 import GPTProcess
 import InstToMemStre
 import InputToMemStre
 import InstructionDB
+import ProcessOnece
 
 import pandas as pd
 import numpy as np
