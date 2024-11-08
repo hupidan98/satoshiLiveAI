@@ -23,3 +23,6 @@ import json
 import re
 import pickle
 
+
+def choiceOneToReply():
+    return 0 

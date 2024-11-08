@@ -40,7 +40,7 @@ def process_all_give_conversation(memories_str, reflections_str, java_input_str,
     """
     
     completion = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",
@@ -103,7 +103,7 @@ def generate_reflection(memories_str, reflections_str, java_input_str):
     """
     
     completion = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",
