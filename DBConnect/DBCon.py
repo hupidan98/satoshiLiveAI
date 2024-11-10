@@ -8,8 +8,8 @@ def establish_sql_connection():
     print("Current working directory:", os.getcwd())
     
     config = configparser.ConfigParser()
-    # Use the path relative to this file's location to locate config.ini
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.ini')
+    # Adjust the path to locate config.ini one level above this file's directory
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'config.ini')
     
     if not os.path.exists(config_path):
         print(f"Error: config.ini not found at {config_path}")

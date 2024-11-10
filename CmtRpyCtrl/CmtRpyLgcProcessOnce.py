@@ -1,31 +1,30 @@
 import sys
 import os
 
-import DBConnect.DBCon as DBCon 
-from DBConnect import CommentReplyDBJavaBuffer
-from DBConnect import CommentReplyDBInstruction
-from DBConnect import BehaviorDBMemStre
-from DBConnect import BehaviorDBReflection
-from DBConnect import BehaviorScheduleDB
-
-
-import CmtRpyLgcGPTProcess
-# import CommentReplyManualProcess
-# import CommentReplyInstToMemStre
-# import CommentReplyInputToMemStre
-
-
-
 import pandas as pd
 import numpy as np
 import json
 import re
 import pickle
 
+import DBConnect.DBCon as DBCon 
+from DBConnect import CmtRpyDBJavaBuffer
+from DBConnect import CmtRpyDBInstruction
+from DBConnect import BhrDBMemStre
+from DBConnect import BhrDBReflection
+from DBConnect import BhrScheduleDB
+
+
+import CmtRpyLgcGPTProcess
+# import CmtRpyManualProcess
+# import CmtRpyInstToMemStre
+# import CmtRpyInputToMemStre
+
+
 
 def choiceOneToReply():
     db_conn = DBCon.establish_sql_connection()
-    input_from_java = CommentReplyDBJavaBuffer.get_earliest_unprocessed_entry(db_conn)
+    input_from_java = CmtRpyDBJavaBuffer.get_earliest_unprocessed_entry(db_conn)
     print(input_from_java)
 
     if input_from_java is None:
@@ -42,7 +41,7 @@ def choiceOneToReply():
     content = input_from_java[5]
 
     # Get all comments for that npc
-    all_comments = CommentReplyDBJavaBuffer.get_unprocessed_entries_of_npc(db_conn, npcId)
+    all_comments = CmtRpyDBJavaBuffer.get_unprocessed_entries_of_npc(db_conn, npcId)
     print(all_comments)
     # Prepare data for DataFrame
     data = []
@@ -88,9 +87,9 @@ def choiceOneToReply():
 
     
     print(instruction_to_give)
-    CommentReplyDBInstruction.insert_into_instruction_table(db_conn, requestId, time, npcId, msgId, instruction_to_give, isProcessed=False)
+    CmtRpyDBInstruction.insert_into_instruction_table(db_conn, requestId, time, npcId, msgId, instruction_to_give, isProcessed=False)
     
-    CommentReplyDBJavaBuffer.mark_entry_as_processed(db_conn, requestId)
+    CmtRpyDBJavaBuffer.mark_entry_as_processed(db_conn, requestId)
     # Example instruction.
     # {
     # "actionId": 117,

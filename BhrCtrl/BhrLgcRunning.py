@@ -2,6 +2,10 @@ import sys
 import os
 
 
+# Add the base directory (one level up from AnnCtrl)
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(base_dir)
+
 import DBConnect.DBCon as DBCon
 
 from DBConnect import BhrDBJavaBuffer
@@ -14,7 +18,7 @@ from DBConnect import BhrDBSchedule
 import BhrLgcGPTProcess as BhrLgcGPTProcess
 import BhrLgcInstToMemStre as BhrLgcInstToMemStre
 import BhrLgcInputToMemStre as BhrLgcInputToMemStre
-import BhrLgcProcessOnece
+import BhrCtrl.BhrLgcProcessOnce as BhrLgcProcessOnce
 
 import pandas as pd
 import numpy as np
@@ -56,6 +60,6 @@ BhrDBMemStre.delete_all_content_in_buffer(memstre_db_conn)
 n = 0
 while True:
     print(f"Processing step {n}")
-    BhrLgcProcessOnece.processOneInputGiveOneInstruction()
+    BhrLgcProcessOnce.processOneInputGiveOneInstruction()
     time.sleep(1)
     n += 1

@@ -5,12 +5,17 @@ import sys
 import os
 
 
+# Add the base directory (one level up from AnnCtrl)
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(base_dir)
+
 from DBConnect.DBCon import establish_sql_connection
 
 from DBConnect import BhrDBJavaBuffer
 from DBConnect import BhrDBInstruction
 from DBConnect import CmtRpyDBJavaBuffer
 from DBConnect import CmtRpyDBInstruction
+from DBConnect import AnnDBJavaBuffer
 
 import socket
 import struct
@@ -323,28 +328,23 @@ def receive_data(sock):
             if data['command'] == 10101:
                 # npc Accouncement, use behavior logic right now.
                 try:
+                    requestId = data['requestId']
+
                     npcInputSingle = data['data']
-                    print(npcInputSingle)
-                    print(npcInputSingle.keys())
-                    
                     dt_object = datetime.datetime.fromtimestamp(npcInputSingle['world']['time'] / 1000.0)
                     time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S')  # Format to MySQL datetime format
                     npcId = npcInputSingle['npcs'][0]['npcId']
-
-
+                    
                     content = json.dumps(npcInputSingle)  # Convert the content to JSON format
                     db_connection = establish_sql_connection()
-
                     # Insert into table using formatted datetime string
-                    BhrDBJavaBuffer.insert_into_table(db_connection, time_stamp, int(npcId), content)
-                    
+                    AnnDBJavaBuffer.insert_into_table(db_connection, requestId,time_stamp, int(npcId), content)
                 except Exception as e:
-                    print('is it here?')
-                    print(f"Failed to insert data for npcId {npcId}: {e}")
+                    print(f"Failed to insert into Announcement Java Buffer for requesId {requestId} npcId {npcId}: {e}")
                     traceback.print_exc()
                 else:
-                    print(f"Data for npcId {npcId} inserted successfully.")
-            # elif data['command'] == 10101:
+                    print(f"Insertion into Announcement for requesId {requestId} npcId {npcId} inserted successfully.")
+            # elif data['command'] == 10100:
             #     # npc Behavior
             #     try:
             #         # do something
@@ -356,7 +356,6 @@ def receive_data(sock):
             #         print(f"Data for npcId {npcId} inserted successfully.")
             elif data['command'] == 10103:
                 # npc reply to comment from player
-                print("is 10103")
                 try:
                     # do something
                     playerCommentData = data['data']
@@ -367,13 +366,21 @@ def receive_data(sock):
                     content = playerCommentData['chatData']['content']
                     dt_object = datetime.datetime.fromtimestamp(playerCommentData['chatData']['time'] / 1000.0)
                     time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S') 
+                    db_connection = establish_sql_connection()
+                    print(db_connection)
                     CmtRpyDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, npcId, msgId, senderId, content)
                 except Exception as e:
-                    print(f"Failed to insert data for npcId {npcId}: {e}")
+                    print(f"Failed to insert into CommentReply Java Buffer for requesId {requestId} npcId {npcId}: {e}")
                     traceback.print_exc()
+                else:
+                    print(f"Insertion into CommentReply for requesId {requestId} npcId {npcId} inserted successfully.")
             else:
                 print('unkowncase')
                 print(data)
+            print()
+            print()
+            print()
+            
         except Exception as e:
             print(f"Error in receive_data: {e}")
             traceback.print_exc()
