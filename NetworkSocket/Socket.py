@@ -1,15 +1,16 @@
 
 import sys
-sys.path.append('./DBmanipulation')
-sys.path.append('../DBmanipulation')
-sys.path.append('./SenidngReceiving')
-sys.path.append('../SenidngReceiving')
+
+
 import os
 
-from DBCon import establish_sql_connection
-import BehaviorJavaBufferDB
-import BehaviorInstructionDB 
-import CommentReplyJavaBufferDB
+
+from DBConnect.DBCon import establish_sql_connection
+
+from DBConnect import BhrDBJavaBuffer
+from DBConnect import BhrDBInstruction
+from DBConnect import CmtRpyDBJavaBuffer
+from DBConnect import CmtRpyDBInstruction
 
 import socket
 import struct
@@ -28,6 +29,28 @@ import threading
 import select
 
 
+# Load config.ini once at the beginning
+def load_config():
+    config = configparser.ConfigParser()
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    config_path = os.path.join(base_dir, 'config.ini')
+    
+    if os.path.exists(config_path):
+        config.read(config_path)
+        print("Config sections found:", config.sections())
+    else:
+        print(f"Error: config.ini not found at {config_path}")
+        exit(1)
+    
+    # Check required sections
+    if 'NetworkSocket' not in config:
+        print("Error: 'NetworkSocket' section not found in config.ini")
+        exit(1)
+    if 'mysql' not in config:
+        print("Error: 'mysql' section not found in config.ini")
+        exit(1)
+
+    return config
 
 def build_packet_buffer(header_data, message_data):
     header_length = len(header_data)
@@ -298,7 +321,7 @@ def receive_data(sock):
             print("Parsed input successfully:", data)
 
             if data['command'] == 10101:
-                # npc behavior
+                # npc Accouncement, use behavior logic right now.
                 try:
                     npcInputSingle = data['data']
                     print(npcInputSingle)
@@ -313,15 +336,16 @@ def receive_data(sock):
                     db_connection = establish_sql_connection()
 
                     # Insert into table using formatted datetime string
-                    BehaviorJavaBufferDB.insert_into_table(db_connection, time_stamp, int(npcId), content)
+                    BhrDBJavaBuffer.insert_into_table(db_connection, time_stamp, int(npcId), content)
                     
                 except Exception as e:
+                    print('is it here?')
                     print(f"Failed to insert data for npcId {npcId}: {e}")
                     traceback.print_exc()
                 else:
                     print(f"Data for npcId {npcId} inserted successfully.")
             # elif data['command'] == 10101:
-            #     # npc Accouncement
+            #     # npc Behavior
             #     try:
             #         # do something
             #         print(data)
@@ -332,22 +356,24 @@ def receive_data(sock):
             #         print(f"Data for npcId {npcId} inserted successfully.")
             elif data['command'] == 10103:
                 # npc reply to comment from player
+                print("is 10103")
                 try:
                     # do something
                     playerCommentData = data['data']
                     npcId = playerCommentData['npcId']
                     requestId = data['requestId']
-                    senderId = playerCommentData['ChatData']['sender']
-                    msgId = playerCommentData['ChatData']['msgId']
-                    content = playerCommentData['ChatData']['content']
-                    dt_object = datetime.datetime.fromtimestamp(playerCommentData['ChatData']['time'] / 1000.0)
+                    senderId = playerCommentData['chatData']['sender']
+                    msgId = playerCommentData['chatData']['msgId']
+                    content = playerCommentData['chatData']['content']
+                    dt_object = datetime.datetime.fromtimestamp(playerCommentData['chatData']['time'] / 1000.0)
                     time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S') 
-                    CommentReplyJavaBufferDB.insert_into_table(db_connection, time_stamp, npcId, msgId, senderId, content)
+                    CmtRpyDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, npcId, msgId, senderId, content)
                 except Exception as e:
                     print(f"Failed to insert data for npcId {npcId}: {e}")
                     traceback.print_exc()
-                else:
-                    print(f"Data for npcId {npcId} inserted successfully.")
+            else:
+                print('unkowncase')
+                print(data)
         except Exception as e:
             print(f"Error in receive_data: {e}")
             traceback.print_exc()
@@ -359,7 +385,7 @@ def send_data(sock, config):
         print("Checking for unprocessed instructions...")
         try:
             db_conn = establish_sql_connection()
-            instruction_from_db = BehaviorInstructionDB.get_earliest_unprocessed_instruction(db_conn)
+            instruction_from_db = BhrDBInstruction.get_earliest_unprocessed_instruction(db_conn)
             print(f"Instruction from DB: {instruction_from_db}")
             if instruction_from_db is not None:
                 curTime, npcId, instruction_str = instruction_from_db[0], instruction_from_db[1], instruction_from_db[2]
@@ -367,7 +393,21 @@ def send_data(sock, config):
                 print('Sending instruction:', instruction_str)
                 # Execute the instruction and mark it as processed
                 execute_instruction(sock, config, instruction_str, head_num)
-                BehaviorInstructionDB.mark_instruction_as_processed(db_conn, curTime, npcId)
+                BhrDBInstruction.mark_instruction_as_processed(db_conn, curTime, npcId)
+                print(f"Sent instruction: {instruction_str} for npcId {npcId} and marked as processed.")
+            else:
+                print("No unprocessed instructions found.")
+                time.sleep(5)  # Sleep for 5 seconds before checking again
+
+            comment_instruction_from_db = CmtRpyDBInstruction.get_earliest_unprocessed_instruction(db_conn)
+            print(f"comment Instruction from DB: {comment_instruction_from_db}")
+            if comment_instruction_from_db is not None:
+                requestId, instruction_str = comment_instruction_from_db[0], comment_instruction_from_db[4]
+                head_num = 10100  # Set the appropriate head_num or pull dynamically if needed
+                print('Sending instruction:', instruction_str)
+                # Execute the instruction and mark it as processed
+                execute_instruction(sock, config, instruction_str, head_num)
+                CmtRpyDBInstruction.mark_instruction_as_processed(db_conn, requestId)
                 print(f"Sent instruction: {instruction_str} for npcId {npcId} and marked as processed.")
             else:
                 print("No unprocessed instructions found.")
@@ -382,18 +422,17 @@ if __name__ == "__main__":
     # ip_java = 'aitown.infinitytest.cc'
     # ip_java = 'satoshi-ai.live'
     # port_java = 2521
-    print("Current working directory:", os.getcwd())
-    
-    config = configparser.ConfigParser()
-    # Adjust path to look for config.ini in AImodule regardless of the current directory
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    config_path = os.path.join(base_dir, 'config.ini')
-    config.read(config_path)
-    
-    print("Config sections found:", config.sections())
-    
+    config = load_config()
+
+    # Check if the required sections are in config.ini
     if 'NetworkSocket' not in config:
         print("Error: 'NetworkSocket' section not found in config.ini")
+        exit(1)
+    if 'mysql' not in config:
+        print("Error: 'mysql' section not found in config.ini")
+        exit(1)
+        
+    # Now you can safely access the config values
     ip_java = config['NetworkSocket']['ip_java']
     port_java = int(config['NetworkSocket']['port_java'])
 

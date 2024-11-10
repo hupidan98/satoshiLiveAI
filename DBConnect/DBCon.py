@@ -1,5 +1,3 @@
-
-
 import mysql.connector
 from mysql.connector import Error
 import configparser
@@ -10,9 +8,13 @@ def establish_sql_connection():
     print("Current working directory:", os.getcwd())
     
     config = configparser.ConfigParser()
-    # Adjust path to look for config.ini in AImodule regardless of the current directory
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    config_path = os.path.join(base_dir, 'config.ini')
+    # Use the path relative to this file's location to locate config.ini
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.ini')
+    
+    if not os.path.exists(config_path):
+        print(f"Error: config.ini not found at {config_path}")
+        return None
+    
     config.read(config_path)
     
     print("Config sections found:", config.sections())
@@ -28,7 +30,7 @@ def establish_sql_connection():
             password=config['mysql']['password']
         )
         if connection.is_connected():
-            print("Connected to MySQL server and database 'AITown'")
+            print("Connected to MySQL server successfully")
         return connection
     except Error as e:
         print(f"Error: {e}")
