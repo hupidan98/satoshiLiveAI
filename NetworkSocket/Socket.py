@@ -16,6 +16,7 @@ from DBConnect import BhrDBInstruction
 from DBConnect import CmtRpyDBJavaBuffer
 from DBConnect import CmtRpyDBInstruction
 from DBConnect import AnnDBJavaBuffer
+from DBConnect import AnnDBInstruction
 
 import socket
 import struct
@@ -392,7 +393,7 @@ def send_data(sock, config):
         print("Checking for unprocessed instructions...")
         try:
             db_conn = establish_sql_connection()
-            instruction_from_db = BhrDBInstruction.get_earliest_unprocessed_instruction(db_conn)
+            instruction_from_db = AnnDBInstruction.get_earliest_unprocessed_instruction(db_conn)
             print(f"Instruction from DB: {instruction_from_db}")
             if instruction_from_db is not None:
                 curTime, npcId, instruction_str = instruction_from_db[0], instruction_from_db[1], instruction_from_db[2]
@@ -400,7 +401,7 @@ def send_data(sock, config):
                 print('Sending instruction:', instruction_str)
                 # Execute the instruction and mark it as processed
                 execute_instruction(sock, config, instruction_str, head_num)
-                BhrDBInstruction.mark_instruction_as_processed(db_conn, curTime, npcId)
+                AnnDBInstruction.mark_instruction_as_processed(db_conn, curTime, npcId)
                 print(f"Sent instruction: {instruction_str} for npcId {npcId} and marked as processed.")
             else:
                 print("No unprocessed instructions found.")

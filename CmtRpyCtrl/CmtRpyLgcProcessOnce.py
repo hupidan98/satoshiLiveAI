@@ -57,11 +57,11 @@ def choiceOneToReply():
     data = []
     requestIdtoMark = []
     for comment in all_comments:
-        requestId, time, npcId, msgId, senderId, content, isProcessed = comment
-        requestIdtoMark.append(requestId)
-        embedding = CmtRpyLgcGPTProcess.get_embedding(content)
+        requestId_frombd, time_frombd, npcId_frombd, msgId_frombd, senderId_frombd, content_frombd, isProcessed_frombd = comment
+        requestIdtoMark.append(requestId_frombd)
+        embedding = CmtRpyLgcGPTProcess.get_embedding(content_frombd)
         # Deserialize the embedding back to a list
-        data.append([requestId, time, npcId, msgId, senderId, content, embedding])
+        data.append([requestId_frombd, time_frombd, npcId_frombd, msgId_frombd, senderId_frombd, content_frombd, embedding])
 
     # Define DataFrame columns
     columns = ['requestId', 'time', 'npcId', 'msgId', 'senderId', 'content', 'embedding']
@@ -90,18 +90,25 @@ def choiceOneToReply():
     reply = CmtRpyLgcGPTProcess.replyToComment(ann_contents_str,  commet_to_reply)
 
     # Sent Reply
+
+    npcId = comment_row_reply['npcId']
+    msgId = comment_row_reply['msgId']
+    senderId = comment_row_reply['senderId']
+    time = comment_row_reply['time'].iloc[0]  # Get the first value if `time` is a Series
+
+
     instruction_to_give = json.dumps({
         "actionId": 117,
-        "npcId": npcId,
+        "npcId": str(npcId),
         "data": {
-            "content": reply,
+            "content": str(reply),
             "chatData": {
-                "msgId": msgId,
+                "msgId": str(msgId),
                 "sname": str(senderId),  # Assuming `sname` can use `senderId` as a string
-                "sender": senderId,
+                "sender": str(senderId),
                 "type": 0,  # Assuming a static value for type; change if needed
-                "content": reply,
-                "time": int(time.timestamp() * 1000),  # Convert datetime to milliseconds
+                "content": str(reply),
+                "time": str(int(time.timestamp() * 1000)),  # Convert datetime to milliseconds
                 "barrage": 0  # Assuming a static value for barrage; change if needed
             }
         }
