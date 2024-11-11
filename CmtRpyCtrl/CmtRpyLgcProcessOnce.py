@@ -91,9 +91,9 @@ def choiceOneToReply():
 
     # Sent Reply
 
-    npcId = comment_row_reply['npcId']
-    msgId = comment_row_reply['msgId']
-    senderId = comment_row_reply['senderId']
+    npcId = comment_row_reply['npcId'].iloc[0]
+    msgId = comment_row_reply['msgId'].iloc[0]
+    senderId = comment_row_reply['senderId'].iloc[0]
     time = comment_row_reply['time'].iloc[0]  # Get the first value if `time` is a Series
 
 
