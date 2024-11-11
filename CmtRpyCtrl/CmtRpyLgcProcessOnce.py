@@ -57,14 +57,14 @@ def choiceOneToReply():
     data = []
     requestIdtoMark = []
     for comment in all_comments:
-        requestId_frombd, time_frombd, npcId_frombd, msgId_frombd, senderId_frombd, content_frombd, isProcessed_frombd = comment
-        requestIdtoMark.append(requestId_frombd)
-        embedding = CmtRpyLgcGPTProcess.get_embedding(content_frombd)
+        requestId_fromdb, time_fromdb, npcId_fromdb, msgId_fromdb, senderId_fromdb, content_fromdb, isProcessed_fromdb, sname_fromdb = comment
+        requestIdtoMark.append(requestId_fromdb)
+        embedding = CmtRpyLgcGPTProcess.get_embedding(content_fromdb)
         # Deserialize the embedding back to a list
-        data.append([requestId_frombd, time_frombd, npcId_frombd, msgId_frombd, senderId_frombd, content_frombd, embedding])
+        data.append([requestId_fromdb, time_fromdb, npcId_fromdb, msgId_fromdb, senderId_fromdb, content_fromdb, embedding, sname_fromdb])
 
     # Define DataFrame columns
-    columns = ['requestId', 'time', 'npcId', 'msgId', 'senderId', 'content', 'embedding']
+    columns = ['requestId', 'time', 'npcId', 'msgId', 'senderId', 'content', 'embedding', 'sname']
 
     # Create DataFrame
     df = pd.DataFrame(data, columns=columns)
@@ -87,28 +87,29 @@ def choiceOneToReply():
     commet_to_reply = comment_row_reply['content']
 
     #Creating Reply
-    reply = CmtRpyLgcGPTProcess.replyToComment(ann_contents_str,  commet_to_reply)
+    reply_tosent = CmtRpyLgcGPTProcess.replyToComment(ann_contents_str,  commet_to_reply)
 
     # Sent Reply
-
-    npcId = comment_row_reply['npcId'].iloc[0]
-    msgId = comment_row_reply['msgId'].iloc[0]
-    senderId = comment_row_reply['senderId'].iloc[0]
-    time = comment_row_reply['time'].iloc[0]  # Get the first value if `time` is a Series
+    requestId_tosent = str(comment_row_reply['requestId'].iloc[0])
+    npcId_tosent = str(comment_row_reply['npcId'].iloc[0])
+    msgId_tosent = str(comment_row_reply['msgId'].iloc[0])
+    senderId_tosent = str(comment_row_reply['senderId'].iloc[0])
+    time_tosent = comment_row_reply['time'].iloc[0]  # Get the first value if `time` is a Series
+    sname_tosent = str(comment_row_reply['sname'].iloc[0])
 
 
     instruction_to_give = json.dumps({
         "actionId": 117,
         "npcId": str(npcId),
         "data": {
-            "content": str(reply),
+            "content": str(reply_tosent),
             "chatData": {
-                "msgId": str(msgId),
-                "sname": str(senderId),  # Assuming `sname` can use `senderId` as a string
-                "sender": str(senderId),
+                "msgId": str(msgId_tosent),
+                "sname": str(sname_tosent),  # Assuming `sname` can use `senderId` as a string
+                "sender": str(senderId_tosent),
                 "type": 0,  # Assuming a static value for type; change if needed
-                "content": str(reply),
-                "time": str(int(time.timestamp() * 1000)),  # Convert datetime to milliseconds
+                "content": str(reply_tosent),
+                "time": str(int(time_tosent.timestamp() * 1000)),  # Convert datetime to milliseconds
                 "barrage": 0  # Assuming a static value for barrage; change if needed
             }
         }
@@ -116,7 +117,7 @@ def choiceOneToReply():
 
     
     print(instruction_to_give)
-    CmtRpyDBInstruction.insert_into_instruction_table(db_conn, requestId, time, npcId, msgId, instruction_to_give, isProcessed=False)
+    CmtRpyDBInstruction.insert_into_instruction_table(db_conn, requestId_tosent, time_tosent, npcId_tosent, msgId_tosent, instruction_to_give, isProcessed=False)
     
 
     for rid in requestIdtoMark:

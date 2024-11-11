@@ -299,11 +299,12 @@ def receive_data():
                     senderId = playerCommentData['chatData']['sender']
                     msgId = playerCommentData['chatData']['msgId']
                     content = playerCommentData['chatData']['content']
+                    sname = playerCommentData['chatData']['sname']
                     dt_object = datetime.datetime.fromtimestamp(playerCommentData['chatData']['time'] / 1000.0)
                     time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S') 
                     db_connection = establish_sql_connection()
                     print(db_connection)
-                    CmtRpyDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, npcId, msgId, senderId, content)
+                    CmtRpyDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, npcId, msgId, senderId, content, sname)
                 except Exception as e:
                     print(f"Failed to insert into CommentReply Java Buffer for requestId {requestId} npcId {npcId}: {e}")
                     traceback.print_exc()

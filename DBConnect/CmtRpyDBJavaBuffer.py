@@ -76,6 +76,7 @@ def create_table(connection):
             senderId VARCHAR(255) NOT NULL,  -- Assuming senderId might be alphanumeric
             content LONGTEXT,
             isProcessed BOOLEAN NOT NULL DEFAULT FALSE,
+            sname TEXT,
             PRIMARY KEY (requestId)
         )
         """
@@ -84,18 +85,18 @@ def create_table(connection):
     except Error as e:
         print(f"Failed to create table: {e}")
 
-def insert_into_table(connection, requestId, time, npcId, msgId, senderId, content, isProcessed=False):
+def insert_into_table(connection, requestId, time, npcId, msgId, senderId, content, sname, isProcessed=False):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown") 
         insert_query = """
-        INSERT INTO comment_reply_java_buffer (requestId, time, npcId, msgId, senderId, content, isProcessed)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        ON DUPLICATE KEY UPDATE content = VALUES(content), isProcessed = VALUES(isProcessed)
+        INSERT INTO comment_reply_java_buffer (requestId, time, npcId, msgId, senderId, content, isProcessed, sname)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE content = VALUES(content), isProcessed = VALUES(isProcessed), sname = VALUES(sname)
         """
-        cursor.execute(insert_query, (requestId, time, npcId, msgId, senderId, content, isProcessed))
+        cursor.execute(insert_query, (requestId, time, npcId, msgId, senderId, content, isProcessed, sname))
         connection.commit()
-        print(f"Data inserted successfully: requestId={requestId}, time={time}, npcId={npcId}, msgId={msgId}, senderId={senderId}, content length={len(content)}, isProcessed={isProcessed}")
+        print(f"Data inserted successfully: requestId={requestId}, time={time}, npcId={npcId}, msgId={msgId}, senderId={senderId}, sname={sname}, content length={len(content)}, isProcessed={isProcessed}")
     except Error as e:
         print(f"Failed to insert data: {e}")
 
@@ -104,7 +105,7 @@ def get_earliest_unprocessed_entry(connection):
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         query = """
-        SELECT * FROM comment_reply_java_buffer 
+        SELECT requestId, time, npcId, msgId, senderId, content, isProcessed, sname FROM comment_reply_java_buffer 
         WHERE isProcessed = FALSE
         ORDER BY time ASC 
         LIMIT 1
@@ -112,7 +113,7 @@ def get_earliest_unprocessed_entry(connection):
         cursor.execute(query)
         result = cursor.fetchone()
         if result:
-            print(f"Earliest unprocessed entry: requestId={result[0]}, time={result[1]}, npcId={result[2]}, msgId={result[3]}, senderId={result[4]}, content={result[5]}")
+            print(f"Earliest unprocessed entry: requestId={result[0]}, time={result[1]}, npcId={result[2]}, msgId={result[3]}, senderId={result[4]}, sname={result[7]}, content={result[5]}")
             return result
         else:
             print("No unprocessed entries found.")
@@ -152,7 +153,7 @@ def get_unprocessed_entries_of_npc(connection, npcId):
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         query = """
-        SELECT * FROM comment_reply_java_buffer
+        SELECT requestId, time, npcId, msgId, senderId, content, isProcessed, sname FROM comment_reply_java_buffer
         WHERE isProcessed = FALSE AND npcId = %s
         ORDER BY time ASC
         """
@@ -172,7 +173,7 @@ def get_all_unprocessed_entries(connection):
         cursor = connection.cursor()
         cursor.execute("USE AITown")
         query = """
-        SELECT * FROM comment_reply_java_buffer 
+        SELECT requestId, time, npcId, msgId, senderId, content, isProcessed, sname FROM comment_reply_java_buffer 
         WHERE isProcessed = FALSE
         ORDER BY time ASC
         """
