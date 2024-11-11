@@ -50,7 +50,7 @@ def makeAnAnnouncement():
 
         counter = 0
         for newAnn in newAnns:
-            AnnDBAnnBuffer.insert_into_announce_table(db_conn, npcId, newTheme, counter, newAnn)
+            AnnDBAnnBuffer.insert_into_announce_table(db_conn, npcId, newTheme, counter, newAnn, time)
             counter += 1
         #again, get anoucnement from the buffer
         annData = AnnDBAnnBuffer.get_earliest_order_announcement(db_conn, npcId)

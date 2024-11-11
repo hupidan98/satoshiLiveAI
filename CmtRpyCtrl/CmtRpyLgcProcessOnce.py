@@ -7,12 +7,22 @@ import json
 import re
 import pickle
 
-import DBConnect.DBCon as DBCon 
+# Add the base directory (one level up from AnnCtrl)
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(base_dir)
+
+
+from DBConnect import DBCon 
 from DBConnect import CmtRpyDBJavaBuffer
 from DBConnect import CmtRpyDBInstruction
+  
+from DBConnect import AnnDBAnnBuffer
+
 from DBConnect import BhrDBMemStre
 from DBConnect import BhrDBReflection
-from DBConnect import BhrScheduleDB
+
+
+
 
 
 import CmtRpyLgcGPTProcess
@@ -45,8 +55,10 @@ def choiceOneToReply():
     print(all_comments)
     # Prepare data for DataFrame
     data = []
+    requestIdtoMark = []
     for comment in all_comments:
         requestId, time, npcId, msgId, senderId, content, isProcessed = comment
+        requestIdtoMark.append(requestId)
         embedding = CmtRpyLgcGPTProcess.get_embedding(content)
         # Deserialize the embedding back to a list
         data.append([requestId, time, npcId, msgId, senderId, content, embedding])
@@ -57,28 +69,38 @@ def choiceOneToReply():
     # Create DataFrame
     df = pd.DataFrame(data, columns=columns)
 
-    # Get memeory strem
+
+    # Get memeory strem later
     
-    # Get reflect
-    # Get daily schedule
+    # Get reflect later
+
+    # Get daily schedule later
+
     # Get announcement
+    ann_contents = AnnDBAnnBuffer.get_latest_n_announcements(db_conn, npcId, 50)
     
-    # Process, find the closest match
+    ann_contents_str = str(ann_contents)
+
+    
+    # Select one randomly
+    comment_row_reply = df.sample(n=1)
+    commet_to_reply = comment_row_reply['content']
 
     #Creating Reply
+    reply = CmtRpyLgcGPTProcess.replyToComment(ann_contents_str,  commet_to_reply)
 
     # Sent Reply
     instruction_to_give = json.dumps({
         "actionId": 117,
         "npcId": npcId,
         "data": {
-            "content": content,
+            "content": reply,
             "chatData": {
                 "msgId": msgId,
                 "sname": str(senderId),  # Assuming `sname` can use `senderId` as a string
                 "sender": senderId,
                 "type": 0,  # Assuming a static value for type; change if needed
-                "content": content,
+                "content": reply,
                 "time": int(time.timestamp() * 1000),  # Convert datetime to milliseconds
                 "barrage": 0  # Assuming a static value for barrage; change if needed
             }
@@ -89,7 +111,9 @@ def choiceOneToReply():
     print(instruction_to_give)
     CmtRpyDBInstruction.insert_into_instruction_table(db_conn, requestId, time, npcId, msgId, instruction_to_give, isProcessed=False)
     
-    CmtRpyDBJavaBuffer.mark_entry_as_processed(db_conn, requestId)
+
+    for rid in requestIdtoMark:
+        CmtRpyDBJavaBuffer.mark_entry_as_processed(db_conn, rid )
     # Example instruction.
     # {
     # "actionId": 117,

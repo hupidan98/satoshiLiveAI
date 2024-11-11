@@ -2,6 +2,9 @@ import sys
 import os
 import time
 
+# Add the base directory (one level up from AnnCtrl)
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(base_dir)
 
 import DBConnect.DBCon as DBCon
 from DBConnect import DBCon

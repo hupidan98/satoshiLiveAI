@@ -22,6 +22,7 @@ def create_announce_table(connection):
             theme LONGTEXT,
             `order` INT NOT NULL,
             content LONGTEXT,
+            time DATETIME NOT NULL,
             isSent BOOLEAN NOT NULL DEFAULT FALSE,
             PRIMARY KEY (npcId, `order`)
         )
@@ -31,18 +32,18 @@ def create_announce_table(connection):
     except Error as e:
         print(f"Failed to create table: {e}")
 
-def insert_into_announce_table(connection, npcId, theme, order, content, isSent=False):
+def insert_into_announce_table(connection, npcId, theme, order, content, time, isSent=False):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown") 
         insert_query = """
-        INSERT INTO announcement_announce_buffer (npcId, theme, `order`, content, isSent)
-        VALUES (%s, %s, %s, %s, %s)
-        ON DUPLICATE KEY UPDATE content = VALUES(content), isSent = VALUES(isSent)
+        INSERT INTO announcement_announce_buffer (npcId, theme, `order`, content, time, isSent)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE content = VALUES(content), time = VALUES(time), isSent = VALUES(isSent)
         """
-        cursor.execute(insert_query, (npcId, theme, order, content, isSent))
+        cursor.execute(insert_query, (npcId, theme, order, content, time, isSent))
         connection.commit()
-        print(f"Announcement inserted successfully: npcId={npcId}, theme={theme}, order={order}, content length={len(content)}, isSent={isSent}")
+        print(f"Announcement inserted successfully: npcId={npcId}, theme={theme}, order={order}, content length={len(content)}, time={time}, isSent={isSent}")
     except Error as e:
         print(f"Failed to insert announcement: {e}")
 
@@ -70,7 +71,7 @@ def get_earliest_order_announcement(connection, npcId):
         cursor.execute(query, (npcId,))
         result = cursor.fetchone()
         if result:
-            print(f"Earliest announcement for npcId={npcId}: theme={result[1]}, order={result[2]}, content={result[3]}")
+            print(f"Earliest announcement for npcId={npcId}: theme={result[1]}, order={result[2]}, content={result[3]}, time={result[4]}")
             return result
         else:
             print(f"No unsent announcements found for npcId={npcId}.")
@@ -93,7 +94,6 @@ def mark_announcement_as_sent(connection, npcId, order):
         print(f"Announcement with npcId={npcId} and order={order} marked as sent.")
     except Error as e:
         print(f"Failed to mark announcement as sent: {e}")
-
 
 def create_database(connection):
     db_name = 'AITown'
@@ -124,7 +124,6 @@ def table_exists(connection, table_name = 'announcement_announce_buffer'):
         print(f"Failed to check if table exists: {e}")
         return False
 
-    
 def create_table(connection):
     try:
         cursor = connection.cursor()
@@ -135,6 +134,7 @@ def create_table(connection):
             theme LONGTEXT,
             `order` INT NOT NULL,
             content LONGTEXT,
+            time DATETIME NOT NULL,
             isSent BOOLEAN NOT NULL DEFAULT FALSE,
             PRIMARY KEY (npcId, `order`)
         )
@@ -144,12 +144,26 @@ def create_table(connection):
     except Error as e:
         print(f"Failed to create table: {e}")
 
-# Usage examples:
-# connection = establish_sql_connection()
-# create_announce_table(connection)
-# insert_into_announce_table(connection, 1, 'Welcome', 1, 'Welcome message content')
-# get_earliest_order_announcement(connection, 1)
-# mark_announcement_as_sent(connection, 1, 1)
-# delete_all_announcements(connection)
-
-
+def get_latest_n_announcements(connection, npcId, n):
+    try:
+        cursor = connection.cursor()
+        cursor.execute("USE AITown")
+        query = """
+        SELECT theme, `order`, content, time, isSent FROM announcement_announce_buffer 
+        WHERE npcId = %s
+        ORDER BY `order` DESC 
+        LIMIT %s
+        """
+        cursor.execute(query, (npcId, n))
+        results = cursor.fetchall()
+        if results:
+            print(f"Latest {n} announcements for npcId={npcId}:")
+            for result in results:
+                print(f"theme={result[0]}, order={result[1]}, content={result[2]}, time={result[3]}, isSent={result[4]}")
+            return results
+        else:
+            print(f"No announcements found for npcId={npcId}.")
+            return []
+    except Error as e:
+        print(f"Failed to retrieve latest {n} announcements: {e}")
+        return []

@@ -20,6 +20,70 @@ if 'OpenAI' not in config:
     print("Error: 'OpenAI' section not found in config.ini")
 openai_key = config['OpenAI']['key']
 client = OpenAI(api_key=openai_key)
+import json
+import copy
+from datetime import datetime
+import configparser
+import os
+
+from openai import OpenAI
+
+print("Current working directory:", os.getcwd())
+
+config = configparser.ConfigParser()
+# Adjust path to look for config.ini in AImodule regardless of the current directory
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+config_path = os.path.join(base_dir, 'config.ini')
+config.read(config_path)
+
+print("Config sections found:", config.sections())
+
+if 'OpenAI' not in config:
+    print("Error: 'OpenAI' section not found in config.ini")
+openai_key = config['OpenAI']['key']
+client = OpenAI(api_key=openai_key)
+
+
+def replyToComment(hisAnn, comment, special_instruction=''):
+    # Default response prompt
+    base_prompt = f"""
+    You are Nakamoto Satoshi, the inventor of blockchain and Bitcoin. You are livestreaming your life in a simulated world, discussing various topics in concise and direct language.
+
+    Persona: A dedicated researcher and engineer, always learning, coding, and working on your robot, Coinnie.
+
+    Past announcements: {hisAnn}
+
+    Comment to reply to: {comment}
+
+    {special_instruction}
+
+    Task:
+    - Provide a concise, conversational response in 35 words or fewer.
+    - Do not use emojis or unnecessary comments.
+    """
+
+    try:
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a skilled and detail-oriented thinker, responding in brief, clear, and inspiring statements."
+                },
+                {
+                    "role": "user",
+                    "content": base_prompt
+                }
+            ]
+        )
+        
+        response = completion.choices[0].message.content.strip()
+        print("Generated response:", response)  # For debugging purposes
+        return response
+
+    except Exception as e:
+        print("Error generating response:", e)
+        return "I'm currently unable to respond. Please try again later."
 
 
 def get_embedding(text, model="text-embedding-3-small"):
