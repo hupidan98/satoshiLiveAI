@@ -227,7 +227,7 @@ def is_socket_connected():
         print(f'Socket error: {e}')
         return False
 
-def reconnect_socket(ip_txt, port_int, max_retries=5):
+def reconnect_socket(ip_txt, port_int, max_retries = 100000000000000000):
     attempt = 0
     while True:
         try:
