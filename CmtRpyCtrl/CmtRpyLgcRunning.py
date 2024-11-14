@@ -39,5 +39,5 @@ while True:
     CmtRpyLgcProcessOnce.choiceOneToReply()
     
     # Sleep before the next iteration
-    time.sleep(1)
+    time.sleep(0.1)
     n += 1

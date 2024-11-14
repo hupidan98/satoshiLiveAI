@@ -1,0 +1,1795 @@
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+Database 'AITown' deleted successfully.
+Database 'AITown' checked/created successfully.
+Table 'announcement_java_buffer' does not exist in database 'AITown'.
+Table 'announcement_java_buffer' checked/created successfully.
+Table 'announcement_announce_buffer' does not exist in database 'AITown'.
+Table 'announcement_announce_buffer' checked/created successfully.
+Table 'announcement_instruction_buffer' does not exist in database 'AITown'.
+Table 'announcement_instruction_buffer' checked/created successfully.
+All content in the 'announcement_java_buffer' table has been deleted successfully.
+All announcements in the 'announcement_announce_buffer' table have been deleted successfully.
+All instructions in the 'announcement_instruction_buffer' table have been deleted successfully.
+Processing step 0
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 1
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 2
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 3
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 4
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 5
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 6
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 7
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 8
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 9
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 10
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 11
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 12
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 13
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 14
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 15
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 16
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 17
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 18
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 19
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 20
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 21
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 22
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 23
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 24
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 25
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 26
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 27
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 28
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 29
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 30
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 31
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 32
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 33
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 34
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 35
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 36
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 37
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 38
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 39
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 40
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 41
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 42
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 43
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 44
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 45
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 46
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 47
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 48
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 49
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 50
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 51
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 52
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 53
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 54
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 55
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 56
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 57
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 58
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 59
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 60
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 61
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 62
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 63
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 64
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 65
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 66
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 67
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 68
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 69
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 70
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 71
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 72
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 73
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 74
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 75
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 76
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 77
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 78
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 79
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 80
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 81
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 82
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 83
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 84
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 85
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 86
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 87
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 88
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 89
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 90
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 91
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 92
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 93
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 94
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 95
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 96
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 97
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 98
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 99
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 100
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 101
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 102
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 103
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 104
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 105
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 106
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 107
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 108
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 109
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 110
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 111
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 112
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 113
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 114
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 115
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 116
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 117
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 118
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 119
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 120
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 121
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 122
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 123
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 124
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 125
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 126
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 127
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 128
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 129
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 130
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 131
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 132
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 133
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 134
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 135
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 136
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 137
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 138
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 139
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 140
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 141
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 142
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 143
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 144
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 145
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 146
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 147
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 148
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 149
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 150
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 151
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 152
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 153
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 154
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 155
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 156
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 157
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 158
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 159
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 160
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 161
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 162
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 163
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 164
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 165
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 166
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 167
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 168
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 169
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 170
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 171
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 172
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 173
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 174
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 175
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 176
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 177
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 178
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 179
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 180
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 181
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 182
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 183
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 184
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 185
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 186
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 187
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 188
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 189
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 190
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 191
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 192
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 193
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 194
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 195
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 196
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 197
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 198
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 199
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 200
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 201
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 202
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 203
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 204
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 205
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 206
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 207
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 208
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 209
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 210
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 211
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 212
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 213
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 214
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 215
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 216
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 217
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 218
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 219
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 220
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 221
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed entries found.
+Nothing to Announce so far
+
+
+Processing step 222
+Current working directory: /data/app/game/aitown/AIModule/AnnCtrl
+Config sections found: 

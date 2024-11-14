@@ -337,7 +337,7 @@ def send_data():
                 print(f"Sent instruction: {instruction_str} for npcId {npcId} and marked as processed.")
             else:
                 print("No unprocessed instructions found.")
-                time.sleep(5)  # Sleep for 5 seconds before checking again
+                time.sleep(0.1)  # Sleep for 5 seconds before checking again
 
             comment_instruction_from_db = CmtRpyDBInstruction.get_earliest_unprocessed_instruction(db_conn)
             print(f"Comment Instruction from DB: {comment_instruction_from_db}")
@@ -351,11 +351,11 @@ def send_data():
                 print(f"Sent instruction: {instruction_str} for requestId {requestId} and marked as processed.")
             else:
                 print("No unprocessed instructions found.")
-                time.sleep(5)  # Sleep for 5 seconds before checking again
+                time.sleep(0.1)  # Sleep for 5 seconds before checking again
         except Exception as e:
             print(f"Error in send_data: {e}")
             traceback.print_exc()
-            time.sleep(5)
+            time.sleep(0.1)
 
 if __name__ == "__main__":
     config = load_config()

@@ -1,0 +1,831 @@
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connecting to satoshi-ai.live port 2521
+b'\x00\x00\x002\x00\x00\x00*\n\x01@\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x1a\x0capp.z1.s2.P1"\x0capp.z1.s2.A1\x00\x00\x00\x00'
+Received response (receiving):
+Header: rtype: "@"
+command: -1
+source: "app.z1.s2.P1"
+destination: "app.z1.s2.A1"
+
+Message: 
+
+Socket is connected.
+Executing initial command before starting threads...
+Starting receiving data...
+Waiting to receive data...
+Starting sending data...
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Received response long:
+Header: rtype: "@"
+command: 10102
+source: "app.z1.s2.P1"
+destination: "app.z1.s2.A1"
+cmd: 10102
+
+Message: {"requestId":0,"type":3,"command":10101,"code":0,"data":{"world":{"time":1733314919174},"mapObj":[{"oid":"zhongbencongType","objName":"zhongbencongType","type":"","X":463,"Y":722,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongRead","objName":"zhongbencongRead","type":"","X":240,"Y":688,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongFix","objName":"zhongbencongFix","type":"","X":370,"Y":304,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongThink","objName":"zhongbencongThink","type":"","X":336,"Y":721,"status":"DEFAULT","availableActions":[]}],"npcs":[{"npcId":10006,"status":"idle","info":{"name":"wSatoshi","firstName":"wSatoshi","lastName":"wSatoshi","type":"Engineer","age":20,"height":180,"weight":60,"body_style":"fit and sturdy","innate":"Visionary, Analytical, Persistent","learned":"wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.","lifestyle":"wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.","living_area":"house","property":"house"},"selling":[],"items":[],"action":{"actionName":"think","actionId":115},"curAction":{"actionName":"think","actionId":115,"param":{"oid":"zhongbencongThink"}},"mapData":[],"surroundings":{"people":[],"items":[]},"talk":{"isTalking":true,"talkingTo":[10006],"contents":[{"sender":10006,"target":10006,"time":1731578019804,"content":"Friendly entities explain transactions."}]}}]}}
+Received input from Java: {"requestId":0,"type":3,"command":10101,"code":0,"data":{"world":{"time":1733314919174},"mapObj":[{"oid":"zhongbencongType","objName":"zhongbencongType","type":"","X":463,"Y":722,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongRead","objName":"zhongbencongRead","type":"","X":240,"Y":688,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongFix","objName":"zhongbencongFix","type":"","X":370,"Y":304,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongThink","objName":"zhongbencongThink","type":"","X":336,"Y":721,"status":"DEFAULT","availableActions":[]}],"npcs":[{"npcId":10006,"status":"idle","info":{"name":"wSatoshi","firstName":"wSatoshi","lastName":"wSatoshi","type":"Engineer","age":20,"height":180,"weight":60,"body_style":"fit and sturdy","innate":"Visionary, Analytical, Persistent","learned":"wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.","lifestyle":"wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.","living_area":"house","property":"house"},"selling":[],"items":[],"action":{"actionName":"think","actionId":115},"curAction":{"actionName":"think","actionId":115,"param":{"oid":"zhongbencongThink"}},"mapData":[],"surroundings":{"people":[],"items":[]},"talk":{"isTalking":true,"talkingTo":[10006],"contents":[{"sender":10006,"target":10006,"time":1731578019804,"content":"Friendly entities explain transactions."}]}}]}}
+Parsed input successfully: {'requestId': 0, 'type': 3, 'command': 10101, 'code': 0, 'data': {'world': {'time': 1733314919174}, 'mapObj': [{'oid': 'zhongbencongType', 'objName': 'zhongbencongType', 'type': '', 'X': 463, 'Y': 722, 'status': 'DEFAULT', 'availableActions': []}, {'oid': 'zhongbencongRead', 'objName': 'zhongbencongRead', 'type': '', 'X': 240, 'Y': 688, 'status': 'DEFAULT', 'availableActions': []}, {'oid': 'zhongbencongFix', 'objName': 'zhongbencongFix', 'type': '', 'X': 370, 'Y': 304, 'status': 'DEFAULT', 'availableActions': []}, {'oid': 'zhongbencongThink', 'objName': 'zhongbencongThink', 'type': '', 'X': 336, 'Y': 721, 'status': 'DEFAULT', 'availableActions': []}], 'npcs': [{'npcId': 10006, 'status': 'idle', 'info': {'name': 'wSatoshi', 'firstName': 'wSatoshi', 'lastName': 'wSatoshi', 'type': 'Engineer', 'age': 20, 'height': 180, 'weight': 60, 'body_style': 'fit and sturdy', 'innate': 'Visionary, Analytical, Persistent', 'learned': 'wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.', 'lifestyle': 'wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.', 'living_area': 'house', 'property': 'house'}, 'selling': [], 'items': [], 'action': {'actionName': 'think', 'actionId': 115}, 'curAction': {'actionName': 'think', 'actionId': 115, 'param': {'oid': 'zhongbencongThink'}}, 'mapData': [], 'surroundings': {'people': [], 'items': []}, 'talk': {'isTalking': True, 'talkingTo': [10006], 'contents': [{'sender': 10006, 'target': 10006, 'time': 1731578019804, 'content': 'Friendly entities explain transactions.'}]}}]}}
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+Data inserted successfully: requestId=0, time=2024-12-04 12:21:59, npcId=10006, content length=1590, isProcessed=False
+Insertion into Announcement for requestId 0 npcId 10006 inserted successfully.
+
+
+Waiting to receive data...
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Received response long:
+Header: rtype: "!"
+command: 10101
+source: "app.z1.s2.P1"
+destination: "app.z1.s2.A1"
+cmd: 10101
+
+Message: {"requestId":246545739270359,"type":3,"command":10101,"code":0,"data":{"world":{"time":1733314927265},"mapObj":[{"oid":"zhongbencongType","objName":"zhongbencongType","type":"","X":463,"Y":722,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongRead","objName":"zhongbencongRead","type":"","X":240,"Y":688,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongFix","objName":"zhongbencongFix","type":"","X":370,"Y":304,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongThink","objName":"zhongbencongThink","type":"","X":336,"Y":721,"status":"DEFAULT","availableActions":[]}],"npcs":[{"npcId":10006,"status":"idle","info":{"name":"wSatoshi","firstName":"wSatoshi","lastName":"wSatoshi","type":"Engineer","age":20,"height":180,"weight":60,"body_style":"fit and sturdy","innate":"Visionary, Analytical, Persistent","learned":"wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.","lifestyle":"wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.","living_area":"house","property":"house"},"selling":[],"items":[],"action":{"actionName":"think","actionId":115},"curAction":{"actionName":"think","actionId":115,"param":{"oid":"zhongbencongThink"}},"mapData":[],"surroundings":{"people":[],"items":[{"oid":"zhongbencongType","objName":"zhongbencongType","type":""}]},"talk":{"isTalking":true,"talkingTo":[10006],"contents":[{"sender":10006,"target":10006,"time":1731578019804,"content":"Friendly entities explain transactions."}]}}]}}
+Received input from Java: {"requestId":246545739270359,"type":3,"command":10101,"code":0,"data":{"world":{"time":1733314927265},"mapObj":[{"oid":"zhongbencongType","objName":"zhongbencongType","type":"","X":463,"Y":722,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongRead","objName":"zhongbencongRead","type":"","X":240,"Y":688,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongFix","objName":"zhongbencongFix","type":"","X":370,"Y":304,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongThink","objName":"zhongbencongThink","type":"","X":336,"Y":721,"status":"DEFAULT","availableActions":[]}],"npcs":[{"npcId":10006,"status":"idle","info":{"name":"wSatoshi","firstName":"wSatoshi","lastName":"wSatoshi","type":"Engineer","age":20,"height":180,"weight":60,"body_style":"fit and sturdy","innate":"Visionary, Analytical, Persistent","learned":"wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.","lifestyle":"wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.","living_area":"house","property":"house"},"selling":[],"items":[],"action":{"actionName":"think","actionId":115},"curAction":{"actionName":"think","actionId":115,"param":{"oid":"zhongbencongThink"}},"mapData":[],"surroundings":{"people":[],"items":[{"oid":"zhongbencongType","objName":"zhongbencongType","type":""}]},"talk":{"isTalking":true,"talkingTo":[10006],"contents":[{"sender":10006,"target":10006,"time":1731578019804,"content":"Friendly entities explain transactions."}]}}]}}
+Parsed input successfully: {'requestId': 246545739270359, 'type': 3, 'command': 10101, 'code': 0, 'data': {'world': {'time': 1733314927265}, 'mapObj': [{'oid': 'zhongbencongType', 'objName': 'zhongbencongType', 'type': '', 'X': 463, 'Y': 722, 'status': 'DEFAULT', 'availableActions': []}, {'oid': 'zhongbencongRead', 'objName': 'zhongbencongRead', 'type': '', 'X': 240, 'Y': 688, 'status': 'DEFAULT', 'availableActions': []}, {'oid': 'zhongbencongFix', 'objName': 'zhongbencongFix', 'type': '', 'X': 370, 'Y': 304, 'status': 'DEFAULT', 'availableActions': []}, {'oid': 'zhongbencongThink', 'objName': 'zhongbencongThink', 'type': '', 'X': 336, 'Y': 721, 'status': 'DEFAULT', 'availableActions': []}], 'npcs': [{'npcId': 10006, 'status': 'idle', 'info': {'name': 'wSatoshi', 'firstName': 'wSatoshi', 'lastName': 'wSatoshi', 'type': 'Engineer', 'age': 20, 'height': 180, 'weight': 60, 'body_style': 'fit and sturdy', 'innate': 'Visionary, Analytical, Persistent', 'learned': 'wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.', 'lifestyle': 'wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.', 'living_area': 'house', 'property': 'house'}, 'selling': [], 'items': [], 'action': {'actionName': 'think', 'actionId': 115}, 'curAction': {'actionName': 'think', 'actionId': 115, 'param': {'oid': 'zhongbencongThink'}}, 'mapData': [], 'surroundings': {'people': [], 'items': [{'oid': 'zhongbencongType', 'objName': 'zhongbencongType', 'type': ''}]}, 'talk': {'isTalking': True, 'talkingTo': [10006], 'contents': [{'sender': 10006, 'target': 10006, 'time': 1731578019804, 'content': 'Friendly entities explain transactions.'}]}}]}}
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+Data inserted successfully: requestId=246545739270359, time=2024-12-04 12:22:07, npcId=10006, content length=1660, isProcessed=False
+Insertion into Announcement for requestId 246545739270359 npcId 10006 inserted successfully.
+
+
+Waiting to receive data...
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Received response long:
+Header: rtype: "!"
+command: 10101
+source: "app.z1.s2.P1"
+destination: "app.z1.s2.A1"
+cmd: 10101
+
+Message: {"requestId":246554329204967,"type":3,"command":10101,"code":0,"data":{"world":{"time":1733314975331},"mapObj":[{"oid":"zhongbencongType","objName":"zhongbencongType","type":"","X":463,"Y":722,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongRead","objName":"zhongbencongRead","type":"","X":240,"Y":688,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongFix","objName":"zhongbencongFix","type":"","X":370,"Y":304,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongThink","objName":"zhongbencongThink","type":"","X":336,"Y":721,"status":"DEFAULT","availableActions":[]}],"npcs":[{"npcId":10006,"status":"idle","info":{"name":"wSatoshi","firstName":"wSatoshi","lastName":"wSatoshi","type":"Engineer","age":20,"height":180,"weight":60,"body_style":"fit and sturdy","innate":"Visionary, Analytical, Persistent","learned":"wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.","lifestyle":"wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.","living_area":"house","property":"house"},"selling":[],"items":[],"action":{"actionName":"type","actionId":113},"curAction":{"actionName":"type","actionId":113,"param":{"oid":"zhongbencongType"}},"mapData":[],"surroundings":{"people":[],"items":[{"oid":"zhongbencongType","objName":"zhongbencongType","type":""},{"oid":"zhongbencongThink","objName":"zhongbencongThink","type":""}]},"talk":{"isTalking":true,"talkingTo":[10006],"contents":[{"sender":10006,"target":10006,"time":1731578019804,"content":"Friendly entities explain transactions."}]}}]}}
+Received input from Java: {"requestId":246554329204967,"type":3,"command":10101,"code":0,"data":{"world":{"time":1733314975331},"mapObj":[{"oid":"zhongbencongType","objName":"zhongbencongType","type":"","X":463,"Y":722,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongRead","objName":"zhongbencongRead","type":"","X":240,"Y":688,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongFix","objName":"zhongbencongFix","type":"","X":370,"Y":304,"status":"DEFAULT","availableActions":[]},{"oid":"zhongbencongThink","objName":"zhongbencongThink","type":"","X":336,"Y":721,"status":"DEFAULT","availableActions":[]}],"npcs":[{"npcId":10006,"status":"idle","info":{"name":"wSatoshi","firstName":"wSatoshi","lastName":"wSatoshi","type":"Engineer","age":20,"height":180,"weight":60,"body_style":"fit and sturdy","innate":"Visionary, Analytical, Persistent","learned":"wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.","lifestyle":"wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.","living_area":"house","property":"house"},"selling":[],"items":[],"action":{"actionName":"type","actionId":113},"curAction":{"actionName":"type","actionId":113,"param":{"oid":"zhongbencongType"}},"mapData":[],"surroundings":{"people":[],"items":[{"oid":"zhongbencongType","objName":"zhongbencongType","type":""},{"oid":"zhongbencongThink","objName":"zhongbencongThink","type":""}]},"talk":{"isTalking":true,"talkingTo":[10006],"contents":[{"sender":10006,"target":10006,"time":1731578019804,"content":"Friendly entities explain transactions."}]}}]}}
+Parsed input successfully: {'requestId': 246554329204967, 'type': 3, 'command': 10101, 'code': 0, 'data': {'world': {'time': 1733314975331}, 'mapObj': [{'oid': 'zhongbencongType', 'objName': 'zhongbencongType', 'type': '', 'X': 463, 'Y': 722, 'status': 'DEFAULT', 'availableActions': []}, {'oid': 'zhongbencongRead', 'objName': 'zhongbencongRead', 'type': '', 'X': 240, 'Y': 688, 'status': 'DEFAULT', 'availableActions': []}, {'oid': 'zhongbencongFix', 'objName': 'zhongbencongFix', 'type': '', 'X': 370, 'Y': 304, 'status': 'DEFAULT', 'availableActions': []}, {'oid': 'zhongbencongThink', 'objName': 'zhongbencongThink', 'type': '', 'X': 336, 'Y': 721, 'status': 'DEFAULT', 'availableActions': []}], 'npcs': [{'npcId': 10006, 'status': 'idle', 'info': {'name': 'wSatoshi', 'firstName': 'wSatoshi', 'lastName': 'wSatoshi', 'type': 'Engineer', 'age': 20, 'height': 180, 'weight': 60, 'body_style': 'fit and sturdy', 'innate': 'Visionary, Analytical, Persistent', 'learned': 'wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.', 'lifestyle': 'wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.', 'living_area': 'house', 'property': 'house'}, 'selling': [], 'items': [], 'action': {'actionName': 'type', 'actionId': 113}, 'curAction': {'actionName': 'type', 'actionId': 113, 'param': {'oid': 'zhongbencongType'}}, 'mapData': [], 'surroundings': {'people': [], 'items': [{'oid': 'zhongbencongType', 'objName': 'zhongbencongType', 'type': ''}, {'oid': 'zhongbencongThink', 'objName': 'zhongbencongThink', 'type': ''}]}, 'talk': {'isTalking': True, 'talkingTo': [10006], 'contents': [{'sender': 10006, 'target': 10006, 'time': 1731578019804, 'content': 'Friendly entities explain transactions.'}]}}]}}
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+Data inserted successfully: requestId=246554329204967, time=2024-12-04 12:22:55, npcId=10006, content length=1731, isProcessed=False
+Insertion into Announcement for requestId 246554329204967 npcId 10006 inserted successfully.
+
+
+Waiting to receive data...
+Checking for unprocessed instructions...
+Current working directory: /data/app/game/aitown/AIModule/NetworkSocket
+Config sections found: ['mysql', 'Paths', 'NetworkSocket', 'OpenAI']
+Connected to MySQL server successfully
+No unprocessed instructions found.
+Instruction from DB: None
+No unprocessed instructions found.
+No unprocessed instructions found.
+Comment Instruction from DB: None
+No unprocessed instructions found.
+Checking for unprocessed instructions...
