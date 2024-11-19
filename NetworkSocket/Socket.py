@@ -71,7 +71,8 @@ def make_header(command, config):
     header = header_pb2.Header()
     header.rtype = "!"
     header.command = command
-    header.source = config['DEFAULT']['source']
+    # header.source = config['DEFAULT']['source']
+    header.source = "app.z1.s2.A1"
     header.destination = "app.z1.s2.P1"
     header.code = 0
     header.dstScope = 0
@@ -230,18 +231,18 @@ def is_socket_connected():
 def reconnect_socket(ip_txt, port_int, max_retries = 100000000000000000):
     attempt = 0
     while True:
-        try:
-            # Create and connect the socket
-            create_socket(ip_txt, port_int)
+        # try:
+        # Create and connect the socket
+        create_socket(ip_txt, port_int)
 
-            # Check if the socket is connected
-            if is_socket_connected():
-                print("Socket is connected.")
-                return
-            else:
-                print("Socket not connected. Reconnecting...")
-        except Exception as e:
-            print(f"Error connecting socket: {e}")
+        # Check if the socket is connected
+        if is_socket_connected():
+            print("Socket is connected.")
+            return
+        else:
+            print("Socket not connected. Reconnecting...")
+        # except Exception as e:
+        #     print(f"Error connecting socket: {e}")
         
         # Wait before attempting to reconnect
         time.sleep(5)  # Wait 5 seconds before retrying
@@ -407,3 +408,5 @@ if __name__ == "__main__":
         print("Interrupted, closing socket.")
         if sock:
             sock.close()
+
+
