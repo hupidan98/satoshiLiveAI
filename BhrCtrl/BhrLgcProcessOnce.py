@@ -21,6 +21,7 @@ import numpy as np
 import json
 import re
 import pickle
+import hashlib
 
 def processOneInputGiveOneInstruction():
     db_conn = DBCon.establish_sql_connection()
@@ -91,17 +92,28 @@ def processOneInputGiveOneInstruction():
     # Generate New Schedule if needed
     if BhrLgcGPTProcess.need_new_schedule(cur_schedule_str, memories_str, prior_reflection_str, inputInHumanString):
         cur_schedule_str = BhrLgcGPTProcess.generate_schedule(cur_schedule_str, memories_str, prior_reflection_str, inputInHumanString)
-    BhrDBSchedule.insert_into_table(db_conn, npcId, curTime, cur_schedule_str)
+        BhrDBSchedule.insert_into_table(db_conn, npcId, curTime, cur_schedule_str)
     
 
     # Process this information, and give instruction in human language
-    instruction_in_human = BhrLgcGPTProcess.process_all_give_conversation(memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString)
     
-    
-    # Tranlate to instructions.
-    # TODO: Implement the instruction generation logic here
-    instruction_to_give = ''
-    # instruction_to_give = BhrLgcManualProcess.talkingInstruction(npcId, instruction_in_human)
+    max_retries = 3
+    retries = 0
+    while retries < max_retries:
+        try:
+            instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString)
+            words_to_say = BhrLgcGPTProcess.generateThreeSentencesForAction(memories_str, prior_reflection_str, cur_schedule_str, instruction_in_human)
+            instruction_to_give = BhrLgcGPTProcess.humanInstToJava(npcId, words_to_say).strip("```json").strip("```")
+            instruction_json = json.loads(instruction_to_give)
+        except Exception as e:
+            # Log the error and increment retries
+            print(f"Attempt {retries + 1} failed: {e}")
+            retries += 1
+    # Raise an exception if max retries are exceeded
+    raise Exception(f"Failed to generate valid JSON after {max_retries} attempts.")
+
+    # Add unique ack,
+    instruction_json['ack'] = hashlib.sha256(instruction_to_give.encode('utf-8')).hexdigest()
     
 
     # Add to instruction db

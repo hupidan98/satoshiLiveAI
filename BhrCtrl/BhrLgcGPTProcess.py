@@ -264,7 +264,7 @@ def humanInstToJava(instruction_in_human, words_to_say):
     Words to say before the action, during the action, and at the end of the action:
     {words_to_say}
 
-    Please convert the instruction into a structured JSON format with the following fields:
+    Please convert the instruction into a structured JSON format with the following fields, It is very important that your output can be loaded with json.loads():
     {{
         "npcId": <fill in, the npcId of whom is doing the action>,
         "actionId": <fill in, the actionId of what the npc is doing>,
