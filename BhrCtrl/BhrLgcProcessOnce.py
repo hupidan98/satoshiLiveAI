@@ -57,9 +57,9 @@ def processOneInputGiveOneInstruction():
 
         rows_df['cosine_similarity'] = rows_df['Embedding'].apply(lambda x: cosine_similarity(BufferRowEmbedding, np.array(x)))
 
-        a_recency = 0.5  # Adjust the weight for recency as needed
-        a_importance = 0.3  # Adjust the weight for importance as needed
-        a_similarity = 0.2  # Adjust the weight for similarity as needed
+        a_recency = 0.2  # Adjust the weight for recency as needed
+        a_importance = 0.2  # Adjust the weight for importance as needed
+        a_similarity = 0.6  # Adjust the weight for similarity as needed
 
         rows_df['retrieval_score'] = (
             a_recency * rows_df['recency'] +
@@ -81,11 +81,31 @@ def processOneInputGiveOneInstruction():
     else:
         prior_reflection_str = 'No prior reflection yet!'
 
-    # Process this information
-    instruction_in_human = BhrLgcGPTProcess.process_all_give_conversation(
-        memories_str, prior_reflection_str, inputInHumanString, 'Be dramatic, no emoji, under 140 characters'
-    )
-    instruction_to_give = BhrLgcManualProcess.talkingInstruction(npcId, instruction_in_human)
+    # Retrive latest Schedule
+    cur_schedule = BhrDBSchedule.retrieve_latest_schedule(db_conn, npcId)
+    if cur_schedule is not None:
+        cur_schedule_str = str(cur_schedule[2])
+    else:
+        cur_schedule_str = 'No schedule yet!'
+
+    # Generate New Schedule if needed
+    if BhrLgcGPTProcess.need_new_schedule(cur_schedule_str, memories_str, prior_reflection_str, inputInHumanString):
+        cur_schedule_str = BhrLgcGPTProcess.generate_schedule(cur_schedule_str, memories_str, prior_reflection_str, inputInHumanString)
+    BhrDBSchedule.insert_into_table(db_conn, npcId, curTime, cur_schedule_str)
+    
+
+    # Process this information, and give instruction in human language
+    instruction_in_human = BhrLgcGPTProcess.process_all_give_conversation(memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString)
+    
+    
+    # Tranlate to instructions.
+    # TODO: Implement the instruction generation logic here
+    instruction_to_give = ''
+    # instruction_to_give = BhrLgcManualProcess.talkingInstruction(npcId, instruction_in_human)
+    
+
+    # Add to instruction db
+    BhrDBInstruction.insert_into_instruction_table(db_conn, curTime, npcId, instruction_to_give)
 
     # Mark the buffer as processed
     BhrDBJavaBuffer.mark_entry_as_processed(db_conn, curTime, npcId)
@@ -94,9 +114,6 @@ def processOneInputGiveOneInstruction():
         npcId_to_mark = row[1]
         BhrDBJavaBuffer.mark_entry_as_processed(db_conn, time_to_mark, npcId_to_mark)
         
-    # Add to instruction db
-    BhrDBInstruction.insert_into_instruction_table(db_conn, curTime, npcId, instruction_to_give)
-    
     # Insert instruction to Memory Stream
     BhrLgcInstToMemStre.InstToMemStreSatoshiDB(input_from_java, instruction_in_human)
     BhrLgcInstToMemStre.InstImportancetoReflectionTracer(input_from_java, instruction_to_give, instruction_in_human)
