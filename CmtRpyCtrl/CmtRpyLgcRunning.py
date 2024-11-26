@@ -37,7 +37,12 @@ while True:
     
     # Process one input and generate one instruction
     CmtRpyLgcProcessOnce.choiceOneToReply()
+    print()
+    print()
+    print()
+    print()
+    print()
     
     # Sleep before the next iteration
-    time.sleep(0.1)
+    time.sleep(2)
     n += 1

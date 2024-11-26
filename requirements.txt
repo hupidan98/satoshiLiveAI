@@ -19,6 +19,7 @@ pydantic==2.9.2
 pydantic_core==2.23.4
 python-dateutil @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_66ud1l42_h/croot/python-dateutil_1716495741162/work
 pytz @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_a4b76c83ik/croot/pytz_1713974318928/work
+PyYAML==6.0.2
 six @ file:///tmp/build/80754af9/six_1644875935023/work
 sniffio @ file:///home/conda/feedstock_root/build_artifacts/sniffio_1708952932303/work
 tqdm==4.67.0

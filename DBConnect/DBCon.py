@@ -23,15 +23,12 @@ def establish_sql_connection():
         print("Error: 'mysql' section not found in config.ini")
         return None
     
-    try:
-        connection = mysql.connector.connect(
-            host=config['mysql']['host'],
-            user=config['mysql']['user'],
-            password=config['mysql']['password']
-        )
-        if connection.is_connected():
-            print("Connected to MySQL server successfully")
-        return connection
-    except Error as e:
-        print(f"Error: {e}")
-        return None
+
+    connection = mysql.connector.connect(
+        host=config['mysql']['host'],
+        user=config['mysql']['user'],
+        password=config['mysql']['password']
+    )
+    if connection.is_connected():
+        print("Connected to MySQL server successfully")
+    return connection

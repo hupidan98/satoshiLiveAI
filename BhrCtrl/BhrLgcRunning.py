@@ -63,5 +63,10 @@ n = 0
 while True:
     print(f"Processing step {n}")
     BhrLgcProcessOnce.processOneInputGiveOneInstruction()
-    time.sleep(1)
+    print()
+    print()
+    print()
+    print()
+    print()
+    time.sleep(2)
     n += 1

@@ -417,7 +417,7 @@ def humanInstToJava(instruction_in_human, words_to_say):
     10007 : popocat
     10008 : pepe
     10009 : musk
-    
+
     ### Object ID List with Explanations:
     • zhongbencongFix: Nakamoto Satoshi fixes the sprite in front of the sprite station.
     • zhongbencongRead: Nakamoto Satoshi reads at the desk.
@@ -494,25 +494,23 @@ def humanInstToJava(instruction_in_human, words_to_say):
     }}
     """
 
-    try:
+
         # Call GPT-4 model to generate the JSON response
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a detailed instruction translator and JSON formatter."
-                },
-                {
-                    "role": "user",
-                    "content": prompt.strip()
-                }
-            ]
-        )
-        return completion.choices[0].message.content
-    except Exception as e:
-        # Handle errors gracefully
-        return f"Error during translation: {e}"
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a detailed instruction translator and JSON formatter."
+            },
+            {
+                "role": "user",
+                "content": prompt.strip()
+            }
+        ]
+    )
+    return completion.choices[0].message.content
+
 
 
 
@@ -601,79 +599,77 @@ def generate_schedule(current_schedule, memories, reflections, npc_context,npcId
     Returns:
         str: Generated schedule in the specified format.
     """
-    try:
-        npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
-        if not npc:
-            raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
 
-        # Extract name and description
-        npc_name = npc['name']
-        npc_description = npc['description']
-        npc_lifestyle = npc['lifestyle']
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
 
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are a good instruction-to-language translator. "
-                        "You will process the information given to you and give instructions in a fixed format."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": (
-                        f"""
-                        You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    # Extract name and description
+    npc_name = npc['name']
+    npc_description = npc['description']
+    npc_lifestyle = npc['lifestyle']
 
-                        You are livestreaming in a simulated world. 
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You are a good instruction-to-language translator. "
+                    "You will process the information given to you and give instructions in a fixed format."
+                )
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"""
+                    You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-                        Given the NPC's current schedule:
-                        {current_schedule}
+                    You are livestreaming in a simulated world. 
 
-                        Given memories of the NPC:
-                        {memories}
+                    Given the NPC's current schedule:
+                    {current_schedule}
 
-                        Given reflections for the NPC:
-                        {reflections}
+                    Given memories of the NPC:
+                    {memories}
 
-                        Information for understanding the NPC's current situation:
-                            The npcId is the npcId of the current NPC.
-                            The world time is the current time of the NPC.
-                            The mapObj contains all map objects the NPC can go to.
-                            The NPC Information contains details about the NPC.
-                            The NPC's Selling contains the list of items that the NPC is selling.
-                            The NPC's Items contains the list of items the NPC has.
-                            The Available Actions contains special actions that the NPC can take notice of and initiate if needed.
-                            The Map Data contains objects from mapObj that the NPC owns or operates and can interact with when close.
-                            The Surroundings contains a list of other NPCs in the radius that the NPC can immediately talk to, sell to, buy from, or interact with, and a list of objects near the NPC.
-                            The Talk section contains whether the NPC is talking now, who the NPC is talking to, and what the NPC is talking about.
+                    Given reflections for the NPC:
+                    {reflections}
 
-                        Given the NPC's current information:
-                        {npc_context}
+                    Information for understanding the NPC's current situation:
+                        The npcId is the npcId of the current NPC.
+                        The world time is the current time of the NPC.
+                        The mapObj contains all map objects the NPC can go to.
+                        The NPC Information contains details about the NPC.
+                        The NPC's Selling contains the list of items that the NPC is selling.
+                        The NPC's Items contains the list of items the NPC has.
+                        The Available Actions contains special actions that the NPC can take notice of and initiate if needed.
+                        The Map Data contains objects from mapObj that the NPC owns or operates and can interact with when close.
+                        The Surroundings contains a list of other NPCs in the radius that the NPC can immediately talk to, sell to, buy from, or interact with, and a list of objects near the NPC.
+                        The Talk section contains whether the NPC is talking now, who the NPC is talking to, and what the NPC is talking about.
 
-                        Please create a schedule for the NPC for today, adapting to the information given but not strictly following it.
+                    Given the NPC's current information:
+                    {npc_context}
 
-                        Example schedule format:
-                        'wake up and complete the morning routine at 6:00 am', 
-                        'have breakfast and brush teeth at 6:30 am',
-                        'work on painting project from 8:00 am to 12:00 pm', 
-                        'have lunch at 12:00 pm', 
-                        'take a break and watch TV from 2:00 pm to 4:00 pm', 
-                        'work on painting project from 4:00 pm to 6:00 pm', 
-                        'have dinner at 6:00 pm', 
-                        'watch TV from 7:00 pm to 8:00 pm',
-                        'go to bed at 10:00 pm'
-                        """
-                    )
-                }
-            ]
-        )
-        return completion.choices[0].message.content
-    except Exception as e:
-        # Handle errors gracefully
-        return f"An error occurred while generating the schedule: {str(e)}"
+                    Please create a schedule for the NPC for today, adapting to the information given but not strictly following it.
+
+                    Example schedule format:
+                    'wake up and complete the morning routine at 6:00 am', 
+                    'have breakfast and brush teeth at 6:30 am',
+                    'work on painting project from 8:00 am to 12:00 pm', 
+                    'have lunch at 12:00 pm', 
+                    'take a break and watch TV from 2:00 pm to 4:00 pm', 
+                    'work on painting project from 4:00 pm to 6:00 pm', 
+                    'have dinner at 6:00 pm', 
+                    'watch TV from 7:00 pm to 8:00 pm',
+                    'go to bed at 10:00 pm'
+                    """
+                )
+            }
+        ]
+    )
+    return completion.choices[0].message.content
+
 
 def need_new_schedule(current_schedule, memories, reflections, npc_context, npcId):
     """

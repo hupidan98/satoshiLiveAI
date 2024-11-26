@@ -15,8 +15,11 @@ sys.path.append(base_dir)
 from DBConnect import DBCon 
 from DBConnect import CmtRpyDBJavaBuffer
 from DBConnect import CmtRpyDBInstruction
+from DBConnect import BhrDBSchedule
+
+from BhrCtrl import BhrLgcGPTProcess
   
-from DBConnect import AnnDBAnnBuffer
+
 
 from DBConnect import BhrDBMemStre
 from DBConnect import BhrDBReflection
@@ -39,9 +42,10 @@ def choiceOneToReply():
 
     if input_from_java is None:
         print('Nothing to process so far')
-        print()
-        print()
         return 0
+    else:
+        print('Processing the following input:')
+        print(input_from_java)
     
     npcId = input_from_java[2]
     requestId = input_from_java[0]
@@ -52,6 +56,7 @@ def choiceOneToReply():
 
     # Get all comments for that npc
     all_comments = CmtRpyDBJavaBuffer.get_unprocessed_entries_of_npc(db_conn, npcId)
+    print("All comments to choose from:")
     print(all_comments)
     # Prepare data for DataFrame
     data = []
@@ -69,25 +74,68 @@ def choiceOneToReply():
     # Create DataFrame
     df = pd.DataFrame(data, columns=columns)
 
-
-    # Get memeory strem later
-    
-    # Get reflect later
-
-    # Get daily schedule later
-
-    # Get announcement
-    ann_contents = AnnDBAnnBuffer.get_latest_n_announcements(db_conn, npcId, 50)
-    
-    ann_contents_str = str(ann_contents)
-
-    
     # Select one randomly
     comment_row_reply = df.sample(n=1)
     commet_to_reply = comment_row_reply['content']
 
+    info_for_reply = ''
+    # Get memeory stream 
+    BufferRowEmbedding = BhrLgcGPTProcess.get_embedding(commet_to_reply)
+    rows_df = BhrDBMemStre.retrieve_most_recent_entries(db_conn, npcId, time_fromdb)
+    if rows_df is not None:
+        rows_df['Time'] = pd.to_datetime(rows_df['Time'])
+        rows_df['TimeDifference'] = (rows_df['Time'] - pd.to_datetime(time_fromdb)).dt.total_seconds()
+        decay_rate = 0.001 
+        rows_df['recency'] = np.exp(decay_rate * rows_df['TimeDifference'])
+
+        def cosine_similarity(vec1, vec2):
+            dot_product = np.dot(vec1, vec2)
+            norm_vec1 = np.linalg.norm(vec1)
+            norm_vec2 = np.linalg.norm(vec2)
+            return dot_product / (norm_vec1 * norm_vec2)
+
+        rows_df['cosine_similarity'] = rows_df['Embedding'].apply(lambda x: cosine_similarity(BufferRowEmbedding, np.array(x)))
+
+        a_recency = 0.2  # Adjust the weight for recency as needed
+        a_importance = 0.2  # Adjust the weight for importance as needed
+        a_similarity = 0.6  # Adjust the weight for similarity as needed
+
+        rows_df['retrieval_score'] = (
+            a_recency * rows_df['recency'] +
+            a_importance * rows_df['Importance'] + 
+            a_similarity * rows_df['cosine_similarity']
+        )
+
+        rows_df_ranked = rows_df.sort_values(by=['retrieval_score', 'Time'], ascending=[False, False]).head(20)
+        rows_df_ranked = rows_df_ranked.sort_values(by='Time', ascending=False)
+        paragraph = " ".join(rows_df_ranked['Content'].astype(str).tolist())
+        memories_str = paragraph
+    else:
+        memories_str = 'No memory yet'
+    info_for_reply += f'This is prior memeories: {memories_str}\n\n'
+
+    # Get reflect 
+    prior_reflection = BhrDBReflection.retrieve_last_entry_before_time(db_conn, npcId, time_fromdb)
+    if prior_reflection is not None:
+        prior_reflection_str = str(prior_reflection[2])
+    else:
+        prior_reflection_str = 'No prior reflection yet!'
+    info_for_reply += f'This is prior reflection: {prior_reflection_str}\n\n'
+
+    # Get daily schedule 
+    cur_schedule = BhrDBSchedule.retrieve_latest_schedule(db_conn, npcId)
+    if cur_schedule is not None:
+        cur_schedule_str = str(cur_schedule['schedule'])
+    else:
+        cur_schedule_str = 'No schedule yet!'
+    info_for_reply += f'This is schedule of the day: {cur_schedule_str}\n\n'
+    
+    
+    
+
+
     #Creating Reply
-    reply_tosent = CmtRpyLgcGPTProcess.replyToComment(ann_contents_str,  commet_to_reply, npcId)
+    reply_tosent = CmtRpyLgcGPTProcess.replyToComment(info_for_reply,  commet_to_reply, npcId)
 
     # Sent Reply
     requestId_tosent = str(comment_row_reply['requestId'].iloc[0])
@@ -115,7 +163,7 @@ def choiceOneToReply():
         }
     }, ensure_ascii=False)
 
-    
+    print('Instruction for replying user:')
     print(instruction_to_give)
     CmtRpyDBInstruction.insert_into_instruction_table(db_conn, requestId_tosent, time_tosent, npcId_tosent, msgId_tosent, instruction_to_give, isProcessed=False)
     
