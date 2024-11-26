@@ -87,7 +87,7 @@ def choiceOneToReply():
     commet_to_reply = comment_row_reply['content']
 
     #Creating Reply
-    reply_tosent = CmtRpyLgcGPTProcess.replyToComment(ann_contents_str,  commet_to_reply)
+    reply_tosent = CmtRpyLgcGPTProcess.replyToComment(ann_contents_str,  commet_to_reply, npcId)
 
     # Sent Reply
     requestId_tosent = str(comment_row_reply['requestId'].iloc[0])

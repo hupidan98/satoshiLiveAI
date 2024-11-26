@@ -273,8 +273,26 @@ def receive_data():
             data = json.loads(input_from_java)
             print("Parsed input successfully:", data)
 
+            # if data['command'] == 10101:
+            #     # NPC Announcement
+            #     try:
+            #         requestId = data['requestId']
+            #         npcInputSingle = data['data']
+            #         dt_object = datetime.datetime.fromtimestamp(npcInputSingle['world']['time'] / 1000.0)
+            #         time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S')  # Format to MySQL datetime format
+            #         npcId = npcInputSingle['npcs'][0]['npcId']
+                    
+            #         content = json.dumps(npcInputSingle)  # Convert the content to JSON format
+            #         db_connection = establish_sql_connection()
+            #         # Insert into table using formatted datetime string
+            #         AnnDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, int(npcId), content)
+            #     except Exception as e:
+            #         print(f"Failed to insert into Announcement Java Buffer for requestId {requestId} npcId {npcId}: {e}")
+            #         traceback.print_exc()
+            #     else:
+            #         print(f"Insertion into Announcement for requestId {requestId} npcId {npcId} inserted successfully.")
             if data['command'] == 10101:
-                # NPC Announcement
+                # NPC Behavior
                 try:
                     requestId = data['requestId']
                     npcInputSingle = data['data']
@@ -285,12 +303,11 @@ def receive_data():
                     content = json.dumps(npcInputSingle)  # Convert the content to JSON format
                     db_connection = establish_sql_connection()
                     # Insert into table using formatted datetime string
-                    AnnDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, int(npcId), content)
+                    print(requestId, time_stamp, npcId, content)
+                    BhrDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, int(npcId), content)
                 except Exception as e:
-                    print(f"Failed to insert into Announcement Java Buffer for requestId {requestId} npcId {npcId}: {e}")
+                    print(f"Failed to insert into Behavior Java Buffer for requestId {requestId} npcId {npcId}: {e}")
                     traceback.print_exc()
-                else:
-                    print(f"Insertion into Announcement for requestId {requestId} npcId {npcId} inserted successfully.")
             elif data['command'] == 10103:
                 # NPC reply to comment from player
                 try:
@@ -304,13 +321,11 @@ def receive_data():
                     dt_object = datetime.datetime.fromtimestamp(playerCommentData['chatData']['time'] / 1000.0)
                     time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S') 
                     db_connection = establish_sql_connection()
-                    print(db_connection)
+
                     CmtRpyDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, npcId, msgId, senderId, content, sname)
                 except Exception as e:
                     print(f"Failed to insert into CommentReply Java Buffer for requestId {requestId} npcId {npcId}: {e}")
                     traceback.print_exc()
-                else:
-                    print(f"Insertion into CommentReply for requestId {requestId} npcId {npcId} inserted successfully.")
             else:
                 print('Unknown case')
                 print(data)
@@ -326,10 +341,10 @@ def send_data():
         print("Checking for unprocessed instructions...")
         try:
             db_conn = establish_sql_connection()
-            instruction_from_db = AnnDBInstruction.get_earliest_unprocessed_instruction(db_conn)
-            print(f"Instruction from DB: {instruction_from_db}")
-            if instruction_from_db is not None:
-                curTime, npcId, instruction_str = instruction_from_db[0], instruction_from_db[1], instruction_from_db[2]
+            behavior_instruction_from_db = BhrDBInstruction.get_earliest_unprocessed_instruction(db_conn)
+            print(f"Instruction from DB: {behavior_instruction_from_db}")
+            if behavior_instruction_from_db is not None:
+                curTime, npcId, instruction_str = behavior_instruction_from_db[0], behavior_instruction_from_db[1], behavior_instruction_from_db[2]
                 head_num = 10100  # Set the appropriate head_num or pull dynamically if needed
                 print('Sending instruction:', instruction_str)
                 # Execute the instruction and mark it as processed
@@ -338,7 +353,21 @@ def send_data():
                 print(f"Sent instruction: {instruction_str} for npcId {npcId} and marked as processed.")
             else:
                 print("No unprocessed instructions found.")
-                time.sleep(0.1)  # Sleep for 5 seconds before checking again
+                time.sleep(1)  # Sleep for 5 seconds before checking again
+
+            # instruction_from_db = AnnDBInstruction.get_earliest_unprocessed_instruction(db_conn)
+            # print(f"Instruction from DB: {instruction_from_db}")
+            # if instruction_from_db is not None:
+            #     curTime, npcId, instruction_str = instruction_from_db[0], instruction_from_db[1], instruction_from_db[2]
+            #     head_num = 10100  # Set the appropriate head_num or pull dynamically if needed
+            #     print('Sending instruction:', instruction_str)
+            #     # Execute the instruction and mark it as processed
+            #     execute_instruction(instruction_str, head_num)
+            #     AnnDBInstruction.mark_instruction_as_processed(db_conn, curTime, npcId)
+            #     print(f"Sent instruction: {instruction_str} for npcId {npcId} and marked as processed.")
+            # else:
+            #     print("No unprocessed instructions found.")
+            #     time.sleep(1)  # Sleep for 5 seconds before checking again
 
             comment_instruction_from_db = CmtRpyDBInstruction.get_earliest_unprocessed_instruction(db_conn)
             print(f"Comment Instruction from DB: {comment_instruction_from_db}")
@@ -352,11 +381,11 @@ def send_data():
                 print(f"Sent instruction: {instruction_str} for requestId {requestId} and marked as processed.")
             else:
                 print("No unprocessed instructions found.")
-                time.sleep(0.1)  # Sleep for 5 seconds before checking again
+                time.sleep(1)  # Sleep for 5 seconds before checking again
         except Exception as e:
             print(f"Error in send_data: {e}")
             traceback.print_exc()
-            time.sleep(0.1)
+            time.sleep(1)
 
 if __name__ == "__main__":
     config = load_config()

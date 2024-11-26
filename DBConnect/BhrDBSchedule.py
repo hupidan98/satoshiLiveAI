@@ -165,3 +165,38 @@ def retrieve_last_entry_before_time(connection, npcID, before_time):
     except Error as e:
         print(f"Failed to retrieve data: {e}")
         return None
+
+
+def retrieve_latest_schedule(connection, npcID):
+    """
+    Retrieves the latest schedule for the given npcID from the behavior_schedule_stream table.
+    """
+    try:
+        cursor = connection.cursor()
+        cursor.execute("USE AITown")
+        
+        # Query to get the latest schedule
+        select_query = """
+        SELECT npcID, Time, Schedule
+        FROM behavior_schedule_stream
+        WHERE npcID = %s
+        ORDER BY Time DESC
+        LIMIT 1
+        """
+        cursor.execute(select_query, (npcID,))
+        result = cursor.fetchone()
+
+        if result:
+            npcID, time, schedule = result
+            print(f"Latest schedule retrieved: npcID={npcID}, time={time}, schedule={schedule}")
+            return {
+                "npcID": npcID,
+                "time": time,
+                "schedule": schedule
+            }
+        else:
+            print(f"No schedule found for npcID={npcID}")
+            return None
+    except Error as e:
+        print(f"Failed to retrieve latest schedule: {e}")
+        return None

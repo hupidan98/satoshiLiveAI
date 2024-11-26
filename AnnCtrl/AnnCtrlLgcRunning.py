@@ -40,5 +40,5 @@ n = 0
 while True:
     print(f"Processing step {n}")
     AnnCtrlLgcProcessOnce.makeAnAnnouncement()
-    time.sleep(0.1)
+    time.sleep(2)
     n += 1

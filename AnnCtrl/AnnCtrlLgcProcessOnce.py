@@ -40,9 +40,9 @@ def makeAnAnnouncement():
     # If no remaining ones, generate new one
     if annData is None:
         # Generate a new theme
-        newTheme = AnnCtrlLgcGPTProcess.generat_new_theme()
+        newTheme = AnnCtrlLgcGPTProcess.generat_new_theme(npcId)
         # Write a new paragraph, Separate into pieces and put in announcement buffer
-        newAnns = AnnCtrlLgcGPTProcess.generate_new_Announcement(newTheme)
+        newAnns = AnnCtrlLgcGPTProcess.generate_new_Announcement(newTheme, npcId)
 
         if not newAnns:
             print("Error: Failed to generate valid announcements")

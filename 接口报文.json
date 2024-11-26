@@ -363,3 +363,120 @@
     }
   }
 }
+
+
+
+//npc 行文， java -> python
+{
+  "requestId": 117694906771,
+  "type": 3,
+  "command": 10101,
+  "code": 0,
+  "data": {
+      "world": {
+          "time": 1730950051055
+      },
+      "mapObj": [
+          {
+              "oid": "zhongbencongType",
+              "objName": "zhongbencongType",
+              "type": "",
+              "X": 463,
+              "Y": 722,
+              "status": "DEFAULT",
+              "availableActions": []
+          },
+          {
+              "oid": "zhongbencongRead",
+              "objName": "zhongbencongRead",
+              "type": "",
+              "X": 240,
+              "Y": 688,
+              "status": "DEFAULT",
+              "availableActions": []
+          },
+          {
+              "oid": "zhongbencongFix",
+              "objName": "zhongbencongFix",
+              "type": "",
+              "X": 370,
+              "Y": 304,
+              "status": "DEFAULT",
+              "availableActions": []
+          },
+          {
+              "oid": "zhongbencongThink",
+              "objName": "zhongbencongThink",
+              "type": "",
+              "X": 336,
+              "Y": 721,
+              "status": "DEFAULT",
+              "availableActions": []
+          }
+      ],
+      "npcs": [
+          {
+              "npcId": 10006,
+              "status": "idle",
+              "info": {
+                  "name": "wSatoshi",
+                  "firstName": "wSatoshi",
+                  "lastName": "wSatoshi",
+                  "type": "Engineer",
+                  "age": 20,
+                  "height": 180,
+                  "weight": 60,
+                  "body_style": "fit and sturdy",
+                  "innate": "Visionary, Analytical, Persistent",
+                  "learned": "wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.",
+                  "lifestyle": "wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.",
+                  "living_area": "house",
+                  "property": "house"
+              },
+              "selling": [],
+              "items": [],
+              "action": {
+                  "actionName": "move",
+                  "actionId": 112
+              },
+              "curAction": {
+                  "actionName": "move",
+                  "actionId": 112,
+                  "param": {
+                      "oid": "zhongbencongFix",
+                      "gridX": 0,
+                      "gridY": 0
+                  }
+              },
+              "mapData": [],
+              "surroundings": {
+                  "people": [],
+                  "items": [
+                      {
+                          "oid": "zhongbencongFix",
+                          "objName": "zhongbencongFix",
+                          "type": ""
+                      }
+                  ]
+              },
+              "talk": {
+                  "isTalking": true,
+                  "talkingTo": [
+                      10006
+                  ],
+                  "contents": [
+                      {
+                          "sender": 10006,
+                          "target": 10006,
+                          "time": 1730785543343,
+                          "content": "In this digital epoch, I'm delving into texts chronicling the vast evolution of technology. The journey from Bitcoin's inception lingers vividly. As I read, I muse on how a decentralized idea sparked a financial revolution. Yet, with blockchain's potential, new pathways beckon. The next frontier may lie not just in cryptocurrency, but in integrating blockchain with AI, deepening transparency and automating trust. The horizon holds limitless innovations, and perhaps the creation of ubiquitous digital identities using blockchain. Change is the only constant, each line a step towards a new dawn. What might we craft with precision and freedom next?"
+                      }
+                  ]
+              }
+          }
+      ]
+  }
+}
+
+
+

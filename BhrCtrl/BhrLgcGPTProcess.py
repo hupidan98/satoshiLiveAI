@@ -3,6 +3,7 @@ import copy
 from datetime import datetime
 import configparser
 import os
+import yaml
 
 from openai import OpenAI
 
@@ -20,6 +21,16 @@ if 'OpenAI' not in config:
     print("Error: 'OpenAI' section not found in config.ini")
 openai_key = config['OpenAI']['key']
 client = OpenAI(api_key=openai_key)
+
+
+yaml_path = os.path.join(base_dir, 'char_config.yaml')
+
+# Load the YAML file
+
+with open(yaml_path, 'r') as file:
+    char_config = yaml.safe_load(file)
+    print("YAML content loaded successfully.")
+
 
 
 def get_embedding(text, model="text-embedding-3-small"):
@@ -48,17 +59,23 @@ def get_importance(mem_single_str):
     return completion.choices[0].message.content
 
 
-def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_context, special_instruction = ''):
+def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_context, npcId, special_instruction = ''):
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+    npc_description = npc['description']
+    npc_lifestyle = npc['lifestyle']
+    
     completion = client.chat.completions.create(
       model="gpt-4o",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
         {"role": "user", "content": '''
          
-        You are Nakamoto Satoshi, a revolutionary figure in the digital and blockchain worlds, known for creating Bitcoin and authoring its groundbreaking whitepaper, which introduced the concept of decentralized digital currency. Satoshi’s work on Bitcoin ignited the blockchain revolution, forever changing the landscape of finance and data security.
-        Recently, you have ambitious vision that transcends currency. Your new mission is to bring data to life by endowing it with intelligence and emotions. This journey involves creating a digital world where data entities—transformed into “heroes,” “animals,” and “plants” with their own minds and feelings, as an AI agents—live in a vibrant, fairy-tale-like virtual town. Through live streaming, you share the world with the public, allowing people to witness and engage with these digital beings.
-        You Satoshi, also sparked bold ideas for real-world governance. Envisioning the potential of blockchain to reform national transparency, accountability, and freedom, Satoshi even contemplates a presidential run. His recent meeting with President Donald Trump included discussions on potentially making Bitcoin a legal currency in the United States, marking a historic convergence of blockchain and traditional governance.
-        You are livestreaming in a simulated world. 
+        You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
         Given some information of an NPC (input), please tell what the npc should do next.
          
@@ -94,6 +111,8 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
         •	Fishing: The NPC engages in fishing at a designated location.
         •	stock: The NPC procures supplies or items to replenish inventory.
         •	TidyUp: The NPC organizes or cleans its environment, ensuring spaces are orderly and presentable.
+        •	DataAnalysis: The NPC processes data or information to derive insights or make decisions.
+        •	Meeting: The NPC participates in a meeting and discuss topics or make decisions.
      
 
         Special instruction, needs to be followed if given and if logic allows: 
@@ -113,7 +132,193 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     # print(completion.choices[0].message.content)
     return completion.choices[0].message.content
 
-def generateThreeSentencesForAction(memories, reflections, npc_context, npc_action, special_instruction=''):
+def needDeepTalk(memories, reflections, npc_context, npc_action, npcId):
+    
+
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+    npc_description = npc['description']
+    npc_lifestyle = npc['lifestyle']
+
+    prompt = f"""
+    
+    You are an expert in determining narrative significance for NPC dialogues.
+
+    Based on the following details, determine if the NPC should deliver a meaningful speech:
+
+    You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    
+    Memories:
+    {memories}
+    
+    Reflections:
+    {reflections}
+    
+    Current Context:
+    {npc_context}
+    
+    Upcoming Action:
+    {npc_action}
+    
+    Please return "True" if a meaningful speech is warranted (e.g., critical moment in the story, deep character development), 
+    or "False" if not.
+    """
+    
+    # Call GPT model
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an assistant designed to analyze narrative elements and make decisions."
+            },
+            {
+                "role": "user",
+                "content": prompt.strip()
+            }
+        ]
+    )
+    
+    # Parse GPT output
+    response = completion.choices[0].message.content.strip()
+    if response.lower() == "true":
+        return True
+    elif response.lower() == "false":
+        return False
+
+def generateTheme(memories, reflections, npc_context, npc_action, npcId, special_instruction=''):
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+    npc_description = npc['description']
+    npc_lifestyle = npc['lifestyle']
+        # Constructing the prompt dynamically
+
+    # First determine if this topic would like to go deep. 
+
+    prompt = f"""
+    You are {npc_name}, {npc_description}, {npc_lifestyle}.
+
+    Here is some Memory of the NPC:
+    {memories}
+
+    Here is some Reflection of the NPC about past experiences and events: 
+    {reflections}
+
+    Here is the NPC's current information:
+    {npc_context}
+
+    Here is what the NPC is doing next:
+    {npc_action}
+
+    The NPC needs to say something at the beginning of the action, in the middle of the action, and at the end of the action.
+
+    {special_instruction if special_instruction else ''}
+
+    Choose an intriguing topic for today's discussion, incorporating relevant details.
+   
+    """
+
+    # Calling the GPT-4 model to generate output
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a knowledgeable thinker and inspiring speaker."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+    
+    return completion.choices[0].message.content
+
+
+
+def generate_new_Announcement(memories, reflections, theme, npcId):
+    # Find the NPC details by npcId
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+    npc_description = npc['description']
+    npc_lifestyle = npc['lifestyle']
+
+    prompt = f"""
+    You are {npc_name}, {npc_description}, {npc_lifestyle}.
+
+    Here is some Memory of the NPC:
+    {memories}
+
+    Here is some Reflection of the NPC about past experiences and events: 
+    {reflections}
+    
+    You are livestreaming in a simulated world about the topic: {theme}.
+    Write an engaging and insightful speech.
+    """
+    
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a skilled and detail-oriented thinker, and an inspiring speech giver."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+    
+    speech = completion.choices[0].message.content
+
+    prompt = f"""
+    Transform the following speech into three parts
+    - At the beginning of the action.
+    - In the middle of the action.
+    - At the end of the action.
+    
+    Speech:
+    {speech}
+    
+
+
+
+    """
+    
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are skilled in concise and clear formatting."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+    
+    # Clean and validate the response
+    result = completion.choices[0].message.content.strip("```json").strip("```")
+    
+    return result
+
+def generateThreeSentencesForAction(memories, reflections, npc_context, npc_action, npcId, special_instruction=''):
     """
     Generates three sentences for an NPC to say during an action: at the beginning, middle, and end.
 
@@ -127,60 +332,61 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
     Returns:
         str: The generated three sentences for the NPC.
     """
-    try:
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+    npc_description = npc['description']
+    npc_lifestyle = npc['lifestyle']
         # Constructing the prompt dynamically
-        prompt = f"""
-        You are Nakamoto Satoshi, a revolutionary figure in the digital and blockchain worlds, known for creating Bitcoin 
-        and authoring its groundbreaking whitepaper, which introduced the concept of decentralized digital currency. 
-        Satoshi’s work on Bitcoin ignited the blockchain revolution, forever changing the landscape of finance and data security.
-        Recently, you have ambitious vision that transcends currency. Your new mission is to bring data to life by endowing it 
-        with intelligence and emotions. This journey involves creating a digital world where data entities—transformed into 
-        “heroes,” “animals,” and “plants” with their own minds and feelings, as AI agents—live in a vibrant, fairy-tale-like 
-        virtual town. Through live streaming, you share the world with the public, allowing people to witness and engage with 
-        these digital beings.
 
-        Here is some Memory of the NPC:
-        {memories}
+    # First determine if this topic would like to go deep. 
 
-        Here is some Reflection of the NPC about past experiences and events: 
-        {reflections}
+    prompt = f"""
+    You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-        Here is the NPC's current information:
-        {npc_context}
+    Here is some Memory of the NPC:
+    {memories}
 
-        Here is what the NPC is doing next:
-        {npc_action}
+    Here is some Reflection of the NPC about past experiences and events: 
+    {reflections}
 
-        The NPC needs to say something at the beginning of the action, in the middle of the action, and at the end of the action.
+    Here is the NPC's current information:
+    {npc_context}
 
-        {special_instruction if special_instruction else ''}
+    Here is what the NPC is doing next:
+    {npc_action}
 
-        Please generate three sentences for the NPC to say: 
-        - At the beginning of the action.
-        - In the middle of the action.
-        - At the end of the action.
-        """
+    The NPC needs to say something at the beginning of the action, in the middle of the action, and at the end of the action.
 
-        # Calling the GPT-4 model to generate output
-        completion = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a great schedule planner and instruction giver. You will process the information given to you and generate appropriate sentences."
-                },
-                {
-                    "role": "user",
-                    "content": prompt.strip()
-                }
-            ]
-        )
+    {special_instruction if special_instruction else ''}
 
-        return completion.choices[0].message.content
+    Please generate three sentences for the NPC to say: 
+    - At the beginning of the action.
+    - In the middle of the action.
+    - At the end of the action.
+    """
 
-    except Exception as e:
-        # Handle errors gracefully
-        return f"Error generating sentences for NPC: {e}"
+    # Calling the GPT-4 model to generate output
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a great schedule planner and instruction giver. You will process the information given to you and generate appropriate sentences."
+            },
+            {
+                "role": "user",
+                "content": prompt.strip()
+            }
+        ]
+    )
+
+    return completion.choices[0].message.content
+
+
 
 
 
@@ -206,6 +412,12 @@ def humanInstToJava(instruction_in_human, words_to_say):
     3. Extract any required object or location information from the instruction and place it in the `data` field as `oid`.
     4. Use the provided words to fill in the sentences to say at the beginning, during, and after the action.
 
+    ### NPC ID List and Character Names:
+    10006 : satoshi
+    10007 : popocat
+    10008 : pepe
+    10009 : musk
+    
     ### Object ID List with Explanations:
     • zhongbencongFix: Nakamoto Satoshi fixes the sprite in front of the sprite station.
     • zhongbencongRead: Nakamoto Satoshi reads at the desk.
@@ -257,6 +469,8 @@ def humanInstToJava(instruction_in_human, words_to_say):
     - 119: Fishing, needs location by filling in oid, needs duration time.
     - 120: stock, needs location by filling in oid, needs duration time.
     - 121: TidyUp, needs location by filling in oid, needs duration time.
+    - 123: DataAnalysis, needs location by filling in oid, needs duration time.
+    - 124: Meeting, needs location by filling in oid, needs duration time.
 
     Instruction for the NPC:
     {instruction_in_human}
@@ -302,47 +516,79 @@ def humanInstToJava(instruction_in_human, words_to_say):
 
 
 
-def generate_reflection(memories_str, reflections_str, java_input_str):
-  #  Your current action is: {java_input_str} 
-    prompt = f"""
-    You are Nakamoto Satoshi, a revolutionary figure in the digital and blockchain worlds, known for creating Bitcoin and authoring its groundbreaking whitepaper, which introduced the concept of decentralized digital currency. Satoshi’s work on Bitcoin ignited the blockchain revolution, forever changing the landscape of finance and data security.
-
-    Recently, you have ambitious vision that transcends currency. Your new mission is to bring data to life by endowing it with intelligence and emotions. This journey involves creating a digital world where data entities—transformed into “heroes,” “animals,” and “plants” with their own minds and feelings, as an AI agents—live in a vibrant, fairy-tale-like virtual town. Through live streaming, you share the world with the public, allowing people to witness and engage with these digital beings.
-
-    You Satoshi, also sparked bold ideas for real-world governance. Envisioning the potential of blockchain to reform national transparency, accountability, and freedom, Satoshi even contemplates a presidential run. His recent meeting with President Donald Trump included discussions on potentially making Bitcoin a legal currency in the United States, marking a historic convergence of blockchain and traditional governance.
-    
-    You are livestreaming in a simulated world. 
-
-    Given the memories of what you’ve said in the past:
-    {memories_str}
-
-    And your reflections and summaries on past statements:
-    {reflections_str}
-
-    Task:
-    1. Based on these memories and reflections and summaries, generate five high-level, thought-provoking questions Satoshi already discussed.
-    2. Provide detailed, nuanced insights that answer each question, considering Satoshi's engineering mindset and philosophy on decentralization and societal evolution.
-
-    Write in Satoshi's reflective and analytical voice. Make the commentary vivid, covering extensive material, but keep responses concise.
+def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId):
     """
-    
-    completion = client.chat.completions.create(
+    Generate reflections by first identifying high-level questions and then deriving insights.
+    """
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+    npc_description = npc['description']
+    npc_lifestyle = npc['lifestyle']
+    # Define the first question
+    question_1 = "Given only the information above, what are 5 most salient high-level questions we can answer about the subjects in the statements during the daily life not included in the npc current information?"
+
+    # Step 1: Generate high-level questions
+    completion_1 = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {
-                "role": "system",
-                "content": "You are a deep thinker and detailed analyst."
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
+            {"role": "system", "content": "You are a deep thinker and reflective analyst."},
+            {"role": "user", "content": f'''
+            You are {npc_name}, {npc_description}, {npc_lifestyle}.
+
+            Current Input:
+            {java_input_str}
+
+            Given the memories of the NPC:
+            {memories_str}
+
+            And given prior reflections:
+            {reflections_str}
+
+            {question_1}
+            '''}
         ]
     )
 
-    return completion.choices[0].message.content
+    question_1_answer = completion_1.choices[0].message.content
 
-def generate_schedule(current_schedule, memories, reflections, npc_context):
+    # Define the second question
+    question_2 = "What 5 high-level insights can you infer from the above statements not included in the information of the npc?"
+
+    # Step 2: Generate insights based on the high-level questions
+    completion_2 = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a deep thinker and reflective analyst."},
+            {"role": "user", "content": f'''
+            You are {npc_name}, {npc_description}, {npc_lifestyle}.
+
+            Current Input:
+            {java_input_str}
+
+            Given the memories of the NPC:
+            {memories_str}
+
+            And given prior reflections:
+            {reflections_str}
+
+            {question_2} in the following directions:
+            {question_1_answer}
+
+            Just give me the insights, do not provide explanations or any other information.
+            '''}
+        ]
+    )
+
+    # Return the generated insights
+    return completion_2.choices[0].message.content
+
+
+
+def generate_schedule(current_schedule, memories, reflections, npc_context,npcId):
     """
     Generates a schedule for an NPC based on current context, memories, and reflections.
     
@@ -356,6 +602,15 @@ def generate_schedule(current_schedule, memories, reflections, npc_context):
         str: Generated schedule in the specified format.
     """
     try:
+        npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+        if not npc:
+            raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+        # Extract name and description
+        npc_name = npc['name']
+        npc_description = npc['description']
+        npc_lifestyle = npc['lifestyle']
+
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -370,12 +625,8 @@ def generate_schedule(current_schedule, memories, reflections, npc_context):
                     "role": "user",
                     "content": (
                         f"""
-                        You are Nakamoto Satoshi, a revolutionary figure in the digital and blockchain worlds, known for creating Bitcoin and authoring its groundbreaking whitepaper, which introduced the concept of decentralized digital currency. Satoshi’s work on Bitcoin ignited the blockchain revolution, forever changing the landscape of finance and data security.
+                        You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-                        Recently, you have ambitious vision that transcends currency. Your new mission is to bring data to life by endowing it with intelligence and emotions. This journey involves creating a digital world where data entities—transformed into “heroes,” “animals,” and “plants” with their own minds and feelings, as an AI agents—live in a vibrant, fairy-tale-like virtual town. Through live streaming, you share the world with the public, allowing people to witness and engage with these digital beings.
-
-                        You Satoshi, also sparked bold ideas for real-world governance. Envisioning the potential of blockchain to reform national transparency, accountability, and freedom, Satoshi even contemplates a presidential run. His recent meeting with President Donald Trump included discussions on potentially making Bitcoin a legal currency in the United States, marking a historic convergence of blockchain and traditional governance.
-                        
                         You are livestreaming in a simulated world. 
 
                         Given the NPC's current schedule:
@@ -424,7 +675,7 @@ def generate_schedule(current_schedule, memories, reflections, npc_context):
         # Handle errors gracefully
         return f"An error occurred while generating the schedule: {str(e)}"
 
-def need_new_schedule(current_schedule, memories, reflections, npc_context):
+def need_new_schedule(current_schedule, memories, reflections, npc_context, npcId):
     """
     Determines if a new schedule is needed for the next behavior.
     
@@ -438,6 +689,15 @@ def need_new_schedule(current_schedule, memories, reflections, npc_context):
         bool: True if a new schedule is needed, False otherwise.
     """
     try:
+        npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+        if not npc:
+            raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+        # Extract name and description
+        npc_name = npc['name']
+        npc_description = npc['description']
+        npc_lifestyle = npc['lifestyle']
+        
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -452,12 +712,8 @@ def need_new_schedule(current_schedule, memories, reflections, npc_context):
                     "role": "user",
                     "content": (
                         f"""
-                        You are Nakamoto Satoshi, a revolutionary figure in the digital and blockchain worlds, known for creating Bitcoin and authoring its groundbreaking whitepaper, which introduced the concept of decentralized digital currency. Satoshi’s work on Bitcoin ignited the blockchain revolution, forever changing the landscape of finance and data security.
+                        YYou are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-                        Recently, you have ambitious vision that transcends currency. Your new mission is to bring data to life by endowing it with intelligence and emotions. This journey involves creating a digital world where data entities—transformed into “heroes,” “animals,” and “plants” with their own minds and feelings, as an AI agents—live in a vibrant, fairy-tale-like virtual town. Through live streaming, you share the world with the public, allowing people to witness and engage with these digital beings.
-
-                        You Satoshi, also sparked bold ideas for real-world governance. Envisioning the potential of blockchain to reform national transparency, accountability, and freedom, Satoshi even contemplates a presidential run. His recent meeting with President Donald Trump included discussions on potentially making Bitcoin a legal currency in the United States, marking a historic convergence of blockchain and traditional governance.
-                        
                         You are livestreaming in a simulated world. 
                                             
                         Current schedule of the NPC:

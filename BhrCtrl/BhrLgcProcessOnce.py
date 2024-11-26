@@ -34,12 +34,13 @@ def processOneInputGiveOneInstruction():
         print()
         return 0
 
-    npcId = input_from_java[1]
+    npcId = input_from_java[2]
     AllEntryOfNPC, LatestEntryOfNpc = BhrDBJavaBuffer.get_unprocessed_entries_of_npc(db_conn, npcId)
     input_from_java = LatestEntryOfNpc
 
-    curTime = input_from_java[0]
-    inputInHumanString = BhrLgcManualProcess.parse_npc_info(input_from_java[2])
+    curTime = input_from_java[1]
+    request_id = input_from_java[0]
+    inputInHumanString = BhrLgcManualProcess.parse_npc_info(input_from_java[3])
 
     # Get Relevant Memory from Memory Stream
     BufferRowEmbedding = BhrLgcGPTProcess.get_embedding(inputInHumanString)
@@ -84,35 +85,53 @@ def processOneInputGiveOneInstruction():
 
     # Retrive latest Schedule
     cur_schedule = BhrDBSchedule.retrieve_latest_schedule(db_conn, npcId)
+    print(cur_schedule)
     if cur_schedule is not None:
-        cur_schedule_str = str(cur_schedule[2])
+        cur_schedule_str = str(cur_schedule['schedule'])
     else:
         cur_schedule_str = 'No schedule yet!'
 
     # Generate New Schedule if needed
-    if BhrLgcGPTProcess.need_new_schedule(cur_schedule_str, memories_str, prior_reflection_str, inputInHumanString):
-        cur_schedule_str = BhrLgcGPTProcess.generate_schedule(cur_schedule_str, memories_str, prior_reflection_str, inputInHumanString)
+    if BhrLgcGPTProcess.need_new_schedule(cur_schedule_str, memories_str, prior_reflection_str, inputInHumanString, npcId):
+        cur_schedule_str = BhrLgcGPTProcess.generate_schedule(cur_schedule_str, memories_str, prior_reflection_str, inputInHumanString, npcId)
         BhrDBSchedule.insert_into_table(db_conn, npcId, curTime, cur_schedule_str)
     
 
     # Process this information, and give instruction in human language
     
-    max_retries = 3
-    retries = 0
-    while retries < max_retries:
-        try:
-            instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString)
-            words_to_say = BhrLgcGPTProcess.generateThreeSentencesForAction(memories_str, prior_reflection_str, cur_schedule_str, instruction_in_human)
-            instruction_to_give = BhrLgcGPTProcess.humanInstToJava(npcId, words_to_say).strip("```json").strip("```")
-            instruction_json = json.loads(instruction_to_give)
-        except Exception as e:
-            # Log the error and increment retries
-            print(f"Attempt {retries + 1} failed: {e}")
-            retries += 1
-    # Raise an exception if max retries are exceeded
-    raise Exception(f"Failed to generate valid JSON after {max_retries} attempts.")
+    # max_retries = 3
+    # retries = 0
 
+    # while retries < max_retries:
+        # try:
+            # Generate the human-readable instruction
+    instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(
+        memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId
+    )
+
+    # Generate sentences for the NPC to say during the action
+    words_to_say = BhrLgcGPTProcess.generateThreeSentencesForAction(
+        memories_str, prior_reflection_str, cur_schedule_str, instruction_in_human, npcId
+    )
+
+    # Convert the instruction into JSON format
+    instruction_to_give = BhrLgcGPTProcess.humanInstToJava(instruction_in_human, words_to_say).strip("```json").strip("```")
+
+    # Parse the instruction into a JSON object
+    instruction_json = json.loads(instruction_to_give)
+
+            # If successful, break out of the loop
+        #     break
+        # except Exception as e:
+        #     # Log the error and increment retries
+        #     print(f"Attempt {retries + 1} failed: {e}")
+        #     retries += 1
+    # else:
+        # Raise an exception if the loop exits without success
+        # raise Exception(f"Failed to generate valid JSON after {max_retries} attempts.")
+    
     # Add unique ack,
+    print(instruction_json)
     instruction_json['ack'] = hashlib.sha256(instruction_to_give.encode('utf-8')).hexdigest()
     
 
@@ -120,11 +139,12 @@ def processOneInputGiveOneInstruction():
     BhrDBInstruction.insert_into_instruction_table(db_conn, curTime, npcId, instruction_to_give)
 
     # Mark the buffer as processed
-    BhrDBJavaBuffer.mark_entry_as_processed(db_conn, curTime, npcId)
+    BhrDBJavaBuffer.mark_entry_as_processed(db_conn, request_id)
     for row in AllEntryOfNPC:
-        time_to_mark = row[0]
-        npcId_to_mark = row[1]
-        BhrDBJavaBuffer.mark_entry_as_processed(db_conn, time_to_mark, npcId_to_mark)
+        # time_to_mark = row[1]
+        # npcId_to_mark = row[2]
+        request_id_to_mark = row[0]
+        BhrDBJavaBuffer.mark_entry_as_processed(db_conn, request_id_to_mark)
         
     # Insert instruction to Memory Stream
     BhrLgcInstToMemStre.InstToMemStreSatoshiDB(input_from_java, instruction_in_human)
@@ -142,7 +162,7 @@ def processOneInputGiveOneInstruction():
             prior_reflection = BhrDBReflection.retrieve_last_entry_before_time(db_conn, npcId, output_endtime)
             prior_reflection_str = prior_reflection[2] if prior_reflection is not None else ''
             memories_str = str(memories['Content']) if memories is not None else ''
-            new_reflection = BhrLgcGPTProcess.generate_reflection(prior_reflection_str, memories_str, inputInHumanString)
+            new_reflection = BhrLgcGPTProcess.generate_reflection(prior_reflection_str, memories_str, inputInHumanString,npcId)
             BhrDBReflection.insert_into_table(db_conn, npcId, curTime, new_reflection)
             # Reset the importance tracer
             BhrDBReflectionTracer.insert_into_table(db_conn, npcId, 0, curTime, curTime)

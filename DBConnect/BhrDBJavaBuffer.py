@@ -1,20 +1,15 @@
 import mysql.connector
 from mysql.connector import Error
 
-import configparser
-import os
 
 
 
-
-
-    
 def check_connection(connection):
     if connection.is_connected():
         print("Connection is still active.")
     else:
         print("Connection is not active. Reconnecting...")
-        connection.reconnect(attempts=3, delay=5)  # Attempt to reconnect 3 times with a 5-second delay
+        connection.reconnect(attempts=3, delay=5)
         if connection.is_connected():
             print("Reconnection successful.")
         else:
@@ -70,11 +65,12 @@ def create_table(connection):
         cursor.execute("USE AITown")  # Use the AITown database
         create_table_query = """
         CREATE TABLE IF NOT EXISTS behavior_java_buffer (
+            requestId BIGINT NOT NULL,
             time DATETIME NOT NULL,
             npcId INT NOT NULL,
             content LONGTEXT,
             isProcessed BOOLEAN NOT NULL DEFAULT FALSE,
-            PRIMARY KEY (time, npcId)
+            PRIMARY KEY (requestId, time)
         )
         """
         cursor.execute(create_table_query)
@@ -114,18 +110,18 @@ def table_exists(connection):
         print(f"Failed to check if table exists: {e}")
         return False
 
-def insert_into_table(connection, time, npcId, content, isProcessed=False):
+def insert_into_table(connection, requestId, time, npcId, content, isProcessed=False):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown") 
         insert_query = """
-        INSERT INTO behavior_java_buffer (time, npcId, content, isProcessed)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO behavior_java_buffer (requestId, time, npcId, content, isProcessed)
+        VALUES (%s, %s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE content = VALUES(content), isProcessed = VALUES(isProcessed)
         """
-        cursor.execute(insert_query, (time, npcId, content, isProcessed))
+        cursor.execute(insert_query, (requestId, time, npcId, content, isProcessed))
         connection.commit()
-        print(f"Data inserted successfully: time={time}, npcId={npcId}, content length={len(content)}, isProcessed={isProcessed}")
+        print(f"Data inserted successfully: requestId={requestId}, time={time}, npcId={npcId}, content length={len(content)}, isProcessed={isProcessed}")
     except Error as e:
         print(f"Failed to insert data: {e}")
 
@@ -139,6 +135,8 @@ def delete_entry_in_buffer(connection, time, npcId):
         print(f"Entry with time={time} and npcId={npcId} has been deleted successfully.")
     except Error as e:
         print(f"Failed to delete entry: {e}")
+
+
 
 def delete_all_content_in_buffer(connection):
     try:
@@ -165,7 +163,7 @@ def get_earliest_unprocessed_entry(connection):
         cursor.execute(query)
         result = cursor.fetchone()
         if result:
-            print(f"Earliest unprocessed entry: time={result[0]}, npcId={result[1]}, content={result[2]}")
+            print(f"Earliest unprocessed entry: time={result[1]}, npcId={result[2]}, content={result[3]}")
             return result
         else:
             print("No unprocessed entries found.")
@@ -205,7 +203,7 @@ def get_unprocessed_entries_of_npc(connection, npcId):
             print(f"No unprocessed entries found for npcId={npcId}.")
         
         if latest_unprocessed_of_a_npc:
-            print(f"Latest unprocessed entry for npcId={npcId}: time={latest_unprocessed_of_a_npc[0]}")
+            print(f"Latest unprocessed entry for npcId={npcId}: time={latest_unprocessed_of_a_npc[1]}")
         else:
             print(f"No latest unprocessed entry found for npcId={npcId}.")
 
@@ -215,22 +213,28 @@ def get_unprocessed_entries_of_npc(connection, npcId):
         print(f"Failed to retrieve unprocessed entries for npcId={npcId}: {e}")
         return [], None
 
-
-# Function 2: Mark an entry as processed
-def mark_entry_as_processed(connection, time, npcId):
+def get_earliest_unprocessed_entry(connection):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
-        update_query = """
-        UPDATE behavior_java_buffer
-        SET isProcessed = TRUE
-        WHERE time = %s AND npcId = %s
+        query = """
+        SELECT * FROM behavior_java_buffer 
+        WHERE isProcessed = FALSE
+        ORDER BY time ASC 
+        LIMIT 1
         """
-        cursor.execute(update_query, (time, npcId))
-        connection.commit()
-        print(f"Entry with time={time} and npcId={npcId} marked as processed.")
+        cursor.execute(query)
+        result = cursor.fetchone()
+        if result:
+            print(f"Earliest unprocessed entry: requestId={result[0]}, time={result[1]}, npcId={result[2]}, content={result[3]}")
+            return result
+        else:
+            print("No unprocessed entries found.")
+            return None
     except Error as e:
-        print(f"Failed to mark entry as processed: {e}")
+        print(f"Failed to retrieve earliest unprocessed entry: {e}")
+        return None
+
 
 # Function 3: Get all unprocessed entries
 def get_all_unprocessed_entries(connection):
@@ -247,7 +251,7 @@ def get_all_unprocessed_entries(connection):
         if results:
             print("Unprocessed entries:")
             for result in results:
-                print(f"time={result[0]}, npcId={result[1]}, content length={len(result[2])}")
+                print(f"time={result[1]}, npcId={result[2]}, content length={len(result[3])}")
             return results
         else:
             print("No unprocessed entries found.")
@@ -257,7 +261,7 @@ def get_all_unprocessed_entries(connection):
         return []
 
 
-def mark_entry_as_processed(connection, time, npcId):
+def mark_entry_as_processed_bynpctime(connection, time, npcId):
     try:
         cursor = connection.cursor()
         cursor.execute("USE AITown")
@@ -269,5 +273,21 @@ def mark_entry_as_processed(connection, time, npcId):
         cursor.execute(update_query, (time, npcId))
         connection.commit()
         print(f"Entry with time={time} and npcId={npcId} marked as processed.")
+    except Error as e:
+        print(f"Failed to mark entry as processed: {e}")
+
+
+def mark_entry_as_processed(connection, requestId):
+    try:
+        cursor = connection.cursor()
+        cursor.execute("USE AITown")
+        update_query = """
+        UPDATE behavior_java_buffer
+        SET isProcessed = TRUE
+        WHERE requestId = %s
+        """
+        cursor.execute(update_query, (requestId,))
+        connection.commit()
+        print(f"Entry with requestId={requestId} marked as processed.")
     except Error as e:
         print(f"Failed to mark entry as processed: {e}")

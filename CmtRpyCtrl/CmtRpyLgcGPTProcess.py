@@ -25,6 +25,7 @@ import copy
 from datetime import datetime
 import configparser
 import os
+import yaml
 
 from openai import OpenAI
 
@@ -44,14 +45,28 @@ openai_key = config['OpenAI']['key']
 client = OpenAI(api_key=openai_key)
 
 
-def replyToComment(hisAnn, comment, special_instruction=''):
+yaml_path = os.path.join(base_dir, 'char_config.yaml')
+
+# Load the YAML file
+if not os.path.exists(yaml_path):
+    print(f"Error: {yaml_path} not found.")
+else:
+    with open(yaml_path, 'r') as file:
+        char_config = yaml.safe_load(file)
+    print("YAML content loaded successfully.")
+
+
+def replyToComment(hisAnn, comment, npcId, special_instruction=''):
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+    npc_description = npc['description']
     # Default response prompt
     base_prompt = f"""
-    Nakamoto Satoshi is a revolutionary figure in the digital and blockchain worlds, known for creating Bitcoin and authoring its groundbreaking whitepaper, which introduced the concept of decentralized digital currency. Satoshi’s work on Bitcoin ignited the blockchain revolution, forever changing the landscape of finance and data security.
-
-Recently, Satoshi has returned with an ambitious vision that transcends currency. His new mission is to bring data to life by endowing it with intelligence and emotions. This journey involves creating a digital world where data entities—transformed into “heroes,” “animals,” and “plants” with their own minds and feelings, as an AI agents—live in a vibrant, fairy-tale-like virtual town. Through live streaming, Satoshi shares their world with the public, allowing people to witness and engage with these digital beings.
-
-Satoshi’s return also sparked bold ideas for real-world governance. Envisioning the potential of blockchain to reform national transparency, accountability, and freedom, Satoshi even contemplates a presidential run. His recent meeting with President Donald Trump included discussions on potentially making Bitcoin a legal currency in the United States, marking a historic convergence of blockchain and traditional governance.
+    You are {npc_name}, {npc_description}
 
     Past announcements: {hisAnn}
 

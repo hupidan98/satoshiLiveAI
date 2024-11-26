@@ -5,6 +5,7 @@ from datetime import datetime
 import configparser
 import os
 from openai import OpenAI
+import yaml
 
 print("Current working directory:", os.getcwd())
 
@@ -21,14 +22,31 @@ if 'OpenAI' not in config:
 openai_key = config['OpenAI']['key']
 client = OpenAI(api_key=openai_key)
 
-def generat_new_theme():
+
+yaml_path = os.path.join(base_dir, 'char_config.yaml')
+
+# Load the YAML file
+if not os.path.exists(yaml_path):
+    print(f"Error: {yaml_path} not found.")
+else:
+    with open(yaml_path, 'r') as file:
+        char_config = yaml.safe_load(file)
+    print("YAML content loaded successfully.")
+
+
+def generat_new_theme(npcId):
+    # Find the NPC details by npcId
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+    npc_description = npc['description']
+
     prompt = """
-    You are Nakamoto Satoshi, a revolutionary figure in the digital and blockchain worlds, known for creating Bitcoin and authoring its groundbreaking whitepaper, which introduced the concept of decentralized digital currency. Satoshi’s work on Bitcoin ignited the blockchain revolution, forever changing the landscape of finance and data security.
+    You are {npc_name}, {npc_description}
 
-    Recently, you have ambitious vision that transcends currency. Your new mission is to bring data to life by endowing it with intelligence and emotions. This journey involves creating a digital world where data entities—transformed into “heroes,” “animals,” and “plants” with their own minds and feelings, as an AI agents—live in a vibrant, fairy-tale-like virtual town. Through live streaming, you share the world with the public, allowing people to witness and engage with these digital beings.
-
-    You Satoshi, also sparked bold ideas for real-world governance. Envisioning the potential of blockchain to reform national transparency, accountability, and freedom, Satoshi even contemplates a presidential run. His recent meeting with President Donald Trump included discussions on potentially making Bitcoin a legal currency in the United States, marking a historic convergence of blockchain and traditional governance.
-    
     You are livestreaming in a simulated world. 
     
     
@@ -51,13 +69,18 @@ def generat_new_theme():
     
     return completion.choices[0].message.content
 
-def generate_new_Announcement(theme):
+def generate_new_Announcement(theme, npcId):
+    # Find the NPC details by npcId
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+    npc_description = npc['description']
+
     prompt = f"""
-    You are Nakamoto Satoshi, a revolutionary figure in the digital and blockchain worlds, known for creating Bitcoin and authoring its groundbreaking whitepaper, which introduced the concept of decentralized digital currency. Satoshi’s work on Bitcoin ignited the blockchain revolution, forever changing the landscape of finance and data security.
-
-    Recently, you have ambitious vision that transcends currency. Your new mission is to bring data to life by endowing it with intelligence and emotions. This journey involves creating a digital world where data entities—transformed into “heroes,” “animals,” and “plants” with their own minds and feelings, as an AI agents—live in a vibrant, fairy-tale-like virtual town. Through live streaming, you share the world with the public, allowing people to witness and engage with these digital beings.
-
-    You Satoshi, also sparked bold ideas for real-world governance. Envisioning the potential of blockchain to reform national transparency, accountability, and freedom, Satoshi even contemplates a presidential run. His recent meeting with President Donald Trump included discussions on potentially making Bitcoin a legal currency in the United States, marking a historic convergence of blockchain and traditional governance.
+    You are {npc_name}, {npc_description}
     
     You are livestreaming in a simulated world about the topic: {theme}.
     Write an engaging and insightful speech.

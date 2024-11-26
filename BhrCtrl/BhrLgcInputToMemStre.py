@@ -4,10 +4,10 @@ import os
 # Add the DBmanipulation folder to the Python path
 
 import DBConnect.DBCon as DBCon
-import DBConnect.DBCon as DBCon
+
   
-import BhrDBMemStre
-import BhrDBReflectionTracer
+from DBConnect import BhrDBMemStre
+from DBConnect import BhrDBReflectionTracer
 
 import json
 import re
@@ -33,7 +33,7 @@ def inputToMemStre(java_input):
         insert_importance = BhrLgcGPTProcess.get_importance(MemString)
         insert_embedding= BhrLgcGPTProcess.get_embedding(MemString)
         insert_isInstruction = 0
-        BehaviorDBMemStre.insert_into_table(memstre_db_connection, insert_npcId, insert_time, insert_isInstruction,insert_content, insert_importance, insert_embedding)
+        BhrDBMemStre.insert_into_table(memstre_db_connection, insert_npcId, insert_time, insert_isInstruction,insert_content, insert_importance, insert_embedding)
 
     return 0
 
@@ -42,19 +42,19 @@ def inputToMemStre(java_input):
 def inputImportancetoReflectionTracer(java_input):
     row_dict_string = java_input[2]
     ReflectionTracer_db_conection =   DBCon.establish_sql_connection()
-    if not BehaviorDBReflectionTracer.table_exists(ReflectionTracer_db_conection):
-        BehaviorDBReflectionTracer.create_table(ReflectionTracer_db_conection)
+    if not BhrDBReflectionTracer.table_exists(ReflectionTracer_db_conection):
+        BhrDBReflectionTracer.create_table(ReflectionTracer_db_conection)
     row_dict = json.loads(row_dict_string)
     if row_dict['npc']['talk']['isTalking'] == 'true':
         MemString = BhrLgcGPTProcess.parse_npc_info(row_dict['npc']['talk'])
         insert_npcId = row_dict['npc']['npcId']
         insert_time = row_dict['time']
         insert_importance = int(BhrLgcGPTProcess.get_importance(MemString))
-        output = BehaviorDBReflectionTracer.retrieve_entry(ReflectionTracer_db_conection, insert_npcId)
+        output = BhrDBReflectionTracer.retrieve_entry(ReflectionTracer_db_conection, insert_npcId)
         if output == None:
-            BehaviorDBReflectionTracer.insert_into_table(ReflectionTracer_db_conection, insert_npcId, insert_importance, insert_time, insert_time)
+            BhrDBReflectionTracer.insert_into_table(ReflectionTracer_db_conection, insert_npcId, insert_importance, insert_time, insert_time)
             return 0
         total_importance, start_time, end_time  = output[0], output[1], output[2]
-        BehaviorDBReflectionTracer.insert_into_table(ReflectionTracer_db_conection, insert_npcId, total_importance + insert_importance, start_time,insert_time)
+        BhrDBReflectionTracer.insert_into_table(ReflectionTracer_db_conection, insert_npcId, total_importance + insert_importance, start_time,insert_time)
 
     return 0
