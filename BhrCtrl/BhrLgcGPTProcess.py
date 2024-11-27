@@ -70,7 +70,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     npc_lifestyle = npc['lifestyle']
     
     completion = client.chat.completions.create(
-      model="gpt-4o",
+      model="gpt-4o-mini",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
         {"role": "user", "content": '''
@@ -170,7 +170,7 @@ def needDeepTalk(memories, reflections, npc_context, npc_action, npcId):
     
     # Call GPT model
     completion = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",
@@ -226,7 +226,6 @@ def generateTheme(memories, reflections, npc_context, npc_action, npcId, special
    
     """
 
-    # Calling the GPT-4 model to generate output
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -369,9 +368,8 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
     - At the end of the action.
     """
 
-    # Calling the GPT-4 model to generate output
     completion = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",
@@ -495,7 +493,6 @@ def humanInstToJava(instruction_in_human, words_to_say):
     """
 
 
-        # Call GPT-4 model to generate the JSON response
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[

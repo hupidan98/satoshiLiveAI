@@ -342,18 +342,17 @@ def send_data():
         try:
             db_conn = establish_sql_connection()
             behavior_instruction_from_db = BhrDBInstruction.get_earliest_unprocessed_instruction(db_conn)
-            print(f"Instruction from DB: {behavior_instruction_from_db}")
+            print(f"Behavior Instruction from DB: {behavior_instruction_from_db}")
             if behavior_instruction_from_db is not None:
                 curTime, npcId, instruction_str = behavior_instruction_from_db[0], behavior_instruction_from_db[1], behavior_instruction_from_db[2]
                 head_num = 10100  # Set the appropriate head_num or pull dynamically if needed
-                print('Sending instruction:', instruction_str)
+                print('Sending Behavior instruction:', instruction_str)
                 # Execute the instruction and mark it as processed
                 execute_instruction(instruction_str, head_num)
-                AnnDBInstruction.mark_instruction_as_processed(db_conn, curTime, npcId)
-                print(f"Sent instruction: {instruction_str} for npcId {npcId} and marked as processed.")
+                BhrDBInstruction.mark_instruction_as_processed(db_conn, curTime, npcId)
+                print(f"Sent Behavior instruction: {instruction_str} for npcId {npcId} and marked as processed.")
             else:
-                print("No unprocessed instructions found.")
-                time.sleep(1)  # Sleep for 5 seconds before checking again
+                print("No unprocessed Behavior instructions found.")
 
             # instruction_from_db = AnnDBInstruction.get_earliest_unprocessed_instruction(db_conn)
             # print(f"Instruction from DB: {instruction_from_db}")
@@ -370,18 +369,19 @@ def send_data():
             #     time.sleep(1)  # Sleep for 5 seconds before checking again
 
             comment_instruction_from_db = CmtRpyDBInstruction.get_earliest_unprocessed_instruction(db_conn)
-            print(f"Comment Instruction from DB: {comment_instruction_from_db}")
+            print(f"Comment CommentReply Instruction from DB: {comment_instruction_from_db}")
             if comment_instruction_from_db is not None:
                 requestId, instruction_str = comment_instruction_from_db[0], comment_instruction_from_db[4]
                 head_num = 10100  # Set the appropriate head_num or pull dynamically if needed
-                print('Sending instruction:', instruction_str)
+                print('Sending CommentReply instruction:', instruction_str)
                 # Execute the instruction and mark it as processed
                 execute_instruction(instruction_str, head_num)
                 CmtRpyDBInstruction.mark_instruction_as_processed(db_conn, requestId)
-                print(f"Sent instruction: {instruction_str} for requestId {requestId} and marked as processed.")
+                print(f"Sent CommentReply instruction: {instruction_str} for requestId {requestId} and marked as processed.")
             else:
-                print("No unprocessed instructions found.")
-                time.sleep(1)  # Sleep for 5 seconds before checking again
+                print("No unprocessed CommentReply instructions found.")
+
+            time.sleep(1) 
         except Exception as e:
             print(f"Error in send_data: {e}")
             traceback.print_exc()

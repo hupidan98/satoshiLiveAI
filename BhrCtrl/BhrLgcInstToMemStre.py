@@ -54,8 +54,15 @@ def InstImportancetoReflectionTracer(input_from_java, instruction, words_to_say)
     insert_npcId = input_from_java[2]
     insert_time = input_from_java[1]
 
-    insert_importance = int(BhrLgcGPTProcess.get_importance(output_str))
-    
+    while True:
+        try:
+            # Attempt to get the importance and convert it to an integer
+            insert_importance = int(BhrLgcGPTProcess.get_importance(output_str))
+            # Break the loop if no exception occurs
+            break
+        except Exception as e:
+            print(f"Error occurred: {e}. Retrying...")
+        
     output = BhrDBReflectionTracer.retrieve_entry(ReflectionTracer_db_conection, insert_npcId)
 
     if output is None:
