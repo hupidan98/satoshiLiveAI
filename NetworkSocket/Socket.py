@@ -131,12 +131,12 @@ def parse_response(response, is_iterative=True):
 def receive_input():
     global sock
     response = sock.recv(4096)
-    print(response)
-    print('Received response (receiving):')
+    # print(response)
+    # print('Received response (receiving):')
 
     header, message = parse_response(response, is_iterative=True)
-    print(f'Header: {header}')
-    print(f'Message: {message.content.decode("utf-8")}')
+    # print(f'Header: {header}')
+    # print(f'Message: {message.content.decode("utf-8")}')
     response_from_java = message.content.decode("utf-8")
     return response_from_java
 
@@ -164,10 +164,10 @@ def receive_input_long():
                 received_data += data
             
             response = received_data
-            print('Received response long:')
+            # print('Received response long:')
             header, message = parse_response(response, is_iterative=False)
-            print(f'Header: {header}')
-            print(f'Message: {message.content.decode("utf-8")}')
+            # print(f'Header: {header}')
+            # print(f'Message: {message.content.decode("utf-8")}')
             output = message.content.decode("utf-8")
             return output
         
@@ -213,7 +213,6 @@ def create_socket(ip_txt, port_int):
     # Register current server node information: send node registration message
     sock.sendall(wrapped_packet_node_data)
     initial_back = receive_input()
-    print(initial_back)
     # No need to return 'sock'
 
 def is_socket_connected():
@@ -267,13 +266,15 @@ def receive_data():
         try:
             print("Waiting to receive data...")
             input_from_java = receive_input_long()
-            print("Received input from Java:", input_from_java)
+            print("Received input from Java")
 
             # Parse input
             data = json.loads(input_from_java)
+            print("Command Type is: ", data['command'])
             print("Parsed input successfully:", data)
 
-            # if data['command'] == 10101:
+
+            # if data['command'] == 10106:
             #     # NPC Announcement
             #     try:
             #         requestId = data['requestId']
@@ -344,18 +345,6 @@ def send_data():
         try:
             db_conn = establish_sql_connection()
 
-            behavior_instruction_from_db = BhrDBInstruction.get_earliest_unprocessed_instruction(db_conn)
-            print(f"Behavior Instruction from DB: {behavior_instruction_from_db}")
-            if behavior_instruction_from_db is not None:
-                curTime, npcId, instruction_str = behavior_instruction_from_db[0], behavior_instruction_from_db[1], behavior_instruction_from_db[2]
-                head_num = 10100  # Set the appropriate head_num or pull dynamically if needed
-                print('Sending Behavior instruction:', instruction_str)
-                # Execute the instruction and mark it as processed
-                execute_instruction(instruction_str, head_num)
-                BhrDBInstruction.mark_instruction_as_processed(db_conn, curTime, npcId)
-                print(f"Sent Behavior instruction: {instruction_str} for npcId {npcId} and marked as processed.")
-            else:
-                print("No unprocessed Behavior instructions found.")
 
             # instruction_from_db = AnnDBInstruction.get_earliest_unprocessed_instruction(db_conn)
             # print(f"Instruction from DB: {instruction_from_db}")
@@ -370,6 +359,19 @@ def send_data():
             # else:
             #     print("No unprocessed instructions found.")
             #     time.sleep(1)  # Sleep for 5 seconds before checking again
+
+            behavior_instruction_from_db = BhrDBInstruction.get_earliest_unprocessed_instruction(db_conn)
+            print(f"Behavior Instruction from DB: {behavior_instruction_from_db}")
+            if behavior_instruction_from_db is not None:
+                curTime, npcId, instruction_str = behavior_instruction_from_db[0], behavior_instruction_from_db[1], behavior_instruction_from_db[2]
+                head_num = 10100  # Set the appropriate head_num or pull dynamically if needed
+                print('Sending Behavior instruction:', instruction_str)
+                # Execute the instruction and mark it as processed
+                execute_instruction(instruction_str, head_num)
+                BhrDBInstruction.mark_instruction_as_processed(db_conn, curTime, npcId)
+                print(f"Sent Behavior instruction: {instruction_str} for npcId {npcId} and marked as processed.")
+            else:
+                print("No unprocessed Behavior instructions found.")
 
             comment_instruction_from_db = CmtRpyDBInstruction.get_earliest_unprocessed_instruction(db_conn)
             print(f"Comment CommentReply Instruction from DB: {comment_instruction_from_db}")
