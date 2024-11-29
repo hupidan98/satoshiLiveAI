@@ -19,9 +19,9 @@ def parse_npc_info(json_input):
     npc_info = npc['info']
     first_name = npc_info['firstName']
     last_name = npc_info['lastName']
-    learned = npc_info['learned']
-    lifestyle = npc_info['lifestyle']
-    living_area = npc_info['living_area']
+    # learned = npc_info['learned']
+    # lifestyle = npc_info['lifestyle']
+    # living_area = npc_info['living_area']
 
     # Extract current action
     cur_action = npc['curAction']
@@ -48,9 +48,6 @@ def parse_npc_info(json_input):
         f"NPC Information:\n"
         f"  First Name: {first_name}\n"
         f"  Last Name: {last_name}\n"
-        f"  Learned: {learned}\n"
-        f"  Lifestyle: {lifestyle}\n"
-        f"  Living Area: {living_area}\n\n"
         f"Map Objects:\n{map_details}\n\n"
         f"NPC Current Action:\n"
         f"  Action Name: {action_name}\n"

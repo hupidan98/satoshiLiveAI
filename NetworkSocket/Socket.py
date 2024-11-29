@@ -273,27 +273,8 @@ def receive_data():
             data = json.loads(input_from_java)
             print("Parsed input successfully:", data)
 
-            if data['command'] == 10101:
-                # NPC Announcement
-                try:
-                    requestId = data['requestId']
-                    npcInputSingle = data['data']
-                    dt_object = datetime.datetime.fromtimestamp(npcInputSingle['world']['time'] / 1000.0)
-                    time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S')  # Format to MySQL datetime format
-                    npcId = npcInputSingle['npcs'][0]['npcId']
-                    
-                    content = json.dumps(npcInputSingle)  # Convert the content to JSON format
-                    db_connection = establish_sql_connection()
-                    # Insert into table using formatted datetime string
-                    AnnDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, int(npcId), content)
-                except Exception as e:
-                    print(f"Failed to insert into Announcement Java Buffer for requestId {requestId} npcId {npcId}: {e}")
-                    traceback.print_exc()
-                else:
-                    print(f"Insertion into Announcement for requestId {requestId} npcId {npcId} inserted successfully.")
-
             # if data['command'] == 10101:
-            #     # NPC Behavior
+            #     # NPC Announcement
             #     try:
             #         requestId = data['requestId']
             #         npcInputSingle = data['data']
@@ -304,11 +285,30 @@ def receive_data():
             #         content = json.dumps(npcInputSingle)  # Convert the content to JSON format
             #         db_connection = establish_sql_connection()
             #         # Insert into table using formatted datetime string
-            #         print(requestId, time_stamp, npcId, content)
-            #         BhrDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, int(npcId), content)
+            #         AnnDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, int(npcId), content)
             #     except Exception as e:
-            #         print(f"Failed to insert into Behavior Java Buffer for requestId {requestId} npcId {npcId}: {e}")
+            #         print(f"Failed to insert into Announcement Java Buffer for requestId {requestId} npcId {npcId}: {e}")
             #         traceback.print_exc()
+            #     else:
+            #         print(f"Insertion into Announcement for requestId {requestId} npcId {npcId} inserted successfully.")
+
+            if data['command'] == 10101:
+                # NPC Behavior
+                try:
+                    requestId = data['requestId']
+                    npcInputSingle = data['data']
+                    dt_object = datetime.datetime.fromtimestamp(npcInputSingle['world']['time'] / 1000.0)
+                    time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S')  # Format to MySQL datetime format
+                    npcId = npcInputSingle['npcs'][0]['npcId']
+                    
+                    content = json.dumps(npcInputSingle)  # Convert the content to JSON format
+                    db_connection = establish_sql_connection()
+                    # Insert into table using formatted datetime string
+                    print(requestId, time_stamp, npcId, content)
+                    BhrDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, int(npcId), content)
+                except Exception as e:
+                    print(f"Failed to insert into Behavior Java Buffer for requestId {requestId} npcId {npcId}: {e}")
+                    traceback.print_exc()
 
             if data['command'] == 10103:
                 # NPC reply to comment from player
