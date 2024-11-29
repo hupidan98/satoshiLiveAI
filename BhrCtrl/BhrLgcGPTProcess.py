@@ -33,9 +33,16 @@ with open(yaml_path, 'r') as file:
 
 
 
-def get_embedding(text, model="text-embedding-3-small"):
-   text = text.replace("\n", " ")
-   return client.embeddings.create(input = [text], model=model).data[0].embedding
+# def get_embedding(text, model="text-embedding-3-small"):
+#    text = text.replace("\n", " ")
+#    return client.embeddings.create(input = [text], model=model).data[0].embedding
+
+def get_embedding(text, model="text-embedding-ada-002"):  # Replace with a valid model
+    if not isinstance(text, str) or not text.strip():
+        raise ValueError("Input text must be a non-empty string.")
+    text = text.replace("\n", " ").strip()
+    response = client.embeddings.create(input=text, model=model)  # No need for a list
+    return response['data'][0]['embedding']
 
 
 def get_importance(mem_single_str):

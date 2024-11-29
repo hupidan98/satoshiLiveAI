@@ -25,8 +25,9 @@ def parse_npc_info(json_input):
 
     # Extract current action
     cur_action = npc['curAction']
-    action_name = cur_action['actionName']
-    action_oid = cur_action['param']['oid']
+    action_name = cur_action.get('actionName', None)  # Get 'actionName' or None if not present
+    action_oid = cur_action.get('param', {}).get('oid', None)  # Get 'oid' inside 'param', or None if not present
+
     
     # Extract talking information
     talk_info = npc.get('talk', {})

@@ -291,24 +291,26 @@ def receive_data():
             #         traceback.print_exc()
             #     else:
             #         print(f"Insertion into Announcement for requestId {requestId} npcId {npcId} inserted successfully.")
-            if data['command'] == 10101:
-                # NPC Behavior
-                try:
-                    requestId = data['requestId']
-                    npcInputSingle = data['data']
-                    dt_object = datetime.datetime.fromtimestamp(npcInputSingle['world']['time'] / 1000.0)
-                    time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S')  # Format to MySQL datetime format
-                    npcId = npcInputSingle['npcs'][0]['npcId']
+
+            # if data['command'] == 10101:
+            #     # NPC Behavior
+            #     try:
+            #         requestId = data['requestId']
+            #         npcInputSingle = data['data']
+            #         dt_object = datetime.datetime.fromtimestamp(npcInputSingle['world']['time'] / 1000.0)
+            #         time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S')  # Format to MySQL datetime format
+            #         npcId = npcInputSingle['npcs'][0]['npcId']
                     
-                    content = json.dumps(npcInputSingle)  # Convert the content to JSON format
-                    db_connection = establish_sql_connection()
-                    # Insert into table using formatted datetime string
-                    print(requestId, time_stamp, npcId, content)
-                    BhrDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, int(npcId), content)
-                except Exception as e:
-                    print(f"Failed to insert into Behavior Java Buffer for requestId {requestId} npcId {npcId}: {e}")
-                    traceback.print_exc()
-            elif data['command'] == 10103:
+            #         content = json.dumps(npcInputSingle)  # Convert the content to JSON format
+            #         db_connection = establish_sql_connection()
+            #         # Insert into table using formatted datetime string
+            #         print(requestId, time_stamp, npcId, content)
+            #         BhrDBJavaBuffer.insert_into_table(db_connection, requestId, time_stamp, int(npcId), content)
+            #     except Exception as e:
+            #         print(f"Failed to insert into Behavior Java Buffer for requestId {requestId} npcId {npcId}: {e}")
+            #         traceback.print_exc()
+
+            if data['command'] == 10103:
                 # NPC reply to comment from player
                 try:
                     playerCommentData = data['data']
@@ -341,18 +343,19 @@ def send_data():
         print("Checking for unprocessed instructions...")
         try:
             db_conn = establish_sql_connection()
-            behavior_instruction_from_db = BhrDBInstruction.get_earliest_unprocessed_instruction(db_conn)
-            print(f"Behavior Instruction from DB: {behavior_instruction_from_db}")
-            if behavior_instruction_from_db is not None:
-                curTime, npcId, instruction_str = behavior_instruction_from_db[0], behavior_instruction_from_db[1], behavior_instruction_from_db[2]
-                head_num = 10100  # Set the appropriate head_num or pull dynamically if needed
-                print('Sending Behavior instruction:', instruction_str)
-                # Execute the instruction and mark it as processed
-                execute_instruction(instruction_str, head_num)
-                BhrDBInstruction.mark_instruction_as_processed(db_conn, curTime, npcId)
-                print(f"Sent Behavior instruction: {instruction_str} for npcId {npcId} and marked as processed.")
-            else:
-                print("No unprocessed Behavior instructions found.")
+
+            # behavior_instruction_from_db = BhrDBInstruction.get_earliest_unprocessed_instruction(db_conn)
+            # print(f"Behavior Instruction from DB: {behavior_instruction_from_db}")
+            # if behavior_instruction_from_db is not None:
+            #     curTime, npcId, instruction_str = behavior_instruction_from_db[0], behavior_instruction_from_db[1], behavior_instruction_from_db[2]
+            #     head_num = 10100  # Set the appropriate head_num or pull dynamically if needed
+            #     print('Sending Behavior instruction:', instruction_str)
+            #     # Execute the instruction and mark it as processed
+            #     execute_instruction(instruction_str, head_num)
+            #     BhrDBInstruction.mark_instruction_as_processed(db_conn, curTime, npcId)
+            #     print(f"Sent Behavior instruction: {instruction_str} for npcId {npcId} and marked as processed.")
+            # else:
+            #     print("No unprocessed Behavior instructions found.")
 
             # instruction_from_db = AnnDBInstruction.get_earliest_unprocessed_instruction(db_conn)
             # print(f"Instruction from DB: {instruction_from_db}")
