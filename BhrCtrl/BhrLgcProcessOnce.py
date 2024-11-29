@@ -13,8 +13,8 @@ from DBConnect import BhrDBSchedule
 
 import BhrLgcGPTProcess
 import BhrLgcManualProcess
-import BhrLgcInstToMemStre
-import BhrLgcInputToMemStre
+import BhrCtrl.BhrLgcToMemStre as BhrLgcToMemStre
+import BhrLgcToMemStre
 
 import pandas as pd
 import numpy as np
@@ -150,10 +150,15 @@ def processOneInputGiveOneInstruction():
     for row in AllEntryOfNPC:
         request_id_to_mark = row[0]
         BhrDBJavaBuffer.mark_entry_as_processed(db_conn, request_id_to_mark)
+
+    # Insert Input to Memory Strea
+    input_for_mem = BhrLgcManualProcess.parse_npc_info_formemory(input_from_java[3])
+    BhrLgcToMemStre.InputToMemStreDB(input_from_java, input_for_mem)
+    BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, input_for_mem)
         
     # Insert instruction to Memory Stream
-    BhrLgcInstToMemStre.InstToMemStreSatoshiDB(input_from_java, instruction_in_human)
-    BhrLgcInstToMemStre.InstImportancetoReflectionTracer(input_from_java, instruction_to_give, instruction_in_human)
+    BhrLgcToMemStre.InstToMemStreDB(input_from_java, instruction_in_human)
+    BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, instruction_in_human)
 
     # Generate reflection if needed
     npcId = input_from_java[1]

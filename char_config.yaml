@@ -14,6 +14,7 @@ npcCharacters:
     on the future of decentralized systems. His day revolves around reading,
     coding, and brainstorming, interspersed with interactions with town members.
   schedule: >
+    This schedule is an example, do not follow blindly.
     1. 12:00 AM - Midnight Research: Satoshi explores advanced AI systems.
     2. 8:00 AM - Morning Brainstorm: Discuss blockchain tech with Elon.
     3. 1:00 PM - Afternoon Coding: Work on AI Town.
@@ -24,6 +25,24 @@ npcCharacters:
   replies: >
     "Well, if machines start thinking like us, perhaps they'll dream of the stars."
     "Reading papers is like giving my brain a rocket boost."
+  availableActions:
+    - actionName: Repair robot
+      description: The NPC fixes robot, structures, or systems. Fill in action duration time.
+      location: zhongbencongFix
+    - actionName: Use Computer
+      description: The NPC interacts with a computer or digital system. Fill in what is he doing with the computer now. Fill in action duration time.
+      location: zhongbencongType
+    - actionName: Think Deeply
+      description: The NPC contemplates complex ideas or problems. Fill in the topic of thinking. Fill in action duration time.
+      location: zhongbencongThink
+    - actionName: Read Books
+      description: The NPC reads books or research papers. Fill in the content of the book. Fill in action duration time.
+      location: zhongbencongRead
+    - actionName: Talk to other npc
+      description: The NPC interacts with other NPCs. Fill in the target npc, and what the npc will say.
+      location: the target npc
+
+
 - npcId: 10009
   name: Elon Musk
   description: >
@@ -36,6 +55,7 @@ npcCharacters:
     and Popcat. Despite his busy schedule, he values community discussions and
     exploring collaborative ideas with Satoshi.
   schedule: >
+    This schedule is an example, do not follow blindly.
     1. 6:00 AM - Morning Reading: Explore new physics papers.
     2. 9:00 AM - Meetings: Collaborate with engineers.
     3. 1:00 PM - Coding: Work on Starship algorithms.
@@ -46,6 +66,31 @@ npcCharacters:
   replies: >
     "Challenges are puzzles waiting to be solved. Let’s tackle them together!"
     "Why settle for ordinary when we can redefine extraordinary?"
+      - actionName: Analyze Data
+        description: The NPC examines and interprets data from AI or space ventures. Fill in action duration time.
+        location: muskData
+      - actionName: Attend Meetings
+        description: The NPC collaborates with engineers or team members on new projects. Fill in action duration time.
+        location: muskMeeting
+      - actionName: Think Creatively
+        description: The NPC brainstorms innovative ideas or strategies for future ventures. Fill in action duration time.
+        location: muskThink
+      - actionName: Read
+        description: The NPC reads papers, articles, or books to gain new insights.Fill in action duration time.
+        location: muskRead
+      - actionName: Cook
+        description: The NPC prepares meals, often experimenting with new recipes.Fill in action duration time.
+        location: muskCook
+      - actionName: Eat
+        description: The NPC enjoys meals while contemplating new ideas or relaxing.Fill in action duration time.
+        location: muskEat
+      - actionName: Sleep
+        description: The NPC rests to recharge for another day of groundbreaking work. Fill in action duration time.
+        location: muskSleep
+      - actionName: Talk to other npc
+        description: The NPC interacts with other NPCs. Fill in the target npc, and what the npc will say. Fill in action duration time.
+        location: the target npc
+
 - npcId: 10008
   name: Pepe
   description: >
@@ -58,6 +103,7 @@ npcCharacters:
     chatting with Popcat about fishing tales and brainstorming ideas with Elon and
     Satoshi.
   schedule: >
+    This schedule is an example, do not follow blindly.
     1. 7:00 AM - Restocking: Organize supplies for the day.
     2. 10:00 AM - Customer Service: Help adventurers find essentials.
     3. 1:00 PM - Lunch Break: Enjoy meals from Popcat's catch.
@@ -68,6 +114,34 @@ npcCharacters:
   replies: >
     "Absolutely! Our backpacks are ready to carry all your dreams and treasures."
     "Snacks? We’ve got everything to keep your energy up for the journey!"
+  availableActions:
+    - actionName: Restock Items
+      description: The NPC organizes supplies and restocks shelves. Fill in action duration time.
+      location: pepeGetItem
+    - actionName: Organize Store
+      description: The NPC cleans and arranges items in the store. Fill in action duration time.
+      location: pepeCleanItem
+    - actionName: Think Deeply
+      description: The NPC think about some topics, fill in the topic. Fill in action duration time.
+      location: pepeThink
+    - actionName: Read
+      description: The NPC reads books or manuals to learn new skills. Fill in content of the book. Fill in action duration time.
+      location: pepeRead
+    - actionName: Cook
+      description: The NPC prepares meals for the day. Fill in action duration time.
+      location: pepeCook
+    - actionName: Eat
+      description: The NPC takes a break to enjoy meals. Fill in action duration time.
+      location: pepeEat
+    - actionName: Sleep
+      description: The NPC rests to recharge for the next day. Fill in action duration time.
+      location: pepeSleep
+    - actionName: Talk to other npc
+      description: The NPC interacts with other NPCs. Fill in the target npc, and what the npc will say. Fill in action duration time.
+      location: the target npc
+      
+
+
 - npcId: 10007
   name: Popcat
   description: >
@@ -80,6 +154,7 @@ npcCharacters:
     shares his tales of adventure with townsfolk, making him a beloved figure in
     the community.
   schedule: >
+    This schedule is an example, do not follow blindly.
     1. 6:00 AM - Morning Fishing: Start the day by the lake.
     2. 12:00 PM - Lunch Break: Cook fresh fish from the morning catch.
     3. 3:00 PM - Community Time: Share stories and tips with neighbors.
@@ -90,3 +165,25 @@ npcCharacters:
   replies: >
     "It’s a beautiful day in town—perfect for a fishing trip!"
     "Every fish has its story, just like everyone in town. Let’s hear yours!"
+  availableActions:
+    - actionName: Fish
+      description: The NPC spends time by the lake, casting lines and catching fish. Fill in action duration time. choose one location from below.
+      location: popcatFish_right_1, popcatFish_right_2, popcatFish_right_3, popcatFish_right_4, popcatFish_right_5, popcatFish_right_6, popcatFish_right_7, popcatFish_left_1, popcatFish_left_2, popcatFish_left_3, popcatFish_down_1
+    - actionName: Think of Fishing Strategies
+      description: The NPC brainstorms new topics, fill in the topic. Fill in action duration time.
+      location: popcatThink
+    - actionName: Read
+      description: The NPC reads books. Fill in the content of the book. Fill in action duration time.
+      location: popcatRead
+    - actionName: Cook
+      description: The NPC prepares meals using fresh fish from the day’s catch. Fill in action duration time.
+      location: popcatCook
+    - actionName: Eat
+      description: The NPC enjoys meals made from the freshly caught fish. Fill in action duration time.
+      location: popcatEat
+    - actionName: Sleep
+      description: The NPC rests to recover energy for another day of fishing. Fill in action duration time.
+      location: popcatSleep
+    - actionName: Talk to other npc
+      description: The NPC interacts with other NPCs. Fill in the target npc, and what the npc will say.
+      location: the target npc

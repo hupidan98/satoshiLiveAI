@@ -69,13 +69,16 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     npc_name = npc['name']
     npc_description = npc['description']
     npc_lifestyle = npc['lifestyle']
+    npc_action = ''
+    available_actions = npc.get('availableActions', [])
+    for action in available_actions:
+        npc_action += f"Action: {action['actionName']}" + f"Description: {action['description']}\n"
     
     completion = client.chat.completions.create(
       model="gpt-4o-mini",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
-        {"role": "user", "content": '''
-         
+        {"role": "user", "content":f'''
         You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
         Given some information of an NPC (input), please tell what the npc should do next.
@@ -91,30 +94,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
         ''' + npc_context + '''
 
         Here is a list of things the npc can do, you can only choose one of the action below:
-        • 	Planting: The NPC prepares the field for planting by ploughing and sowing seeds in a designated area provided in the Map Data section.
-        •	harvest: The NPC gathers crops from the field. This action is restricted to crops marked as ready for harvesting in the action section.
-        •	sale: The NPC sells items from its inventory to another NPC. This involves negotiating with the buyer to confirm price, quantity, and interest before completing the transaction.
-        •	buy: The NPC purchases items from another NPC. This involves negotiating with the seller to confirm price, quantity, and availability before completing the purchase.
-        •	cook: The NPC prepares food. The location for cooking must be a valid one, such as a kitchen, provided in the Map Data section.
-        •	dinning: The NPC consumes cooked food at a designated eating location, such as a table, provided in the Map Data section.
-        •	sleep: The NPC goes to sleep at a specific location provided in the Map Data section, with a designated wake-up time.
-        •	Feeding: The NPC feeds animals using materials from its inventory. The feeding location is determined by the Map Data section.
-        •	slaughter: The NPC selects an animal to slaughter, as specified in the Map Data section.
-        •	make: The NPC creates items. The action must be performed at a designated location, such as a crafting table, provided in the Map Data section.
-        •	transport: The NPC communicates with others by speaking. If speaking to a specific NPC, the NPC must move to that location first.
-        •	GetUp: The NPC transitions from a sleeping state to being awake and ready to begin the day.
-        •	Move: The NPC changes location to a specified destination provided in the Map Object section.
-        •	Type: The NPC inputs information or interacts with a system via typing, representing communication or command execution.
-        •	Repair: The NPC fixes robot, structures, or systems.
-        •	Think: The NPC engages in a reflective or analytical action, considering its next steps or decisions.
-        •	Read: The NPC studies or reviews a written document, book, or other text to gain information or insight.
-        •	Talk: The NPC initiates or continues a conversation with another NPC, engaging in dialogue to exchange information or build relationships.
-        •	Fishing: The NPC engages in fishing at a designated location.
-        •	stock: The NPC procures supplies or items to replenish inventory.
-        •	TidyUp: The NPC organizes or cleans its environment, ensuring spaces are orderly and presentable.
-        •	DataAnalysis: The NPC processes data or information to derive insights or make decisions.
-        •	Meeting: The NPC participates in a meeting and discuss topics or make decisions.
-     
+        ''' + npc_action + '''
 
         Special instruction, needs to be followed if given and if logic allows: 
 
@@ -417,59 +397,50 @@ def humanInstToJava(instruction_in_human, words_to_say):
     10008 : pepe
     10009 : musk
 
-    ### Object ID List with Explanations:
-    • zhongbencongFix: Nakamoto Satoshi fixes the sprite in front of the sprite station.
-    • zhongbencongRead: Nakamoto Satoshi reads at the desk.
-    • zhongbencongThink: Nakamoto Satoshi thinks at the table.
-    • zhongbencongType: Nakamoto Satoshi types on the computer at the desk.
-    • pepeSleep: Pepe goes to bed to sleep.
-    • pepeEat: Pepe eats at the table.
-    • pepeRead: Pepe reads at the table.
-    • pepeThink: Pepe thinks at the table.
-    • pepeCook: Pepe cooks at the stove.
-    • pepeGetItem: Pepe restocks items at the shelf.
-    • pepeCleanItem: Pepe cleans items at the shelf.
-    • popcatSleep: Popcat goes to bed to sleep.
-    • popcatEat: Popcat eats at the table.
-    • popcatRead: Popcat reads at the table.
-    • popcatThink: Popcat thinks at the table.
-    • popcatCook: Popcat cooks at the stove.
-    • popcatFish_up_1: Popcat fishes at the pond.
-    • popcatFish_right_1: Popcat fishes at the pond.
-    • popcatFish_right_2: Popcat fishes at the pond.
-    • popcatFish_right_3: Popcat fishes at the pond.
-    • popcatFish_right_4: Popcat fishes at the pond.
-    • popcatFish_right_5: Popcat fishes at the pond.
-    • popcatFish_right_6: Popcat fishes at the pond.
-    • popcatFish_down_1: Popcat fishes at the pond.
-    • popcatFish_left_1: Popcat fishes at the pond.
-    • popcatFish_left_2: Popcat fishes at the pond.
+    ### Object ID List as Location:
+    •	zhongbencongFix
+	•	zhongbencongRead
+	•	zhongbencongThink
+	•	zhongbencongType
+	•	pepeSleep
+	•	pepeEat
+	•	pepeRead
+	•	pepeThink
+	•	pepeCook
+	•	pepeGetItem
+	•	pepeCleanItem
+	•	popcatSleep
+	•	popcatEat
+	•	popcatRead
+	•	popcatThink
+	•	popcatCook
+	•	popcatFish_up_1
+	•	popcatFish_right_1
+	•	popcatFish_right_2
+	•	popcatFish_right_3
+	•	popcatFish_right_4
+	•	popcatFish_right_5
+	•	popcatFish_right_6
+	•	popcatFish_down_1
+	•	popcatFish_left_1
+	•	popcatFish_left_2
 
-    ### Action ID and Corresponding Actions:
-    - 100: plant, needs location by filling in oid, needs duration time.
-    - 101: harvest, needs location by filling in oid, needs duration time.
-    - 102: sale, needs location by filling in oid, needs duration time.
-    - 103: buy, needs location by filling in oid, needs duration time.
-    - 104: cook, needs location by filling in oid, needs duration time.
-    - 105: dinning, needs location by filling in oid, needs duration time.
-    - 106: sleep, needs location by filling in oid, needs duration time.
-    - 107: Feeding, needs location by filling in oid, needs duration time.
-    - 108: slaughter, needs location by filling in oid, needs duration time.
-    - 109: make, needs location by filling in oid, needs duration time.
-    - 110: transport, needs location by filling in oid, needs duration time.
-    - 111: GetUp, needs location by filling in oid, needs duration time.
-    - 112: Move, needs location by filling in oid, needs duration time.
-    - 113: Type, needs location by filling in oid, needs duration time.
-    - 114: Repair, needs location by filling in oid, needs duration time.
-    - 115: Think, needs location by filling in oid, needs duration time.
-    - 116: Read, needs location by filling in oid, needs duration time.
-    - 117: ReplyChat, needs location by filling in oid, needs duration time.
-    - 118: Talk.
-    - 119: Fishing, needs location by filling in oid, needs duration time.
-    - 120: stock, needs location by filling in oid, needs duration time.
-    - 121: TidyUp, needs location by filling in oid, needs duration time.
-    - 123: DataAnalysis, needs location by filling in oid, needs duration time.
-    - 124: Meeting, needs location by filling in oid, needs duration time.
+    Action ID and Corresponding Actions:
+
+    •	100: Fix, needs location by filling in oid, needs duration time.
+	•	101: Type, needs location by filling in oid, needs duration time.
+	•	102: Data Analysis, needs location by filling in oid, needs duration time.
+	•	103: Meeting, needs location by filling in oid, needs duration time.
+	•	104: Restock, needs location by filling in oid, needs duration time.
+	•	105: Organize, needs location by filling in oid, needs duration time.
+	•	106: Fish, needs location by filling in oid, needs duration time.
+	•	107: Think, needs location by filling in oid, needs duration time.
+	•	108: Read, needs location by filling in oid, needs duration time.
+	•	109: Cook, needs location by filling in oid, needs duration time.
+	•	110: Eat, needs location by filling in oid, needs duration time.
+	•	111: Sleep, needs location by filling in oid, needs duration time.
+
+	•	114: Chat, needs the target npcId by filling in oid, needs the content of the chat.
 
     Instruction for the NPC:
     {instruction_in_human}

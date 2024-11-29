@@ -16,8 +16,7 @@ from DBConnect import BhrDBReflection
 from DBConnect import BhrDBSchedule
 
 import BhrLgcGPTProcess as BhrLgcGPTProcess
-import BhrLgcInstToMemStre as BhrLgcInstToMemStre
-import BhrLgcInputToMemStre as BhrLgcInputToMemStre
+import BhrCtrl.BhrLgcToMemStre as BhrLgcToMemStre
 import BhrCtrl.BhrLgcProcessOnce as BhrLgcProcessOnce
 
 import pandas as pd
