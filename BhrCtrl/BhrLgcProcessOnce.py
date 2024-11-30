@@ -35,8 +35,8 @@ def processOneInputGiveOneInstruction():
         print(input_from_java)
 
     npcId = input_from_java[2]
-    AllEntryOfNPC, LatestEntryOfNpc = BhrDBJavaBuffer.get_unprocessed_entries_of_npc(db_conn, npcId)
-    input_from_java = LatestEntryOfNpc
+    # AllEntryOfNPC, LatestEntryOfNpc = BhrDBJavaBuffer.get_unprocessed_entries_of_npc(db_conn, npcId)
+    # input_from_java = LatestEntryOfNpc
 
     curTime = input_from_java[1]
     request_id = input_from_java[0]
@@ -147,9 +147,9 @@ def processOneInputGiveOneInstruction():
 
     # Mark the buffer as processed
     BhrDBJavaBuffer.mark_entry_as_processed(db_conn, request_id)
-    for row in AllEntryOfNPC:
-        request_id_to_mark = row[0]
-        BhrDBJavaBuffer.mark_entry_as_processed(db_conn, request_id_to_mark)
+    # for row in AllEntryOfNPC:
+    #     request_id_to_mark = row[0]
+    #     BhrDBJavaBuffer.mark_entry_as_processed(db_conn, request_id_to_mark)
 
     # Insert Input to Memory Strea
     input_for_mem = BhrLgcManualProcess.parse_npc_info_formemory(input_from_java[3])

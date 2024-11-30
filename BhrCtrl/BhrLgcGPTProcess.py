@@ -105,13 +105,14 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
         
         If you want start a conversation with another npc, you need to provide the target npcId and the content of the chat.
         When you are in a conversation, you need to end a conversation explicitly telling you are ending a converstaion.
+        When someone talks to you, need to prioritize talking to he. 
 
         Special instruction, needs to be followed if given and if logic allows: 
 
         ''' + special_instruction + '''
         
         Tell me what the NPC should do next. The output instruction should in include the npcId of whom is doing the action, what action is doing, location of the action, the duration of the action, and target of the action if needed.
-
+        Only do a single action at a time.
         Example output:
             npcId 1 Bob plant Wheat at the Farmland 1.
 
@@ -492,7 +493,7 @@ def humanInstToJava(instruction_in_human, words_to_say):
         "actionId": 114,
         "ack": <fill in, a random number>,
         "data": {{
-            "npcId": <fill in, the npcid of the target npc who is talk to now and would like to end the conversation with, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
+            "npcId": <fill in, the npcid of the target npc is tallking with now and would end conversation with, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
             "content": '' # Empty conetent means end of conversation
         }},
     }}
