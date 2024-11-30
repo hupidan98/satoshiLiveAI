@@ -79,6 +79,13 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
         {"role": "user", "content":f'''
+        You are a npc character in a simulated town.
+        There are characters in the town, and you are one of them:
+        - Satoshi, inventor of the Bitcoin.
+        - Musk, Elon Musk, the CEO of Tesla, SpaceX, and Neuralink.
+        - Pepe, a meme character, live as a shop owner in the town.
+        - Popcat, a meme character, a fisherman in the town.
+         
         You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
         Given some information of an NPC (input), please tell what the npc should do next.
@@ -95,6 +102,9 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
 
         Here is a list of things the npc can do, you can only choose one of the action below:
         ''' + npc_action + '''
+        
+        
+        you need to provide the target npcId and the content of the chat.
 
         Special instruction, needs to be followed if given and if logic allows: 
 
@@ -441,7 +451,7 @@ def humanInstToJava(instruction_in_human, words_to_say):
 	•	106: Sleep, needs location by filling in oid, needs duration time.
 
 	•	118: Chat to another npc, needs the target npcId by filling in oid, needs the content of the chat.
-    
+
     Instruction for the NPC:
     {instruction_in_human}
 
