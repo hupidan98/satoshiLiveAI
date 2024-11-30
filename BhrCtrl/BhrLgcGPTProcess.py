@@ -427,31 +427,33 @@ def humanInstToJava(instruction_in_human, words_to_say):
 
     Action ID and Corresponding Actions:
 
-    •	100: Fix, needs location by filling in oid, needs duration time.
-	•	101: Type, needs location by filling in oid, needs duration time.
-	•	102: Data Analysis, needs location by filling in oid, needs duration time.
-	•	103: Meeting, needs location by filling in oid, needs duration time.
-	•	104: Restock, needs location by filling in oid, needs duration time.
-	•	105: Organize, needs location by filling in oid, needs duration time.
-	•	106: Fish, needs location by filling in oid, needs duration time.
-	•	107: Think, needs location by filling in oid, needs duration time.
-	•	108: Read, needs location by filling in oid, needs duration time.
-	•	109: Cook, needs location by filling in oid, needs duration time.
-	•	110: Eat, needs location by filling in oid, needs duration time.
-	•	111: Sleep, needs location by filling in oid, needs duration time.
+     •	114: Repairing Robot, needs location by filling in oid, needs duration time.
+	•	113: Using Computer, needs location by filling in oid, needs duration time.
+	•	123: Data Analysis, needs location by filling in oid, needs duration time.
+	•	124: Meeting, needs location by filling in oid, needs duration time.
+	•	120: Restock mechendise, needs location by filling in oid, needs duration time.
+	•	121: Organize inventory, needs location by filling in oid, needs duration time.
+	•	119: Fishing, needs location by filling in oid, needs duration time.
+	•	115: Think Deeply, needs location by filling in oid, needs duration time.
+	•	116: Read, needs location by filling in oid, needs duration time.
+	•	104: Cook a meal, needs location by filling in oid, needs duration time.
+	•	105: Have a meal, nee location by filling in oid, needs duration time.
+	•	106: Sleep, needs location by filling in oid, needs duration time.
 
-	•	114: Chat, needs the target npcId by filling in oid, needs the content of the chat.
-
+	•	118: Chat to another npc, needs the target npcId by filling in oid, needs the content of the chat.
+    
     Instruction for the NPC:
     {instruction_in_human}
 
     Words to say before the action, during the action, and at the end of the action:
     {words_to_say}
 
-    Please convert the instruction into a structured JSON format with the following fields, It is very important that your output can be loaded with json.loads():
+    Please convert the instruction into a structured JSON format with the following fields, It is very important that your output can be loaded with json.loads().
+    If the action is not Chat, following the format below:
     {{
         "npcId": <fill in, the npcId of whom is doing the action>,
         "actionId": <fill in, the actionId of what the npc is doing>,
+        "ack": <fill in, a random number>,
         "data": {{
             "oid": <fill in, the oid of where the npc is doing the action>
         }},
@@ -461,6 +463,17 @@ def humanInstToJava(instruction_in_human, words_to_say):
             <fill in, things to say during the action>, 
             <fill in, things to say at the end of the action>
         ]  
+    }}
+
+    If the action is Chat, following the format below:
+    {{
+        "npcId": <fill in, the npcId of whom is doing the action>,
+        "actionId": 114,
+        "ack": <fill in, a random number>,
+        "data": {{
+            "npcId": <fill in, the oid of the target npc who is talking to>
+            "content": <fill in, the content of the chat, what does the npc say>
+        }},
     }}
     """
 
