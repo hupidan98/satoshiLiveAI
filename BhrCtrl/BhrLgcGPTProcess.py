@@ -103,8 +103,8 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
         Here is a list of things the npc can do, you can only choose one of the action below:
         ''' + npc_action + '''
         
-        
-        you need to provide the target npcId and the content of the chat.
+        If you want start a conversation with another npc, you need to provide the target npcId and the content of the chat.
+        When you are in a conversation, you need to end a conversation explicitly telling you are ending a converstaion.
 
         Special instruction, needs to be followed if given and if logic allows: 
 
@@ -450,7 +450,7 @@ def humanInstToJava(instruction_in_human, words_to_say):
 	•	105: Have a meal, nee location by filling in oid, needs duration time.
 	•	106: Sleep, needs location by filling in oid, needs duration time.
 
-	•	118: Chat to another npc, needs the target npcId by filling in oid, needs the content of the chat.
+	•	118: Chat to another npc, needs the target npcId by filling in oid, needs the content of the chat. 
 
     Instruction for the NPC:
     {instruction_in_human}
@@ -483,6 +483,17 @@ def humanInstToJava(instruction_in_human, words_to_say):
         "data": {{
             "npcId": <fill in, the npcid of the target npc who is talking to, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
             "content": <fill in, the content of the chat, what does the npc say>
+        }},
+    }}
+
+    If you want to end the conversation, following the format below:
+    {{
+        "npcId": <fill in, the npcId of whom is doing the action>,
+        "actionId": 114,
+        "ack": <fill in, a random number>,
+        "data": {{
+            "npcId": <fill in, the npcid of the target npc who is talk now and would like to end the conversation, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
+            "content": '' # Empty conetent means end of conversation
         }},
     }}
     """
