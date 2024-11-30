@@ -477,7 +477,7 @@ def humanInstToJava(instruction_in_human, words_to_say):
 
     If the action is Chat, following the format below:
     {{
-        "npcId": <fill in, the npcId of whom is doing the action>,
+        "npcId": <fill in, the npcId of whom is talking>,
         "actionId": 114,
         "ack": <fill in, a random number>,
         "data": {{
@@ -488,11 +488,11 @@ def humanInstToJava(instruction_in_human, words_to_say):
 
     If you want to end the conversation, following the format below:
     {{
-        "npcId": <fill in, the npcId of whom is doing the action>,
+        "npcId": <fill in, the npcId of who want to end the conversation>,
         "actionId": 114,
         "ack": <fill in, a random number>,
         "data": {{
-            "npcId": <fill in, the npcid of the target npc who is talk now and would like to end the conversation, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
+            "npcId": <fill in, the npcid of the target npc who is talk to now and would like to end the conversation with, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
             "content": '' # Empty conetent means end of conversation
         }},
     }}
