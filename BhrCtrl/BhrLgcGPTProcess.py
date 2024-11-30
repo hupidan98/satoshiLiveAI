@@ -72,7 +72,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     npc_action = ''
     available_actions = npc.get('availableActions', [])
     for action in available_actions:
-        npc_action += f"Action: {action['actionName']}" + f"Description: {action['description']}\n"
+        npc_action += f"- Action: {action['actionName']} " + f"Action Description: {action['description']}" + f"Action Location: {action['location']}\n"
     
     completion = client.chat.completions.create(
       model="gpt-4o-mini",
