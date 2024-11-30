@@ -481,7 +481,7 @@ def humanInstToJava(instruction_in_human, words_to_say):
         "actionId": 114,
         "ack": <fill in, a random number>,
         "data": {{
-            "npcId": <fill in, the oid of the target npc who is talking to>
+            "npcId": <fill in, the npcid of the target npc who is talking to, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
             "content": <fill in, the content of the chat, what does the npc say>
         }},
     }}

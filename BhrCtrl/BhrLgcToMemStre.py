@@ -25,7 +25,14 @@ def InstToMemStreDB(input_from_java, memeory_input_str):
     insert_time = input_from_java[1]
     
     insert_content = output_str
-    insert_importance = BhrLgcGPTProcess.get_importance(output_str)
+    while True:
+        try:
+            # Attempt to get the importance value
+            insert_importance = int(BhrLgcGPTProcess.get_importance(output_str))
+            break  # Exit the loop if successful
+        except (ValueError, TypeError):
+            # Handle cases where the result is not convertible to an integer
+            print("Importance is not an integer. Retrying...")
     insert_embedding = BhrLgcGPTProcess.get_embedding(output_str)
     insert_isInstruction = 1
 
@@ -39,7 +46,14 @@ def InputToMemStreDB(input_from_java, memeory_input_str):
     insert_time = input_from_java[1]
     
     insert_content = output_str
-    insert_importance = BhrLgcGPTProcess.get_importance(output_str)
+    while True:
+        try:
+            # Attempt to get the importance value
+            insert_importance = int(BhrLgcGPTProcess.get_importance(output_str))
+            break  # Exit the loop if successful
+        except (ValueError, TypeError):
+            # Handle cases where the result is not convertible to an integer
+            print("Importance is not an integer. Retrying...")
     insert_embedding = BhrLgcGPTProcess.get_embedding(output_str)
     insert_isInstruction = 1
 
