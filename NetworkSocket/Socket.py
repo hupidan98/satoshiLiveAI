@@ -437,7 +437,12 @@ if __name__ == "__main__":
     # Keep the main thread alive
     try:
         while True:
-            time.sleep(1)  # Keep main thread alive to allow threads to run
+            init_command = '''
+            {"command": 10102, "data": {}}
+            '''
+            header_number = 10102
+            execute_instruction(init_command, header_number)
+            time.sleep(300)  # Keep main thread alive to allow threads to run
     except KeyboardInterrupt:
         print("Interrupted, closing socket.")
         if sock:
