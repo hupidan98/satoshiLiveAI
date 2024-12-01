@@ -1,27 +1,27 @@
 annotated-types==0.7.0
 anyio==4.6.2.post1
-Bottleneck @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_55txi4fy1u/croot/bottleneck_1731058642212/work
+bottleneck==1.3.7
 certifi==2024.8.30
 distro==1.9.0
-dnspython @ file:///home/conda/feedstock_root/build_artifacts/dnspython_1728178720319/work
+dnspython==2.3.1
 h11==0.14.0
 httpcore==1.0.7
 httpx==0.27.2
 idna==3.10
 jiter==0.7.1
 mysql-connector-python==8.0.31
-numexpr @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_b3kvvt6tc6/croot/numexpr_1730215947700/work
-numpy @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_a51i_mbs7m/croot/numpy_and_numpy_base_1708638620867/work/dist/numpy-1.26.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=3d90dd3382cff7becb2384f73058a8e72b81c697e8bb77f1c69a82caca5b0c57
+numexpr==2.8.4
+numpy==1.26.4
 openai==1.54.4
-pandas @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_b53hgou29t/croot/pandas_1718308972393/work/dist/pandas-2.2.2-cp311-cp311-macosx_11_0_arm64.whl#sha256=a5d15311899355b1b06bbc8e9c159537dc70abd2d98ee2d87eea721e83afa579
+pandas==2.2.2
 protobuf==4.21.12
 pydantic==2.9.2
-pydantic_core==2.23.4
-python-dateutil @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_66ud1l42_h/croot/python-dateutil_1716495741162/work
-pytz @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_a4b76c83ik/croot/pytz_1713974318928/work
+pydantic-core==2.23.4
+python-dateutil==2.8.2
+pytz==2023.3
 PyYAML==6.0.2
-six @ file:///tmp/build/80754af9/six_1644875935023/work
-sniffio @ file:///home/conda/feedstock_root/build_artifacts/sniffio_1708952932303/work
+six==1.16.0
+sniffio==1.3.0
 tqdm==4.67.0
 typing_extensions==4.12.2
-tzdata @ file:///croot/python-tzdata_1690578112552/work
+tzdata==2023.3
