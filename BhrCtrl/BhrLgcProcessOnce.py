@@ -120,18 +120,38 @@ def processOneInputGiveOneInstruction():
 
     # # Parse the instruction into a JSON object
     # instruction_json = json.loads(instruction_to_give)
+
     while True:
         try:
             # Convert the instruction into JSON format
             instruction_to_give = BhrLgcGPTProcess.humanInstToJava(instruction_in_human, words_to_say).strip("```json").strip("```")
-            
             # Parse the instruction into a JSON object
             instruction_json = json.loads(instruction_to_give)
             
             # If no error occurs, break the loop
             break
         except Exception as e:
+            print()
+            print()
+            print()
+            print('Instruction in Human error')
+            print('Instruction in Human error')
+            print('Instruction in Human error')
+            print(instruction_to_give)
+            print()
             print(f"Error occurred: {e}. Retrying...")
+            print('Instruction in Human error')
+            print('Instruction in Human error')
+            print('Instruction in Human error')
+
+    # instruction_to_give = BhrLgcGPTProcess.humanInstToJava(instruction_in_human, words_to_say).strip("```json").strip("```")
+    # print()
+    # print(print(instruction_to_give))
+    # print()
+    # # Parse the instruction into a JSON object
+    # instruction_json = json.loads(instruction_to_give)
+
+            
 
     # Add unique ack
     
@@ -171,7 +191,7 @@ def processOneInputGiveOneInstruction():
             prior_reflection = BhrDBReflection.retrieve_last_entry_before_time(db_conn, npcId, output_endtime)
             prior_reflection_str = prior_reflection[2] if prior_reflection is not None else ''
             memories_str = str(memories['Content']) if memories is not None else ''
-            new_reflection = BhrLgcGPTProcess.generate_reflection(prior_reflection_str, memories_str, inputInHumanString, npcId)
+            new_reflection = BhrLgcGPTProcess.generate_reflection_new(prior_reflection_str, memories_str, inputInHumanString, npcId)
             BhrDBReflection.insert_into_table(db_conn, npcId, curTime, new_reflection)
             # Reset the importance tracer
             BhrDBReflectionTracer.insert_into_table(db_conn, npcId, 0, curTime, curTime)

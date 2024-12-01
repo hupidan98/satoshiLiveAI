@@ -105,7 +105,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
         
         If you want start a conversation with another npc, you need to provide the target npcId and the content of the chat.
         When you are in a conversation, you need to end a conversation explicitly telling you are ending a converstaion.
-        When someone talks to you, need to prioritize talking to he. 
+        When someone talks to you, need to prioritize talking to he. Only talk to one npc at a time.
 
         Special instruction, needs to be followed if given and if logic allows: 
 
@@ -483,20 +483,12 @@ def humanInstToJava(instruction_in_human, words_to_say):
         "ack": <fill in, a random number>,
         "data": {{
             "npcId": <fill in, the npcid of the target npc who is talking to, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
-            "content": <fill in, the content of the chat, what does the npc say>
+            "content": <fill in, the content of the chat, what does the npc say. If you want to end the conversation explicitly, the content should be empty, e.g. "">
         }},
     }}
 
-    If you want to end the conversation, following the format below:
-    {{
-        "npcId": <fill in, the npcId of who want to end the conversation>,
-        "actionId": 114,
-        "ack": <fill in, a random number>,
-        "data": {{
-            "npcId": <fill in, the npcid of the target npc is tallking with now and would end conversation with, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
-            "content": '' # Empty conetent means end of conversation
-        }},
-    }}
+
+    You only give one instruction at a time, not multiple instruction.
     """
 
 
