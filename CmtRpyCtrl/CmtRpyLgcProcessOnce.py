@@ -112,7 +112,7 @@ def choiceOneToReply():
         memories_str = paragraph
     else:
         memories_str = 'No memory yet'
-    info_for_reply += f'This is prior memeories: {memories_str}\n\n'
+    info_for_reply += f'This is your prior memeories: {memories_str}\n\n'
 
     # Get reflect 
     prior_reflection = BhrDBReflection.retrieve_last_entry_before_time(db_conn, npcId, time_fromdb)

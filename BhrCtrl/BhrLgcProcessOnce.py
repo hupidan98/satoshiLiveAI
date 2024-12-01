@@ -75,6 +75,8 @@ def processOneInputGiveOneInstruction():
         memories_str = paragraph
     else:
         memories_str = 'No memory yet'
+    if memories_str == '':
+        memories_str = 'No memory yet'
     print('Memories:')
     print(memories_str)
     print()
@@ -131,18 +133,7 @@ def processOneInputGiveOneInstruction():
             # If no error occurs, break the loop
             break
         except Exception as e:
-            print()
-            print()
-            print()
-            print('Instruction in Human error')
-            print('Instruction in Human error')
-            print('Instruction in Human error')
-            print(instruction_to_give)
-            print()
             print(f"Error occurred: {e}. Retrying...")
-            print('Instruction in Human error')
-            print('Instruction in Human error')
-            print('Instruction in Human error')
 
     # instruction_to_give = BhrLgcGPTProcess.humanInstToJava(instruction_in_human, words_to_say).strip("```json").strip("```")
     # print()
@@ -171,10 +162,18 @@ def processOneInputGiveOneInstruction():
     #     request_id_to_mark = row[0]
     #     BhrDBJavaBuffer.mark_entry_as_processed(db_conn, request_id_to_mark)
 
-    # Insert Input to Memory Strea
-    input_for_mem = BhrLgcManualProcess.parse_npc_info_formemory(input_from_java[3])
-    BhrLgcToMemStre.InputToMemStreDB(input_from_java, input_for_mem)
-    BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, input_for_mem)
+    # Insert Input to Memory Stream, only talk needs to be inserted for now.
+    
+    data = json.loads(input_from_java[3])
+    npcs = data.get('npcs', [])
+    if len(npcs) > 0:
+        npc = npcs[0]  
+        talk_info = npc.get('talk', {})
+        is_talking = talk_info.get('isTalking', False)
+        if is_talking:
+            input_for_mem = BhrLgcManualProcess.parse_npc_info_formemory(input_from_java[3])
+            BhrLgcToMemStre.InputToMemStreDB(input_from_java, input_for_mem)
+            BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, input_for_mem)
         
     # Insert instruction to Memory Stream
     BhrLgcToMemStre.InstToMemStreDB(input_from_java, instruction_in_human)

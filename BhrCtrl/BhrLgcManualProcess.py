@@ -16,16 +16,16 @@ def parse_npc_info(json_input):
         world_time = "Invalid world time"
 
     # Extract map objects
-    map_objects = data.get('mapObj', [])
-    if not map_objects:
-        map_details = "No map objects available."
-    else:
-        map_details = "\n".join([
-            f"Object Name: {obj.get('objName', 'Unknown')}, "
-            f"Location: ({obj.get('X', 'N/A')}, {obj.get('Y', 'N/A')}), "
-            f"Status: {obj.get('status', 'Unknown')}"
-            for obj in map_objects
-        ])
+    # map_objects = data.get('mapObj', [])
+    # if not map_objects:
+    #     map_details = "No map objects available."
+    # else:
+    #     map_details = "\n".join([
+    #         f"Object Name: {obj.get('objName', 'Unknown')}, "
+    #         f"Location: ({obj.get('X', 'N/A')}, {obj.get('Y', 'N/A')}), "
+    #         f"Status: {obj.get('status', 'Unknown')}"
+    #         for obj in map_objects
+    #     ])
     
     # Extract NPC information
     npcs = data.get('npcs', [])
@@ -37,10 +37,10 @@ def parse_npc_info(json_input):
     first_name = npc_info.get('firstName', 'Unknown')
     last_name = npc_info.get('lastName', 'Unknown')
     
-    # Extract current action
-    cur_action = npc.get('curAction', {})
-    action_name = cur_action.get('actionName', 'None')  # Default to 'None' if not present
-    action_oid = cur_action.get('param', {}).get('oid', 'None')  # Default to 'None' if not present
+    # # Extract current action
+    # cur_action = npc.get('curAction', {})
+    # action_name = cur_action.get('actionName', 'None')  # Default to 'None' if not present
+    # action_oid = cur_action.get('param', {}).get('oid', 'None')  # Default to 'None' if not present
 
     # Extract talking information
     talk_info = npc.get('talk', {})
@@ -48,12 +48,16 @@ def parse_npc_info(json_input):
     talking_to = talk_info.get('talkingTo', [])
     talk_contents = talk_info.get('contents', [])
     
+    npc_names = {
+    10006: "satoshi",
+    10007: "popocat",
+    10008: "pepe",
+    10009: "musk"
+}
+
     if is_talking and talk_contents:
         talk_summary = "\n".join([
-            f"Sender: {content.get('sender', 'Unknown')}, "
-            f"Target: {content.get('target', 'Unknown')}, "
-            f"Time: {datetime.fromtimestamp(content.get('time', 0) / 1000.0).strftime('%Y-%m-%d %H:%M:%S') if content.get('time') else 'Unknown'}, "
-            f"Content: {content.get('content', 'None')}"
+            f"{npc_names.get(content.get('sender'), 'Unknown')} said to {npc_names.get(content.get('target'), 'Unknown')}: \"{content.get('content', 'None')}\""
             for content in talk_contents
         ])
     else:
@@ -61,14 +65,14 @@ def parse_npc_info(json_input):
 
     # Compile the extracted information into a readable format
     output_text = (
-        f"World Time: {world_time}\n\n"
-        f"NPC Information:\n"
-        f"  First Name: {first_name}\n"
-        f"  Last Name: {last_name}\n\n"
+        f"Time now is: {world_time}\n\n"
+        # f"NPC Information:\n"
+        # f"  First Name: {first_name}\n"
+        # f"  Last Name: {last_name}\n\n"
         # f"Map Objects:\n{map_details}\n\n"
-        f"NPC Current Action:\n"
-        f"  Action Name: {action_name}\n"
-        f"  Target Object ID: {action_oid}\n\n"
+        # f"NPC Current Action:\n"
+        # f"  Action Name: {action_name}\n"
+        # f"  Target Object ID: {action_oid}\n\n"
         f"Talking Information:\n{talk_summary}"
     )
     

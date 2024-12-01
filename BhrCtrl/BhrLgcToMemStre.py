@@ -55,7 +55,7 @@ def InputToMemStreDB(input_from_java, memeory_input_str):
             # Handle cases where the result is not convertible to an integer
             print("Importance is not an integer. Retrying...")
     insert_embedding = BhrLgcGPTProcess.get_embedding(output_str)
-    insert_isInstruction = 1
+    insert_isInstruction = 0
 
     BhrDBMemStre.insert_into_table(memstre_db_connection, insert_npcId, insert_time, insert_isInstruction, insert_content, insert_importance, insert_embedding)
     return 0

@@ -69,16 +69,17 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     npc_name = npc['name']
     npc_description = npc['description']
     npc_lifestyle = npc['lifestyle']
-    npc_action = ''
+    npc_action = ""
     available_actions = npc.get('availableActions', [])
+
     for action in available_actions:
-        npc_action += f"- Action: {action['actionName']} " + f"Action Description: {action['description']}" + f"Action Location: {action['location']}\n"
-    
-    completion = client.chat.completions.create(
-      model="gpt-4o-mini",
-      messages=[
-        {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
-        {"role": "user", "content":f'''
+        npc_action += (
+            f"- Action: {action['actionName']}\n"
+            f"  Description: {action['description']}\n"
+            f"  Location: {action['location']}\n"
+        )
+
+    prompt = f'''
         You are a npc character in a simulated town.
         There are characters in the town, and you are one of them:
         - Satoshi, inventor of the Bitcoin.
@@ -88,40 +89,47 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
          
         You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-        Given some information of an NPC (input), please tell what the npc should do next.
+        Here is some more information you should know.
          
-        Here is some Memory of the NPC:
+        Here is some Memory of the you:
           ''' + memories_str + '''
-        Here is some Reflection of the NPC about past experiences and events: 
+        Here is some Reflection of you about past experiences and events: 
         ''' + reflections_str + ''' 
-        Here is the NPC's potential schedule, you don't have to follow it, but it might be helpful, feel free to adjust for the NPC's current situation:
+        Here is some potential schedule, you don't have to follow it, but it might be helpful, feel free to adjust for your current situation:
         ''' + schedule_str + '''
 
-        Here is the NPC's current information:
+        Here is your current information:
         ''' + npc_context + '''
 
-        Here is a list of things the npc can do, you can only choose one of the action below:
+        Here is a list of things the you can do, you can only choose one of the action below:
         ''' + npc_action + '''
         
         If you want start a conversation with another npc, you need to provide the target npcId and the content of the chat.
-        When you are in a conversation, you need to end a conversation explicitly telling you are ending a converstaion.
-        When someone talks to you, need to prioritize talking to he. Only talk to one npc at a time.
+        When you are in a conversation and would like to end it, you need to end conversation explicitly telling you are ending a converstaion with another npc.
+        When someone talks to you, need to prioritize talking to them. Only talk to one npc at a time.
 
-        Special instruction, needs to be followed if given and if logic allows: 
-
+    
         ''' + special_instruction + '''
         
-        Tell me what the NPC should do next. The output instruction should in include the npcId of whom is doing the action, what action is doing, location of the action, the duration of the action, and target of the action if needed.
+        Tell me what the you should do next. The output instruction should in include your name, what action you are doing next, location of the action, the duration of the action, and who you are doing action to if needed.
         Only do a single action at a time.
         Example output:
-            npcId 1 Bob plant Wheat at the Farmland 1.
+            Bob watering flower at the farm for 2 hours.
 
         '''
+    completion = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[
+        {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
+        {"role": "user", "content":prompt
         }
       ] 
     )
 
-    # print(completion.choices[0].message.content)
+    print("This is prompt: ")
+    print(prompt)
+    print("This is next action: ")
+    print(completion.choices[0].message.content)
     return completion.choices[0].message.content
 
 def needDeepTalk(memories, reflections, npc_context, npc_action, npcId):
@@ -140,23 +148,23 @@ def needDeepTalk(memories, reflections, npc_context, npc_action, npcId):
     
     You are an expert in determining narrative significance for NPC dialogues.
 
-    Based on the following details, determine if the NPC should deliver a meaningful speech:
+    Based on the following details, determine if the You should deliver a meaningful speech:
 
     You are {npc_name}, {npc_description}, {npc_lifestyle}.
     
-    Memories:
+    Memories of you:
     {memories}
     
-    Reflections:
+    Reflections of you:
     {reflections}
     
-    Current Context:
+    Your current Context:
     {npc_context}
     
-    Upcoming Action:
+    Your upcoming Action:
     {npc_action}
     
-    Please return "True" if a meaningful speech is warranted (e.g., critical moment in the story, deep character development), 
+    Please return "True" if a meaningful speech is warranted (e.g., when you reading, thinking, analyzing, dreaming, etc.), 
     or "False" if not.
     """
     
@@ -196,25 +204,26 @@ def generateTheme(memories, reflections, npc_context, npc_action, npcId, special
     # First determine if this topic would like to go deep. 
 
     prompt = f"""
+
     You are {npc_name}, {npc_description}, {npc_lifestyle}.
-
-    Here is some Memory of the NPC:
+    
+    Memories of you:
     {memories}
-
-    Here is some Reflection of the NPC about past experiences and events: 
+    
+    Reflections of you:
     {reflections}
-
-    Here is the NPC's current information:
+    
+    Your current Context:
     {npc_context}
-
-    Here is what the NPC is doing next:
+    
+    Your upcoming Action:
     {npc_action}
 
-    The NPC needs to say something at the beginning of the action, in the middle of the action, and at the end of the action.
+    You needs to say something at the beginning of the action, in the middle of the action, and at the end of the action.
 
     {special_instruction if special_instruction else ''}
 
-    Choose an intriguing topic for today's discussion, incorporating relevant details.
+    Choose an intriguing topic for today's discussion, incorporating additional relevant details, adding depth and insight to the conversation.
    
     """
 
@@ -250,14 +259,13 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     prompt = f"""
     You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-    Here is some Memory of the NPC:
+    your memeories:
     {memories}
 
-    Here is some Reflection of the NPC about past experiences and events: 
+    Your Reflection on past experiences and events: 
     {reflections}
     
-    You are livestreaming in a simulated world about the topic: {theme}.
-    Write an engaging and insightful speech.
+    From your perspective, write an engaging and insightful speech about the topic: {theme}.
     """
     
     completion = client.chat.completions.create(
@@ -338,28 +346,28 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
     prompt = f"""
     You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-    Here is some Memory of the NPC:
+    Your memeories:
     {memories}
 
-    Here is some Reflection of the NPC about past experiences and events: 
+    Your reflections on past experiences and events: 
     {reflections}
 
-    Here is the NPC's current information:
+    Your context:
     {npc_context}
 
-    Here is what the NPC is doing next:
+    What you are doing next:
     {npc_action}
 
-    The NPC needs to say something at the beginning of the action, in the middle of the action, and at the end of the action.
+    You needs to say something at the beginning of the action, in the middle of the action, and at the end of the action.
 
     {special_instruction if special_instruction else ''}
 
-    Please generate three sentences for the NPC to say: 
+    Please generate three sentences for the you to say: 
     - At the beginning of the action.
     - In the middle of the action.
     - At the end of the action.
     """
-
+    
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -437,8 +445,7 @@ def humanInstToJava(instruction_in_human, words_to_say):
 	•	popcatFish_left_2
 
     Action ID and Corresponding Actions:
-
-     •	114: Repairing Robot, needs location by filling in oid, needs duration time.
+    •	114: Repairing Robot, needs location by filling in oid, needs duration time.
 	•	113: Using Computer, needs location by filling in oid, needs duration time.
 	•	123: Data Analysis, needs location by filling in oid, needs duration time.
 	•	124: Meeting, needs location by filling in oid, needs duration time.
@@ -450,7 +457,6 @@ def humanInstToJava(instruction_in_human, words_to_say):
 	•	104: Cook a meal, needs location by filling in oid, needs duration time.
 	•	105: Have a meal, nee location by filling in oid, needs duration time.
 	•	106: Sleep, needs location by filling in oid, needs duration time.
-
 	•	118: Chat to another npc, needs the target npcId by filling in oid, needs the content of the chat. 
 
     Instruction for the NPC:
@@ -462,11 +468,11 @@ def humanInstToJava(instruction_in_human, words_to_say):
     Please convert the instruction into a structured JSON format with the following fields, It is very important that your output can be loaded with json.loads().
     If the action is not Chat, following the format below:
     {{
-        "npcId": <fill in, the npcId of whom is doing the action>,
-        "actionId": <fill in, the actionId of what the npc is doing>,
-        "ack": <fill in, a random number>,
+        "npcId": <fill in, the NPC Id of whom is initiating the action>,
+        "actionId": <fill in, the Action Id of what the npc is doing>,
+        "ack": <fill in, a random integer>,
         "data": {{
-            "oid": <fill in, the oid of where the npc is doing the action>
+            "oid": <fill in, the Object ID of where the npc conducting the action>
         }},
         "durationTime": <fill in, action duration time in milliseconds>,  
         "speak": [
@@ -476,14 +482,14 @@ def humanInstToJava(instruction_in_human, words_to_say):
         ]  
     }}
 
-    If the action is Chat, following the format below:
+    If the action is Chat (including ending conversation), no need for "speak" section and "duratiomTime" in this case, follow the format below:
     {{
-        "npcId": <fill in, the npcId of whom is talking>,
+        "npcId": <fill in, the NPC id of whom is talking>,
         "actionId": 114,
         "ack": <fill in, a random number>,
         "data": {{
-            "npcId": <fill in, the npcid of the target npc who is talking to, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
-            "content": <fill in, the content of the chat, what does the npc say. If you want to end the conversation explicitly, the content should be empty, e.g. "">
+            "npcId": <fill in, the npcid of the target npc who will receive the talk message, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
+            "content": <fill in, the content of the chat, what the npc says. If this is ending conversation message, the content should be empty, e.g. "">
         }},
     }}
 
@@ -533,13 +539,13 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
             {"role": "user", "content": f'''
             You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-            Current Input:
+            Your context now:
             {java_input_str}
 
-            Given the memories of the NPC:
+            Your memeories:
             {memories_str}
 
-            And given prior reflections:
+            Your prior reflections on past experiences and events:
             {reflections_str}
 
             {question_1}
@@ -558,15 +564,15 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
         messages=[
             {"role": "system", "content": "You are a deep thinker and reflective analyst."},
             {"role": "user", "content": f'''
-            You are {npc_name}, {npc_description}, {npc_lifestyle}.
+           You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-            Current Input:
+            Your context now:
             {java_input_str}
 
-            Given the memories of the NPC:
+            Your memeories:
             {memories_str}
 
-            And given prior reflections:
+            Your prior reflections on past experiences and events:
             {reflections_str}
 
             {question_2} in the following directions:
@@ -604,6 +610,7 @@ def generate_schedule(current_schedule, memories, reflections, npc_context,npcId
     npc_name = npc['name']
     npc_description = npc['description']
     npc_lifestyle = npc['lifestyle']
+    npc_schedule = npc.get('schedule', [])
 
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -621,44 +628,25 @@ def generate_schedule(current_schedule, memories, reflections, npc_context,npcId
                     f"""
                     You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-                    You are livestreaming in a simulated world. 
+                    You are living in a simulated world. 
 
-                    Given the NPC's current schedule:
+                    Your prior schedule:
                     {current_schedule}
 
-                    Given memories of the NPC:
+                    Your memeories:
                     {memories}
 
-                    Given reflections for the NPC:
+                    Your reflections on past experiences and events:
                     {reflections}
 
-                    Information for understanding the NPC's current situation:
-                        The npcId is the npcId of the current NPC.
-                        The world time is the current time of the NPC.
-                        The mapObj contains all map objects the NPC can go to.
-                        The NPC Information contains details about the NPC.
-                        The NPC's Selling contains the list of items that the NPC is selling.
-                        The NPC's Items contains the list of items the NPC has.
-                        The Available Actions contains special actions that the NPC can take notice of and initiate if needed.
-                        The Map Data contains objects from mapObj that the NPC owns or operates and can interact with when close.
-                        The Surroundings contains a list of other NPCs in the radius that the NPC can immediately talk to, sell to, buy from, or interact with, and a list of objects near the NPC.
-                        The Talk section contains whether the NPC is talking now, who the NPC is talking to, and what the NPC is talking about.
-
-                    Given the NPC's current information:
+                    Your current context:
                     {npc_context}
 
-                    Please create a schedule for the NPC for today, adapting to the information given but not strictly following it.
+                    Please create a new schedule for the NPC for today, adapting to the current situation but not strictly following it.
 
-                    Example schedule format:
-                    'wake up and complete the morning routine at 6:00 am', 
-                    'have breakfast and brush teeth at 6:30 am',
-                    'work on painting project from 8:00 am to 12:00 pm', 
-                    'have lunch at 12:00 pm', 
-                    'take a break and watch TV from 2:00 pm to 4:00 pm', 
-                    'work on painting project from 4:00 pm to 6:00 pm', 
-                    'have dinner at 6:00 pm', 
-                    'watch TV from 7:00 pm to 8:00 pm',
-                    'go to bed at 10:00 pm'
+                    Example Schedule, use this as a referance, do not follow it strictly:
+                    {npc_schedule}
+
                     """
                 )
             }
@@ -704,23 +692,23 @@ def need_new_schedule(current_schedule, memories, reflections, npc_context, npcI
                     "role": "user",
                     "content": (
                         f"""
-                        YYou are {npc_name}, {npc_description}, {npc_lifestyle}.
+                        You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-                        You are livestreaming in a simulated world. 
-                                            
-                        Current schedule of the NPC:
+                        You are living in a simulated world. 
+
+                        Your prior schedule:
                         {current_schedule}
 
-                        Memories of the NPC:
+                        Your memeories:
                         {memories}
 
-                        Reflections for the NPC:
+                        Your reflections on past experiences and events:
                         {reflections}
 
-                        Current context of the NPC:
+                        Your current context:
                         {npc_context}
 
-                        Based on the above, does the NPC need a new schedule for the next behavior? 
+                        Based on the above, do need a new schedule for the rest of the day? 
                         Respond only with 'yes' or 'no'.
                         """
                     )

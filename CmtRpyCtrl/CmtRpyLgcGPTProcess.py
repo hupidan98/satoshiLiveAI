@@ -68,7 +68,7 @@ def replyToComment(hisAnn, comment, npcId, special_instruction=''):
     base_prompt = f"""
     You are {npc_name}, {npc_description}
 
-    Past announcements: {hisAnn}
+    Past Memeories: {hisAnn}
 
     Comment to reply to: {comment}
 
