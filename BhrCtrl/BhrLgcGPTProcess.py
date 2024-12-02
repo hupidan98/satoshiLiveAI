@@ -115,7 +115,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     For instruction that is talking, the output instruction should include your name, the target npc name, the one sentence of what you want to say next.
     If you want to talk to another npc, only to one npc one sentence at a time, you need to provide the target npc name and one sentence you want to say. 
     When you want to end an ongoing conversation, you need to say it explicitly telling that you are ending a converstaion with the target npc.
-    When someone talks to you, need to prioritize replying to he/her. 
+    When someone talks to you, need to replying to he/her immediately. 
     
 
     Output format and example:
@@ -129,7 +129,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
             e.g. Bob ending conversation with Alice.
     '''
     completion = client.chat.completions.create(
-      model="gpt-4o-mini",
+      model="gpt-4o",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
         {"role": "user", "content":prompt
