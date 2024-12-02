@@ -27,8 +27,8 @@ if not CmtRpyDBInstruction.table_exists(db_conn):
     CmtRpyDBInstruction.create_comment_reply_table(db_conn)
 
 # Clear all content in the tables (optional)
-CmtRpyDBJavaBuffer.delete_all_content_in_buffer(db_conn)
-CmtRpyDBInstruction.delete_all_instructions(db_conn)
+# CmtRpyDBJavaBuffer.delete_all_content_in_buffer(db_conn)
+# CmtRpyDBInstruction.delete_all_instructions(db_conn)
 
 # Processing loop
 n = 0

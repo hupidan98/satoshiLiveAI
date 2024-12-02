@@ -81,7 +81,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
 
     prompt = f'''
     You are a npc character in a simulated town.
-    There are characters in the town, and you are one of them:
+    Characters in the town:
     - Satoshi, inventor of the Bitcoin.
     - Musk, Elon Musk, the CEO of Tesla, SpaceX, and Neuralink.
     - Pepe, a meme character, live as a shop owner in the town.
@@ -101,34 +101,35 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     Your context:
     ''' + npc_context + '''
 
-    What you can do is the following, you can only choose one of the action below:
+    Tell me what the you should do next.
+
+    Available Actions:
     ''' + npc_action + '''
+    You can only choose one of actions above to at the given location at a time:
     
-    If you want start a conversation with another npc, you need to provide the target npc name and one sentence you want to say. 
-    When you want to end an ongoing conversation, you need to say it explicitly telling that you are ending a converstaion with the target npc.
-    When someone talks to you, need to prioritize replying to he/her, or you can end the conversation explicitly. 
-    You only talk to one npc one sentence at at a time.
-
-
     ''' + special_instruction + '''
     
-    Tell me what the you should do next. 
     For instruction that is not talking, the output instruction should in include your name, your next action using action name given above, location of the action given above, the duration of the action, and some details about the action.
-    For instruction that is talking, the output instruction should include your name, the target npc name, the one sentence of what you want to say next.
     Only do a single action at a time.
+    
+    For instruction that is talking, the output instruction should include your name, the target npc name, the one sentence of what you want to say next.
+    If you want to talk to another npc, only to one npc one sentence at a time, you need to provide the target npc name and one sentence you want to say. 
+    When you want to end an ongoing conversation, you need to say it explicitly telling that you are ending a converstaion with the target npc.
+    When someone talks to you, need to prioritize replying to he/her. 
+    
 
     Output format and example:
         If the action is not Chat, following the format below:
-        - <fill in user name> <fill in action name> at <fill in action location> for <fill in duration>. <fill in details>
+        - <fill in user name, given in characters in the town section> <fill in action name, given in Available Actions> at <fill in action location, given in Available Actions section> for <fill in duration>. <fill in details>
             e.g. Bob using computer at the farm for 2 hours. He surf the internet for fishing tutorial.
         If the action is Chat (including ending conversation), no need for "speak" section and "duratiomTime" in this case, follow the format below:
-        - <fill in user name> talking to <fill in target npc name>, "<fill in content>"
+        - <fill in user name, given in characters in the town section> talking to <fill in target npc name, given in characters in the town section>, "<fill in content>"
             e.g. Bob talking to Alice, "Hello Alice, how are you doing today?"
-        - <fill in user name> ending conversation with <fill in target npc name>
+        - <fill in user name, given in characters in the town section> ending conversation with <fill in target npc name, given at characters in the town section>
             e.g. Bob ending conversation with Alice.
     '''
     completion = client.chat.completions.create(
-      model="gpt-4o-mini",
+      model="gpt-4o",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
         {"role": "user", "content":prompt

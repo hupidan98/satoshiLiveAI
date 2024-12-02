@@ -45,7 +45,7 @@ def parse_npc_info(json_input):
     # NPC name mapping
     npc_names = {
         10006: "Satoshi",
-        10007: "Popocat",
+        10007: "Popcat",
         10008: "Pepe",
         10009: "Musk"
     }
@@ -58,26 +58,28 @@ def parse_npc_info(json_input):
     
     if is_talking and talk_contents:
         talk_summary = "\n".join([
-            f"Sender: {npc_names.get(content.get('sender'), 'Unknown')}, "
-            f"Target: {npc_names.get(content.get('target'), 'Unknown')}, "
-            f"Time: {datetime.fromtimestamp(content.get('time', 0) / 1000.0).strftime('%Y-%m-%d %H:%M:%S') if content.get('time') else 'Unknown'}, "
-            f"Content: {content.get('content', 'None')}"
+            f"{npc_names.get(content.get('sender'), 'Unknown')} said to {npc_names.get(content.get('target'), 'Unknown')}: {content.get('content', 'None')} \n"
             for content in talk_contents
         ])
     else:
         talk_summary = "No ongoing conversation."
 
     # Compile the extracted information into a readable format
+    # output_text = (
+    #     f"Time now is: {world_time}\n\n"
+    #     # f"NPC Information:\n"
+    #     # f"  First Name: {first_name}\n"
+    #     # f"  Last Name: {last_name}\n\n"
+    #     # f"Map Objects:\n{map_details}\n\n"
+    #     # f"NPC Current Action:\n"
+    #     # f"  Action Name: {action_name}\n"
+    #     # f"  Target Object ID: {action_oid}\n\n"
+    #     f"Talking Information:\n{talk_summary}"
+    # )
+
+    # Compile the extracted information into a readable format
     output_text = (
-        f"Time now is: {world_time}\n\n"
-        # f"NPC Information:\n"
-        # f"  First Name: {first_name}\n"
-        # f"  Last Name: {last_name}\n\n"
-        # f"Map Objects:\n{map_details}\n\n"
-        # f"NPC Current Action:\n"
-        # f"  Action Name: {action_name}\n"
-        # f"  Target Object ID: {action_oid}\n\n"
-        f"Talking Information:\n{talk_summary}"
+        f"Time now is: {world_time}, {talk_summary}"
     )
     
     return output_text
@@ -107,7 +109,7 @@ def parse_npc_info_formemory(json_input):
     # NPC name mapping
     npc_names = {
         10006: "Satoshi",
-        10007: "Popocat",
+        10007: "Popcat",
         10008: "Pepe",
         10009: "Musk"
     }
@@ -120,10 +122,7 @@ def parse_npc_info_formemory(json_input):
     
     if is_talking and talk_contents:
         talk_summary = "\n".join([
-            f"Sender: {npc_names.get(content.get('sender'), 'Unknown')}, "
-            f"Target: {npc_names.get(content.get('target'), 'Unknown')}, "
-            f"Time: {datetime.fromtimestamp(content.get('time', 0) / 1000.0).strftime('%Y-%m-%d %H:%M:%S') if content.get('time') else 'Unknown'}, "
-            f"Content: {content.get('content', 'None')}"
+            f"{npc_names.get(content.get('sender'), 'Unknown')} said to {npc_names.get(content.get('target'), 'Unknown')}: {content.get('content', 'None')} \n"
             for content in talk_contents
         ])
     else:
@@ -131,9 +130,7 @@ def parse_npc_info_formemory(json_input):
 
     # Compile the extracted information into a readable format
     output_text = (
-        f"Time now is: {world_time}\n\n"
-
-        f"Talking Information:\n{talk_summary}"
+        f"At {world_time}, {talk_summary}"
     )
     
     return output_text

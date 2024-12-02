@@ -137,12 +137,12 @@ if not BhrDBSchedule.table_exists(db_conn):
 if not BhrDBInstruction.instruction_table_exists(db_conn):
     BhrDBInstruction.create_instruction_table(db_conn)
 
-BhrDBJavaBuffer.delete_all_content_in_buffer(db_conn)
-BhrDBInstruction.delete_all_instructions(db_conn)
-BhrDBSchedule.delete_all_content(db_conn)
-BhrDBReflectionTracer.delete_all_entries(db_conn)
-BhrDBReflection.delete_all_content(db_conn)
-BhrDBMemStre.delete_all_content_in_buffer(db_conn)
+# BhrDBJavaBuffer.delete_all_content_in_buffer(db_conn)
+# BhrDBInstruction.delete_all_instructions(db_conn)
+# BhrDBSchedule.delete_all_content(db_conn)
+# BhrDBReflectionTracer.delete_all_entries(db_conn)
+# BhrDBReflection.delete_all_content(db_conn)
+# BhrDBMemStre.delete_all_content_in_buffer(db_conn)
 
 # Run the infinite loop
 n = 0

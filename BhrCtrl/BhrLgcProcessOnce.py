@@ -85,10 +85,15 @@ def processOneInputGiveOneInstruction():
     prior_reflection = BhrDBReflection.retrieve_last_entry_before_time(db_conn, npcId, curTime)
     if prior_reflection is not None:
         prior_reflection_str = str(prior_reflection[2])
+    elif prior_reflection == "None":
+        prior_reflection_str = 'No prior reflection yet!'
     else:
         prior_reflection_str = 'No prior reflection yet!'
+    
+    # print( 'Prior Reflection not str:')
+    # print(prior_reflection)
     print( 'Prior Reflection:')
-    print(prior_reflection)
+    print(prior_reflection_str)
     print()
 
     # Retrieve latest Schedule
@@ -172,24 +177,35 @@ def processOneInputGiveOneInstruction():
             BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, input_for_mem)
         
     # Insert instruction to Memory Stream
-    BhrLgcToMemStre.InstToMemStreDB(input_from_java, instruction_in_human)
+    BhrLgcToMemStre.InstToMemStreDB(input_from_java, "At "+str(curTime) + " ," + instruction_in_human)
     BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, instruction_in_human)
 
     # Generate reflection if needed
-    npcId = input_from_java[1]
-    curTime = input_from_java[0]
+    # npcId = input_from_java[1]
+    # curTime = input_from_java[0]
     output = BhrDBReflectionTracer.retrieve_entry(db_conn, npcId)
+    # print('Refelction Tracer Output: ', output)
     if output:
         output_importance, output_starttime, output_endtime = output[0], output[1], output[2]
+        # print('Total Importance: ', output_importance)
         if output_importance > 30:
+            # print('Now is reflection time')
+
             memories = BhrDBMemStre.retrieve_entries_between_time(db_conn, npcId, output_starttime, output_endtime)
             prior_reflection = BhrDBReflection.retrieve_last_entry_before_time(db_conn, npcId, output_endtime)
-            prior_reflection_str = prior_reflection[2] if prior_reflection is not None else ''
-            memories_str = str(memories['Content']) if memories is not None else ''
+            prior_reflection_str = prior_reflection[2] if prior_reflection is not None else 'No prior reflections'
+            memories_str = str(memories['Content']) if memories is not None else 'No prior memeories'
+
+            # print('This is prior memeories for reflection: ', memories)
+            # print('This is prior reflection for reflection: ', prior_reflection_str)
+            
             new_reflection = BhrLgcGPTProcess.generate_reflection_new(prior_reflection_str, memories_str, inputInHumanString, npcId)
+            print("New Reflection: ", new_reflection)
+
             BhrDBReflection.insert_into_table(db_conn, npcId, curTime, new_reflection)
             # Reset the importance tracer
             BhrDBReflectionTracer.insert_into_table(db_conn, npcId, 0, curTime, curTime)
+            # print('insert in to relative tables')
 
 
     return 1
