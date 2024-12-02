@@ -1,6 +1,12 @@
 import mysql.connector
 from mysql.connector import Error
 
+import threading
+
+# Create a global lock
+lock = threading.Lock()
+
+
 
 def check_connection(connection):
     if connection.is_connected():
@@ -132,42 +138,45 @@ def delete_all_content_in_buffer(connection):
 #         print("No unprocessed entries found.")
 #         return None
 
+
 def get_earliest_unprocessed_entry(connection):
-    cursor = connection.cursor()
-    cursor.execute("USE AITown")  # Use the AITown database
+    with lock:  # Acquire the lock
+        cursor = connection.cursor()
+        cursor.execute("USE AITown")  # Use the AITown database
 
-    # Query to get the earliest unprocessed entry with isBeingProcessed = FALSE
-    query = """
-    SELECT requestId, time, npcId, content, isProcessed, isBeingProcessed 
-    FROM behavior_java_buffer
-    WHERE isProcessed = FALSE AND isBeingProcessed = FALSE
-    ORDER BY time ASC 
-    LIMIT 1
-    """
-    cursor.execute(query)
-    result = cursor.fetchone()
-
-    if result:
-        request_id = result[0]  # Extract requestId
-        time_stamp = result[1]  # Extract time (DATETIME primary key)
-
-        print(f"Earliest unprocessed entry: requestId={request_id}, time={time_stamp}, npcId={result[2]}, content={result[3]}")
-
-        # Update the entry to set isBeingProcessed = TRUE
-        update_query = """
-        UPDATE behavior_java_buffer
-        SET isBeingProcessed = TRUE
-        WHERE requestId = %s AND time = %s
+        # Query to get the earliest unprocessed entry with isBeingProcessed = FALSE
+        query = """
+        SELECT requestId, time, npcId, content, isProcessed, isBeingProcessed 
+        FROM behavior_java_buffer
+        WHERE isProcessed = FALSE AND isBeingProcessed = FALSE
+        ORDER BY time ASC 
+        LIMIT 1
         """
-        cursor.execute(update_query, (request_id, time_stamp))
-        connection.commit()
+        cursor.execute(query)
+        result = cursor.fetchone()
 
-        print(f"Entry with requestId={request_id}, time={time_stamp} marked as being processed.")
-        return result
-    else:
-        print("No unprocessed entries found.")
-        return None
+        if result:
+            request_id = result[0]  # Extract requestId
+            time_stamp = result[1]  # Extract time (DATETIME primary key)
 
+            print(f"Earliest unprocessed entry: requestId={request_id}, time={time_stamp}, npcId={result[2]}, content={result[3]}")
+
+            # Update the entry to set isBeingProcessed = TRUE
+            update_query = """
+            UPDATE behavior_java_buffer
+            SET isBeingProcessed = TRUE
+            WHERE requestId = %s AND time = %s
+            """
+            cursor.execute(update_query, (request_id, time_stamp))
+            connection.commit()
+
+            print(f"Entry with requestId={request_id}, time={time_stamp} marked as being processed.")
+            return result
+        else:
+            print("No unprocessed entries found.")
+            return None
+        
+        
 def get_unprocessed_entries_of_npc(connection, npcId):
     cursor = connection.cursor()
     cursor.execute("USE AITown")

@@ -91,11 +91,11 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
 
     Here is some more information you should know.
         
-    Your memories:
+    Your past memories and experiences:
         ''' + memories_str + '''
     Your reflection past experiences and events: 
     ''' + reflections_str + ''' 
-    Your potential schedule, you don't have to follow it, feel free to adjust to your needs:
+    Your calendar of the day, but fill free to adjust to the current situation:
     ''' + schedule_str + '''
 
     Your context:
@@ -115,7 +115,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     For instruction that is talking, the output instruction should include your name, the target npc name, the one sentence of what you want to say next.
     If you want to talk to another npc, only to one npc one sentence at a time, you need to provide the target npc name and one sentence you want to say. 
     When you want to end an ongoing conversation, you need to say it explicitly telling that you are ending a converstaion with the target npc.
-    When someone talks to you, need to replying to he/her immediately. 
+    When someone talks to you, need to replying to he/her immediately, but if you have some other things on the calendar, you can tell the other person that you are busy and will talk to him/her later, and end the conversation.
     
 
     Output format and example:
@@ -163,7 +163,7 @@ def needDeepTalk(memories, reflections, npc_context, npc_action, npcId):
 
     You are {npc_name}, {npc_description}, {npc_lifestyle}.
     
-    Memories of you:
+    Your past memories and experiences:
     {memories}
     
     Reflections of you:
@@ -218,7 +218,7 @@ def generateTheme(memories, reflections, npc_context, npc_action, npcId, special
 
     You are {npc_name}, {npc_description}, {npc_lifestyle}.
     
-    Memories of you:
+    Your past memeories and experiences:
     {memories}
     
     Reflections of you:
@@ -270,7 +270,7 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     prompt = f"""
     You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-    your memeories:
+    your past memeories and experiences:
     {memories}
 
     Your Reflection on past experiences and events: 
@@ -358,7 +358,7 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
     prompt = f"""
     You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-    Your memeories:
+    Your past memeories and experiences:
     {memories}
 
     Your reflections on past experiences and events: 
@@ -398,9 +398,48 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
 
 
 
+#    •	zhongbencongFix
+# 	•	zhongbencongRead
+	# •	zhongbencongThink
+	# •	zhongbencongType
+	# •	pepeSleep
+	# •	pepeEat
+	# •	pepeRead
+	# •	pepeThink
+	# •	pepeCook
+	# •	pepeGetItem
+	# •	pepeCleanItem
+	# •	popcatSleep
+	# •	popcatEat
+	# •	popcatRead
+	# •	popcatThink
+	# •	popcatCook
+	# •	popcatFish_up_1
+	# •	popcatFish_right_1
+	# •	popcatFish_right_2
+	# •	popcatFish_right_3
+	# •	popcatFish_right_4
+	# •	popcatFish_right_5
+	# •	popcatFish_right_6
+	# •	popcatFish_down_1
+	# •	popcatFish_left_1
+	# •	popcatFish_left_2
 
+    # •	114: Repair Robot, needs location by filling in oid, needs duration time.
+	# •	113: Use Computer, needs location by filling in oid, needs duration time.
+	# •	123: Analyze Data, needs location by filling in oid, needs duration time.
+	# •	124: Attend Meetings, needs location by filling in oid, needs duration time.
+	# •	120: Restock Items, needs location by filling in oid, needs duration time.
+	# •	121: Organize Store, needs location by filling in oid, needs duration time.
+	# •	119: Go Fishing, needs location by filling in oid, needs duration time.
+	# •	115: Think Deeply, needs location by filling in oid, needs duration time.
+	# •	116: Read material, needs location by filling in oid, needs duration time.
+	# •	104: Cook a meal, needs location by filling in oid, needs duration time.
+	# •	105: Eat a meal, nee location by filling in oid, needs duration time.
+	# •	106: Sleep, needs location by filling in oid, needs duration time.
+	# •	118: Talk to another npc, needs the target npcId by filling in oid, needs the content of the chat. 
 
-def humanInstToJava(instruction_in_human, words_to_say):
+def humanInstToJava(instruction_in_human, words_to_say, npcId):
     """
     Translates a natural language instruction into a structured JSON format suitable for NPC actions.
 
@@ -412,6 +451,25 @@ def humanInstToJava(instruction_in_human, words_to_say):
         str: JSON-formatted string representing the action.
     """
     # Constructing the prompt dynamically
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+
+    available_actions = npc.get('availableActions', [])
+    ava_npc_action = ""
+    for action in available_actions:
+        ava_npc_action += (
+            f"- {action['actionId']} : {action['actionName']}, {action['description']} .\n"
+        )
+    available_locations = ""
+    for action in available_actions:
+        available_locations += (
+            f"{action['location']},"
+        )
+
     prompt = f"""
     You are an instruction translator in a simulated virtual world. Your task is to convert a natural language instruction 
     into a structured JSON format suitable for NPC behavior.
@@ -422,54 +480,18 @@ def humanInstToJava(instruction_in_human, words_to_say):
     3. Extract any required object or location information from the instruction and place it in the `data` field as `oid`.
     4. Use the provided words to fill in the sentences to say at the beginning, during, and after the action.
 
-    ### NPC ID List and Character Names:
+    ### NPC ID List and Character Names (for npcId field below):
     10006 : Satoshi
     10007 : Popcat
     10008 : Pepe
     10009 : Musk
+    
+    {npc_name} initiate the action.
 
-    ### Object ID List as Location:
-    •	zhongbencongFix
-	•	zhongbencongRead
-	•	zhongbencongThink
-	•	zhongbencongType
-	•	pepeSleep
-	•	pepeEat
-	•	pepeRead
-	•	pepeThink
-	•	pepeCook
-	•	pepeGetItem
-	•	pepeCleanItem
-	•	popcatSleep
-	•	popcatEat
-	•	popcatRead
-	•	popcatThink
-	•	popcatCook
-	•	popcatFish_up_1
-	•	popcatFish_right_1
-	•	popcatFish_right_2
-	•	popcatFish_right_3
-	•	popcatFish_right_4
-	•	popcatFish_right_5
-	•	popcatFish_right_6
-	•	popcatFish_down_1
-	•	popcatFish_left_1
-	•	popcatFish_left_2
-
-    Action ID and Corresponding Actions:
-    •	114: Repair Robot, needs location by filling in oid, needs duration time.
-	•	113: Use Computer, needs location by filling in oid, needs duration time.
-	•	123: Analyze Data, needs location by filling in oid, needs duration time.
-	•	124: Attend Meetings, needs location by filling in oid, needs duration time.
-	•	120: Restock Items, needs location by filling in oid, needs duration time.
-	•	121: Organize Store, needs location by filling in oid, needs duration time.
-	•	119: Go Fishing, needs location by filling in oid, needs duration time.
-	•	115: Think Deeply, needs location by filling in oid, needs duration time.
-	•	116: Read material, needs location by filling in oid, needs duration time.
-	•	104: Cook a meal, needs location by filling in oid, needs duration time.
-	•	105: Eat a meal, nee location by filling in oid, needs duration time.
-	•	106: Sleep, needs location by filling in oid, needs duration time.
-	•	118: Talk to another npc, needs the target npcId by filling in oid, needs the content of the chat. 
+    ### Action ID and Corresponding Actions (for actionId field below):
+    {ava_npc_action}
+    ### Object ID List as Location (for oid field below):
+    {available_locations}
 
     Instruction for the NPC:
     {instruction_in_human}
@@ -522,7 +544,10 @@ def humanInstToJava(instruction_in_human, words_to_say):
             }
         ]
     )
-    return completion.choices[0].message.content
+    outputinst = completion.choices[0].message.content
+    print("Instruction translation prompt :", prompt)
+    print("Machine Instruction: ", outputinst)
+    return outputinst
 
 
 

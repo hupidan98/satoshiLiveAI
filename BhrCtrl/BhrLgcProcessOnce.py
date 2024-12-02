@@ -71,7 +71,7 @@ def processOneInputGiveOneInstruction():
 
         rows_df_ranked = rows_df.sort_values(by=['retrieval_score', 'Time'], ascending=[False, False]).head(20)
         rows_df_ranked = rows_df_ranked.sort_values(by='Time', ascending=False)
-        paragraph = " ".join(rows_df_ranked['Content'].astype(str).tolist())
+        paragraph = "\n".join(rows_df_ranked['Content'].astype(str).tolist())
         memories_str = paragraph
     else:
         memories_str = 'No memory yet'
@@ -113,9 +113,7 @@ def processOneInputGiveOneInstruction():
 
     
     # Process this information, and give instruction in human language
-    instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(
-        memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId
-    )
+    instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId)
 
     # Generate sentences for the NPC to say during the action
     if BhrLgcGPTProcess.needDeepTalk(memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId):
@@ -127,7 +125,7 @@ def processOneInputGiveOneInstruction():
     while True:
         try:
             # Convert the instruction into JSON format
-            instruction_to_give = BhrLgcGPTProcess.humanInstToJava(instruction_in_human, words_to_say).strip("```json").strip("```")
+            instruction_to_give = BhrLgcGPTProcess.humanInstToJava(instruction_in_human, words_to_say, npcId).strip("```json").strip("```")
             # Parse the instruction into a JSON object
             instruction_json = json.loads(instruction_to_give)
             
