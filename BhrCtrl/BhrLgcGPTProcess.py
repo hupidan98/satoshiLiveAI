@@ -129,7 +129,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
             e.g. Bob ending conversation with Alice.
     '''
     completion = client.chat.completions.create(
-      model="gpt-4o",
+      model="gpt-4o-mini",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
         {"role": "user", "content":prompt
