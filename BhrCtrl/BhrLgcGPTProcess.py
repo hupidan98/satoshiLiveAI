@@ -276,7 +276,8 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     Your Reflection on past experiences and events: 
     {reflections}
     
-    From your perspective, write an engaging and insightful speech about the topic: {theme}.
+    From your perspective, write an engaging  and insightful speech under 300 words. about the topic: {theme}.
+
     """
     
     completion = client.chat.completions.create(
@@ -296,7 +297,7 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     speech = completion.choices[0].message.content
 
     prompt = f"""
-    Transform the following speech into three parts
+    Transform the following speech into three parts, each part under 100 words:
     - At the beginning of the action.
     - In the middle of the action.
     - At the end of the action.

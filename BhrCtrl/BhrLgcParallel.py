@@ -1,6 +1,9 @@
 import sys
 import os
 import time
+from concurrent.futures import ThreadPoolExecutor
+
+# Import your project-specific modules
 import DBConnect.DBCon as DBCon
 from DBConnect import BhrDBJavaBuffer
 from DBConnect import BhrDBInstruction
@@ -36,9 +39,6 @@ log_file_path = os.path.join(os.path.dirname(__file__), "output_log.txt")
 sys.stdout = Logger(log_file_path)
 sys.stderr = sys.stdout  # Capture any errors as well
 
-
-
-
 # Add the base directory (one level up from AnnCtrl)
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(base_dir)
@@ -70,25 +70,25 @@ if not BhrDBInstruction.instruction_table_exists(db_conn):
 # BhrDBReflection.delete_all_content(db_conn)
 # BhrDBMemStre.delete_all_content_in_buffer(db_conn)
 
-# Run the infinite loop
+# Define the function to run in parallel
+def process_task(task_id):
+    print(f"Processing task {task_id}")
+    BhrLgcProcessOnce.processOneInputGiveOneInstruction()
+    print(f"Task {task_id} completed.")
+
+# Run the parallelized infinite loop
 n = 0
+num_workers = 4  # Number of parallel tasks
 try:
-    while True:
-        print(f"Processing step {n}")
-        BhrLgcProcessOnce.processOneInputGiveOneInstruction()
-        print("\n" * 5)
-        time.sleep(2)
-        n += 1
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
+        while True:
+            futures = [executor.submit(process_task, n + i) for i in range(num_workers)]
+            n += num_workers
+            time.sleep(2)  # Adjust sleep interval to control task submission rate
 except KeyboardInterrupt:
     print("Loop terminated by user.")
 finally:
     # Reset stdout and stderr to default
-    sys.stdout.close()
+    sys.stdout.log.close()
     sys.stdout = sys.__stdout__
     sys.stderr = sys.__stderr__
-
-
-
-
-
-
