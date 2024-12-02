@@ -32,3 +32,10 @@ def establish_sql_connection():
     if connection.is_connected():
         print("Connected to MySQL server successfully")
     return connection
+
+def close_sql_connection(connection):
+    if connection.is_connected():
+        connection.close()
+        print("Connection closed successfully.")
+    else:
+        print("Connection was already closed.")

@@ -45,7 +45,7 @@ sys.path.append(base_dir)
 
 # Check DB exists
 db_conn = DBCon.establish_sql_connection()
-# BhrDBJavaBuffer.delete_database(db_conn, 'AITown')
+BhrDBJavaBuffer.delete_database(db_conn, 'AITown')
 
 if not BhrDBJavaBuffer.database_exists(db_conn):
     BhrDBJavaBuffer.create_database(db_conn)

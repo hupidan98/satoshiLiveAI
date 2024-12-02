@@ -482,7 +482,6 @@ def humanInstToJava(instruction_in_human, words_to_say):
     {{
         "npcId": <fill in, the NPC Id of whom is initiating the action>,
         "actionId": <fill in, the Action Id of what the npc is doing>,
-        "ack": <fill in, a random integer>,
         "data": {{
             "oid": <fill in, the Object ID of where the npc conducting the action>
         }},
@@ -498,7 +497,6 @@ def humanInstToJava(instruction_in_human, words_to_say):
     {{
         "npcId": <fill in, the NPC id of whom is talking>,
         "actionId": 118,
-        "ack": <fill in, a random number>,
         "data": {{
             "npcId": <fill in, the npcid of the target npc who will receive the talk message, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>,
             "content": <fill in, the content of the chat, what the npc says.>,

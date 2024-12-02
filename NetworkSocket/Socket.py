@@ -14,7 +14,7 @@ import threading
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(base_dir)
 
-from DBConnect.DBCon import establish_sql_connection
+from DBConnect.DBCon import establish_sql_connection, close_sql_connection
 from DBConnect import BhrDBJavaBuffer
 from DBConnect import BhrDBInstruction
 from DBConnect import CmtRpyDBJavaBuffer
@@ -273,6 +273,7 @@ def receive_data():
             print("Command Type is: ", data['command'])
             print("Parsed input successfully:", data)
 
+            db_connection = None
 
             # if data['command'] == 10106:
             #     # NPC Announcement
@@ -329,6 +330,9 @@ def receive_data():
                 except Exception as e:
                     print(f"Failed to insert into CommentReply Java Buffer for requestId {requestId} npcId {npcId}: {e}")
                     traceback.print_exc()
+
+                if db_connection:
+                    close_sql_connection(db_connection)
             else:
                 print('Unknown case')
                 print(data)
@@ -385,7 +389,7 @@ def send_data():
                 print(f"Sent CommentReply instruction: {instruction_str} for requestId {requestId} and marked as processed.")
             else:
                 print("No unprocessed CommentReply instructions found.")
-
+            close_sql_connection(db_conn)
             time.sleep(1) 
         except Exception as e:
             print(f"Error in send_data: {e}")
@@ -437,13 +441,17 @@ if __name__ == "__main__":
     # Keep the main thread alive
     try:
         while True:
-            # init_command = '''
-            # {"command": 10102, "data": {}}
-            # '''
-            # header_number = 10102
-            # execute_instruction(init_command, header_number)
-            # time.sleep(300)  
-            time.sleep(1)# Keep main thread alive to allow threads to run
+            time.sleep(300)  
+            db_conn_temp = establish_sql_connection()
+            BhrDBJavaBuffer.mark_all_entries_as_processed(db_conn_temp)
+            close_sql_connection(db_conn_temp)
+            init_command = '''
+            {"command": 10102, "data": {}}
+            '''
+            header_number = 10102
+            execute_instruction(init_command, header_number)
+            
+            # time.sleep(1)# Keep main thread alive to allow threads to run
     except KeyboardInterrupt:
         print("Interrupted, closing socket.")
         if sock:

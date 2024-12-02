@@ -54,6 +54,7 @@ def create_table(connection):
         npcId INT NOT NULL,
         content LONGTEXT,
         isProcessed BOOLEAN NOT NULL DEFAULT FALSE,
+        isBeingProcessed BOOLEAN NOT NULL DEFAULT FALSE,
         PRIMARY KEY (requestId, time)
     )
     """
@@ -85,15 +86,15 @@ def table_exists(connection):
         print(f"Table '{table_name}' does not exist in database '{db_name}'.")
         return False
 
-def insert_into_table(connection, requestId, time, npcId, content, isProcessed=False):
+def insert_into_table(connection, requestId, time, npcId, content, isProcessed=False, isBeingProcessed=False):
     cursor = connection.cursor()
     cursor.execute("USE AITown") 
     insert_query = """
-    INSERT INTO behavior_java_buffer (requestId, time, npcId, content, isProcessed)
-    VALUES (%s, %s, %s, %s, %s)
+    INSERT INTO behavior_java_buffer (requestId, time, npcId, content, isProcessed, isBeingProcessed)
+    VALUES (%s, %s, %s, %s, %s, %s)
     ON DUPLICATE KEY UPDATE content = VALUES(content), isProcessed = VALUES(isProcessed)
     """
-    cursor.execute(insert_query, (requestId, time, npcId, content, isProcessed))
+    cursor.execute(insert_query, (requestId, time, npcId, content, isProcessed, isBeingProcessed))
     connection.commit()
     print(f"Data inserted successfully: requestId={requestId}, time={time}, npcId={npcId}, content length={len(content)}, isProcessed={isProcessed}")
 
@@ -113,19 +114,55 @@ def delete_all_content_in_buffer(connection):
     connection.commit()  # Commit the changes
     print("All content in the 'behavior_java_buffer' table has been deleted successfully.")
 
+# def get_earliest_unprocessed_entry(connection):
+#     cursor = connection.cursor()
+#     cursor.execute("USE AITown")
+#     query = """
+#     SELECT * FROM behavior_java_buffer 
+#     WHERE isProcessed = FALSE AND isBeingProcessed = FALSE
+#     ORDER BY time ASC 
+#     LIMIT 1
+#     """
+#     cursor.execute(query)
+#     result = cursor.fetchone()
+#     if result:
+#         print(f"Earliest unprocessed entry: time={result[1]}, npcId={result[2]}, content={result[3]}")
+#         return result
+#     else:
+#         print("No unprocessed entries found.")
+#         return None
+
 def get_earliest_unprocessed_entry(connection):
     cursor = connection.cursor()
-    cursor.execute("USE AITown")
+    cursor.execute("USE AITown")  # Use the AITown database
+
+    # Query to get the earliest unprocessed entry with isBeingProcessed = FALSE
     query = """
-    SELECT * FROM behavior_java_buffer 
-    WHERE isProcessed = FALSE
+    SELECT requestId, time, npcId, content, isProcessed, isBeingProcessed 
+    FROM behavior_java_buffer
+    WHERE isProcessed = FALSE AND isBeingProcessed = FALSE
     ORDER BY time ASC 
     LIMIT 1
     """
     cursor.execute(query)
     result = cursor.fetchone()
+
     if result:
-        print(f"Earliest unprocessed entry: time={result[1]}, npcId={result[2]}, content={result[3]}")
+        request_id = result[0]  # Extract requestId
+        time_stamp = result[1]  # Extract time (DATETIME primary key)
+
+        print(f"Earliest unprocessed entry: requestId={request_id}, time={time_stamp}, npcId={result[2]}, content={result[3]}")
+
+        # Update the entry to set isBeingProcessed = TRUE
+        update_query = """
+        UPDATE behavior_java_buffer
+        SET isBeingProcessed = TRUE
+        WHERE requestId = %s AND time = %s
+        """
+        cursor.execute(update_query, (request_id, time_stamp))
+        connection.commit()
+
+        print(f"Entry with requestId={request_id}, time={time_stamp} marked as being processed.")
         return result
     else:
         print("No unprocessed entries found.")
@@ -208,3 +245,14 @@ def mark_entry_as_processed(connection, requestId):
     cursor.execute(update_query, (requestId,))
     connection.commit()
     print(f"Entry with requestId={requestId} marked as processed.")
+
+def mark_all_entries_as_processed(connection):
+    cursor = connection.cursor()
+    cursor.execute("USE AITown")
+    update_query = """
+    UPDATE behavior_java_buffer
+    SET isProcessed = TRUE
+    """
+    cursor.execute(update_query)
+    connection.commit()
+    print("All entries have been marked as processed, keeping 'isBeingProcessed' unchanged.")
