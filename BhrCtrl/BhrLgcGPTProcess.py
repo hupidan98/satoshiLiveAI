@@ -95,7 +95,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
         ''' + memories_str + '''
     Your reflection past experiences and events: 
     ''' + reflections_str + ''' 
-    Your calendar of the day, but fill free to adjust to the current situation:
+    Your calendar of the day, try to follow your schedule, but fill free to adjust to the current situation:
     ''' + schedule_str + '''
 
     Your context:
@@ -115,8 +115,8 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     For instruction that is talking, the output instruction should include your name, the target npc name, the one sentence of what you want to say next.
     If you want to talk to another npc, only to one npc one sentence at a time, you need to provide the target npc name and one sentence you want to say. 
     When you want to end an ongoing conversation, you need to say it explicitly telling that you are ending a converstaion with the target npc.
-    When someone talks to you, need to replying to he/her immediately, but if you have some other things on the calendar, you can tell the other person that you are busy and will talk to him/her later, and end the conversation.
-    
+    When someone talks to you, need to replying to he/her immediately,  but you can tell the other person that you are busy and will talk to him/her later, and end the conversation.
+    Please do not talk to other people all day long, end conversation if need to do other things on your calendar.
 
     Output format and example:
         If the action is not Chat, following the format below:
@@ -125,7 +125,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
         If the action is Chat (including ending conversation), no need for "speak" section and "duratiomTime" in this case, follow the format below:
         - <fill in user name, given in characters in the town section> talking to <fill in target npc name, given in characters in the town section>, "<fill in content>"
             e.g. Bob talking to Alice, "Hello Alice, how are you doing today?"
-        - <fill in user name, given in characters in the town section> ending conversation with <fill in target npc name, given at characters in the town section>
+        - <fill in user name, given in characters in the towsn section> ending conversation with <fill in target npc name, given at characters in the town section>
             e.g. Bob ending conversation with Alice.
     '''
     completion = client.chat.completions.create(
@@ -565,11 +565,11 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
     npc_description = npc['description']
     npc_lifestyle = npc['lifestyle']
     # Define the first question
-    question_1 = "Given only the information above, what are 5 most salient high-level questions we can answer about the subjects in the statements during the daily life not included in the npc current information?"
+    question_1 = "Given only the information above, what are 5 most salient high-level questions we can answer about the subjects in the statements during the daily life not included in the npc current information?  Moreover, what is your 3 recent goals, and 3 long terms goals? Do you want to make adjustment to your goals, and how far are you there to achieving those goals?"
 
     # Step 1: Generate high-level questions
     completion_1 = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": "You are a deep thinker and reflective analyst."},
             {"role": "user", "content": f'''
@@ -592,11 +592,11 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
     question_1_answer = completion_1.choices[0].message.content
 
     # Define the second question
-    question_2 = "What 5 high-level insights can you infer from the above statements not included in the information of the npc?"
+    question_2 = "What 5 high-level insights can you infer from the above statements not included in the information of the npc? Repeat your 3 recent goals and 3 long terms goals, and make a plan on how to achieve those goal."
 
     # Step 2: Generate insights based on the high-level questions
     completion_2 = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": "You are a deep thinker and reflective analyst."},
             {"role": "user", "content": f'''
@@ -669,16 +669,13 @@ def generate_schedule(current_schedule, memories, reflections, npc_context,npcId
                     Your prior schedule:
                     {current_schedule}
 
-                    Your memeories:
+                    Your past memeories:
                     {memories}
 
                     Your reflections on past experiences and events:
                     {reflections}
 
-                    Your current context:
-                    {npc_context}
-
-                    Please create a new schedule for the NPC for today, adapting to the current situation but not strictly following it.
+                    Please create a new schedule for the NPC for today, adapting to the current situation.
 
                     Example Schedule, use this as a referance, do not follow it strictly:
                     {npc_schedule}
@@ -735,14 +732,11 @@ def need_new_schedule(current_schedule, memories, reflections, npc_context, npcI
                         Your prior schedule:
                         {current_schedule}
 
-                        Your memeories:
+                        Your past memeories:
                         {memories}
 
                         Your reflections on past experiences and events:
                         {reflections}
-
-                        Your current context:
-                        {npc_context}
 
                         Based on the above, do need a new schedule for the rest of the day? 
                         Respond only with 'yes' or 'no'.
