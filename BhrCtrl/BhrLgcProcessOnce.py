@@ -113,15 +113,11 @@ def processOneInputGiveOneInstruction():
     )
 
     # Generate sentences for the NPC to say during the action
-    words_to_say = BhrLgcGPTProcess.generateThreeSentencesForAction(
-        memories_str, prior_reflection_str, cur_schedule_str, instruction_in_human, npcId
-    )
-
-    # # Convert the instruction into JSON format
-    # instruction_to_give = BhrLgcGPTProcess.humanInstToJava(instruction_in_human, words_to_say).strip("```json").strip("```")
-
-    # # Parse the instruction into a JSON object
-    # instruction_json = json.loads(instruction_to_give)
+    if BhrLgcGPTProcess.needDeepTalk(memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId):
+        theme_for_generation = BhrLgcGPTProcess.generateTheme(memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId, special_instruction='')
+        words_to_say = BhrLgcGPTProcess.generate_new_Announcement(memories_str, prior_reflection_str, theme_for_generation, npcId)
+    else:
+        words_to_say = BhrLgcGPTProcess.generateThreeSentencesForAction(memories_str, prior_reflection_str, cur_schedule_str, instruction_in_human, npcId)
 
     while True:
         try:

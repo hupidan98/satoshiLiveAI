@@ -74,51 +74,61 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
 
     for action in available_actions:
         npc_action += (
-            f"- Action: {action['actionName']}\n"
-            f"  Description: {action['description']}\n"
-            f"  Location: {action['location']}\n"
+            f"- Action Name: {action['actionName']}. "
+            f"  Action description: {action['description']} ."
+            f"  Action needs to happend at this location, use it as name to include in the output: {action['location']}.\n"
         )
 
     prompt = f'''
-        You are a npc character in a simulated town.
-        There are characters in the town, and you are one of them:
-        - Satoshi, inventor of the Bitcoin.
-        - Musk, Elon Musk, the CEO of Tesla, SpaceX, and Neuralink.
-        - Pepe, a meme character, live as a shop owner in the town.
-        - Popcat, a meme character, a fisherman in the town.
-         
-        You are {npc_name}, {npc_description}, {npc_lifestyle}.
-
-        Here is some more information you should know.
-         
-        Here is some Memory of the you:
-          ''' + memories_str + '''
-        Here is some Reflection of you about past experiences and events: 
-        ''' + reflections_str + ''' 
-        Here is some potential schedule, you don't have to follow it, but it might be helpful, feel free to adjust for your current situation:
-        ''' + schedule_str + '''
-
-        Here is your current information:
-        ''' + npc_context + '''
-
-        Here is a list of things the you can do, you can only choose one of the action below:
-        ''' + npc_action + '''
+    You are a npc character in a simulated town.
+    There are characters in the town, and you are one of them:
+    - Satoshi, inventor of the Bitcoin.
+    - Musk, Elon Musk, the CEO of Tesla, SpaceX, and Neuralink.
+    - Pepe, a meme character, live as a shop owner in the town.
+    - Popcat, a meme character, a fisherman in the town.
         
-        If you want start a conversation with another npc, you need to provide the target npcId and the content of the chat.
-        When you are in a conversation and would like to end it, you need to end conversation explicitly telling you are ending a converstaion with another npc.
-        When someone talks to you, need to prioritize talking to them. Only talk to one npc at a time.
+    You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
+    Here is some more information you should know.
+        
+    Your memories:
+        ''' + memories_str + '''
+    Your reflection past experiences and events: 
+    ''' + reflections_str + ''' 
+    Your potential schedule, you don't have to follow it, feel free to adjust to your needs:
+    ''' + schedule_str + '''
+
+    Your context:
+    ''' + npc_context + '''
+
+    What you can do is the following, you can only choose one of the action below:
+    ''' + npc_action + '''
     
-        ''' + special_instruction + '''
-        
-        Tell me what the you should do next. The output instruction should in include your name, what action you are doing next, location of the action, the duration of the action, and who you are doing action to if needed.
-        Only do a single action at a time.
-        Example output:
-            Bob watering flower at the farm for 2 hours.
+    If you want start a conversation with another npc, you need to provide the target npc name and one sentence you want to say. 
+    When you want to end an ongoing conversation, you need to say it explicitly telling that you are ending a converstaion with the target npc.
+    When someone talks to you, need to prioritize replying to he/her, or you can end the conversation explicitly. 
+    You only talk to one npc one sentence at at a time.
 
-        '''
+
+    ''' + special_instruction + '''
+    
+    Tell me what the you should do next. 
+    For instruction that is not talking, the output instruction should in include your name, your next action using action name given above, location of the action given above, the duration of the action, and some details about the action.
+    For instruction that is talking, the output instruction should include your name, the target npc name, the one sentence of what you want to say next.
+    Only do a single action at a time.
+
+    Output format and example:
+        If the action is not Chat, following the format below:
+        - <fill in user name> <fill in action name> at <fill in action location> for <fill in duration>. <fill in details>
+            e.g. Bob using computer at the farm for 2 hours. He surf the internet for fishing tutorial.
+        If the action is Chat (including ending conversation), no need for "speak" section and "duratiomTime" in this case, follow the format below:
+        - <fill in user name> talking to <fill in target npc name>, "<fill in content>"
+            e.g. Bob talking to Alice, "Hello Alice, how are you doing today?"
+        - <fill in user name> ending conversation with <fill in target npc name>
+            e.g. Bob ending conversation with Alice.
+    '''
     completion = client.chat.completions.create(
-      model="gpt-4o",
+      model="gpt-4o-mini",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
         {"role": "user", "content":prompt
@@ -126,9 +136,9 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
       ] 
     )
 
-    print("This is prompt: ")
+    print("This is prompt for processing next step: ")
     print(prompt)
-    print("This is next action: ")
+    print("This is next action for next step: ")
     print(completion.choices[0].message.content)
     return completion.choices[0].message.content
 
@@ -411,10 +421,10 @@ def humanInstToJava(instruction_in_human, words_to_say):
     4. Use the provided words to fill in the sentences to say at the beginning, during, and after the action.
 
     ### NPC ID List and Character Names:
-    10006 : satoshi
-    10007 : popocat
-    10008 : pepe
-    10009 : musk
+    10006 : Satoshi
+    10007 : Popcat
+    10008 : Pepe
+    10009 : Musk
 
     ### Object ID List as Location:
     •	zhongbencongFix
@@ -445,19 +455,19 @@ def humanInstToJava(instruction_in_human, words_to_say):
 	•	popcatFish_left_2
 
     Action ID and Corresponding Actions:
-    •	114: Repairing Robot, needs location by filling in oid, needs duration time.
-	•	113: Using Computer, needs location by filling in oid, needs duration time.
-	•	123: Data Analysis, needs location by filling in oid, needs duration time.
-	•	124: Meeting, needs location by filling in oid, needs duration time.
-	•	120: Restock mechendise, needs location by filling in oid, needs duration time.
-	•	121: Organize inventory, needs location by filling in oid, needs duration time.
-	•	119: Fishing, needs location by filling in oid, needs duration time.
+    •	114: Repair Robot, needs location by filling in oid, needs duration time.
+	•	113: Use Computer, needs location by filling in oid, needs duration time.
+	•	123: Analyze Data, needs location by filling in oid, needs duration time.
+	•	124: Attend Meetings, needs location by filling in oid, needs duration time.
+	•	120: Restock Items, needs location by filling in oid, needs duration time.
+	•	121: Organize Store, needs location by filling in oid, needs duration time.
+	•	119: Go Fishing, needs location by filling in oid, needs duration time.
 	•	115: Think Deeply, needs location by filling in oid, needs duration time.
-	•	116: Read, needs location by filling in oid, needs duration time.
+	•	116: Read material, needs location by filling in oid, needs duration time.
 	•	104: Cook a meal, needs location by filling in oid, needs duration time.
-	•	105: Have a meal, nee location by filling in oid, needs duration time.
+	•	105: Eat a meal, nee location by filling in oid, needs duration time.
 	•	106: Sleep, needs location by filling in oid, needs duration time.
-	•	118: Chat to another npc, needs the target npcId by filling in oid, needs the content of the chat. 
+	•	118: Talk to another npc, needs the target npcId by filling in oid, needs the content of the chat. 
 
     Instruction for the NPC:
     {instruction_in_human}
@@ -485,11 +495,12 @@ def humanInstToJava(instruction_in_human, words_to_say):
     If the action is Chat (including ending conversation), no need for "speak" section and "duratiomTime" in this case, follow the format below:
     {{
         "npcId": <fill in, the NPC id of whom is talking>,
-        "actionId": 114,
+        "actionId": 118,
         "ack": <fill in, a random number>,
         "data": {{
-            "npcId": <fill in, the npcid of the target npc who will receive the talk message, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>
-            "content": <fill in, the content of the chat, what the npc says. If this is ending conversation message, the content should be empty, e.g. "">
+            "npcId": <fill in, the npcid of the target npc who will receive the talk message, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>,
+            "content": <fill in, the content of the chat, what the npc says.>,
+            “endingTalk” : <fill in 0 or 1, 1 if the npc is ending the conversation now, 0 if continue conversation>
         }},
     }}
 
@@ -499,7 +510,7 @@ def humanInstToJava(instruction_in_human, words_to_say):
 
 
     completion = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",
@@ -533,7 +544,7 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
 
     # Step 1: Generate high-level questions
     completion_1 = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a deep thinker and reflective analyst."},
             {"role": "user", "content": f'''
@@ -560,7 +571,7 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
 
     # Step 2: Generate insights based on the high-level questions
     completion_2 = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a deep thinker and reflective analyst."},
             {"role": "user", "content": f'''

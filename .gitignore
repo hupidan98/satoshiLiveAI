@@ -2,3 +2,4 @@ config.ini
 *.pyc
 __pycache__/
 __pycache__/
+BhrCtrl/output_log.txt

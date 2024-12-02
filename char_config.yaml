@@ -35,10 +35,10 @@ npcCharacters:
     - actionName: Think Deeply
       description: You contemplates complex ideas or problems. Fill in the topic of thinking. Fill in action duration time.
       location: zhongbencongThink
-    - actionName: Read Books
+    - actionName: Read material
       description: You reads books or research papers. Fill in the content of the book. Fill in action duration time.
       location: zhongbencongRead
-    - actionName: Talk to other npc
+    - actionName: Talk to another npc
       description: You interacts with other NPCs. Fill in the target npc name who has to be another npc in the town, and what You will say.
       location: the target npc
 
@@ -72,22 +72,22 @@ npcCharacters:
       - actionName: Attend Meetings
         description: You collaborates with engineers or team members on new projects. Fill in action duration time.
         location: muskMeeting
-      - actionName: Think Creatively
+      - actionName: Think Deeply
         description: You brainstorms innovative ideas or strategies for future ventures. Fill in action duration time.
         location: muskThink
-      - actionName: Read
+      - actionName: Read material
         description: You reads papers, articles, or books to gain new insights.Fill in action duration time.
         location: muskRead
-      - actionName: Cook
+      - actionName: Cook a meal
         description: You prepares meals, often experimenting with new recipes.Fill in action duration time.
         location: muskCook
-      - actionName: Eat
+      - actionName: Eat a meal
         description: You enjoys meals while contemplating new ideas or relaxing.Fill in action duration time.
         location: muskEat
       - actionName: Sleep
         description: You rests to recharge for another day of groundbreaking work. Fill in action duration time.
         location: muskSleep
-      - actionName: Talk to other npc
+      - actionName: Talk to another npc
         description: You interacts with other NPCs. Fill in the target npc name who has to be another npc in the town, and what You will say. 
         location: the target npc
 
@@ -124,19 +124,19 @@ npcCharacters:
     - actionName: Think Deeply
       description: You think about some topics, fill in the topic. Fill in action duration time.
       location: pepeThink
-    - actionName: Read
+    - actionName: Read material
       description: You reads books or manuals to learn new skills. Fill in content of the book. Fill in action duration time.
       location: pepeRead
-    - actionName: Cook
+    - actionName: Cook a meal
       description: You prepares meals for the day. Fill in action duration time.
       location: pepeCook
-    - actionName: Eat
+    - actionName: Eat a meal
       description: You takes a break to enjoy meals. Fill in action duration time.
       location: pepeEat
     - actionName: Sleep
       description: You rests to recharge for the next day. Fill in action duration time.
       location: pepeSleep
-    - actionName: Talk to other npc
+    - actionName: Talk to another npc
       description: You interacts with other NPCs. Fill in the target npc who has to be another npc in the town, and what You will say.
       location: the target npc
       
@@ -166,24 +166,24 @@ npcCharacters:
     "It’s a beautiful day in town—perfect for a fishing trip!"
     "Every fish has its story, just like everyone in town. Let’s hear yours!"
   availableActions:
-    - actionName: Fish
+    - actionName: Go Fishing
       description: You spends time by the lake, casting lines and catching fish. Fill in action duration time. choose one location from below.
       location: popcatFish_right_1, popcatFish_right_2, popcatFish_right_3, popcatFish_right_4, popcatFish_right_5, popcatFish_right_6, popcatFish_right_7, popcatFish_left_1, popcatFish_left_2, popcatFish_left_3, popcatFish_down_1
-    - actionName: Think of Fishing Strategies
+    - actionName: Think Deeply
       description: You brainstorms new topics, fill in the topic. Fill in action duration time.
       location: popcatThink
-    - actionName: Read
+    - actionName: Read material
       description: You reads books. Fill in the content of the book. Fill in action duration time.
       location: popcatRead
-    - actionName: Cook
+    - actionName: Cook a meal
       description: You prepares meals using fresh fish from the day’s catch. Fill in action duration time.
       location: popcatCook
-    - actionName: Eat
+    - actionName: Eat a meal
       description: You enjoys meals made from the freshly caught fish. Fill in action duration time.
       location: popcatEat
     - actionName: Sleep
       description: You rests to recover energy for another day of fishing. Fill in action duration time.
       location: popcatSleep
-    - actionName: Talk to other npc
+    - actionName: Talk to another npc
       description: You interacts with other NPCs. Fill in the target npc name who should be another npc in the town, and what the you will say.
       location: the target npc name

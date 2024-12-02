@@ -42,22 +42,26 @@ def parse_npc_info(json_input):
     # action_name = cur_action.get('actionName', 'None')  # Default to 'None' if not present
     # action_oid = cur_action.get('param', {}).get('oid', 'None')  # Default to 'None' if not present
 
+    # NPC name mapping
+    npc_names = {
+        10006: "Satoshi",
+        10007: "Popocat",
+        10008: "Pepe",
+        10009: "Musk"
+    }
+    
+    
     # Extract talking information
     talk_info = npc.get('talk', {})
     is_talking = talk_info.get('isTalking', False)
-    talking_to = talk_info.get('talkingTo', [])
     talk_contents = talk_info.get('contents', [])
     
-    npc_names = {
-    10006: "satoshi",
-    10007: "popocat",
-    10008: "pepe",
-    10009: "musk"
-}
-
     if is_talking and talk_contents:
         talk_summary = "\n".join([
-            f"{npc_names.get(content.get('sender'), 'Unknown')} said to {npc_names.get(content.get('target'), 'Unknown')}: \"{content.get('content', 'None')}\""
+            f"Sender: {npc_names.get(content.get('sender'), 'Unknown')}, "
+            f"Target: {npc_names.get(content.get('target'), 'Unknown')}, "
+            f"Time: {datetime.fromtimestamp(content.get('time', 0) / 1000.0).strftime('%Y-%m-%d %H:%M:%S') if content.get('time') else 'Unknown'}, "
+            f"Content: {content.get('content', 'None')}"
             for content in talk_contents
         ])
     else:
@@ -100,16 +104,24 @@ def parse_npc_info_formemory(json_input):
     
     npc = npcs[0]  # Assuming we're interested in the first NPC
 
+    # NPC name mapping
+    npc_names = {
+        10006: "Satoshi",
+        10007: "Popocat",
+        10008: "Pepe",
+        10009: "Musk"
+    }
+    
+    
     # Extract talking information
     talk_info = npc.get('talk', {})
     is_talking = talk_info.get('isTalking', False)
-    talking_to = talk_info.get('talkingTo', [])
     talk_contents = talk_info.get('contents', [])
     
     if is_talking and talk_contents:
         talk_summary = "\n".join([
-            f"Sender: {content.get('sender', 'Unknown')}, "
-            f"Target: {content.get('target', 'Unknown')}, "
+            f"Sender: {npc_names.get(content.get('sender'), 'Unknown')}, "
+            f"Target: {npc_names.get(content.get('target'), 'Unknown')}, "
             f"Time: {datetime.fromtimestamp(content.get('time', 0) / 1000.0).strftime('%Y-%m-%d %H:%M:%S') if content.get('time') else 'Unknown'}, "
             f"Content: {content.get('content', 'None')}"
             for content in talk_contents
@@ -119,7 +131,7 @@ def parse_npc_info_formemory(json_input):
 
     # Compile the extracted information into a readable format
     output_text = (
-        f"World Time: {world_time}\n\n"
+        f"Time now is: {world_time}\n\n"
 
         f"Talking Information:\n{talk_summary}"
     )
