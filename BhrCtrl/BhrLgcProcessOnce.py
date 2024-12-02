@@ -69,7 +69,7 @@ def processOneInputGiveOneInstruction():
             a_similarity * rows_df['cosine_similarity']
         )
 
-        rows_df_ranked = rows_df.sort_values(by=['retrieval_score', 'Time'], ascending=[False, False]).head(20)
+        rows_df_ranked = rows_df.sort_values(by=['retrieval_score', 'Time'], ascending=[False, False]).head(30)
         rows_df_ranked = rows_df_ranked.sort_values(by='Time', ascending=False)
         paragraph = "\n".join(rows_df_ranked['Content'].astype(str).tolist())
         memories_str = paragraph
@@ -186,7 +186,7 @@ def processOneInputGiveOneInstruction():
     if output:
         output_importance, output_starttime, output_endtime = output[0], output[1], output[2]
         # print('Total Importance: ', output_importance)
-        if output_importance > 30:
+        if output_importance > 100:
             # print('Now is reflection time')
 
             memories = BhrDBMemStre.retrieve_entries_between_time(db_conn, npcId, output_starttime, output_endtime)

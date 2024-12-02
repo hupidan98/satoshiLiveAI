@@ -78,7 +78,7 @@ def process_task(task_id):
 
 # Run the parallelized infinite loop
 n = 0
-num_workers = 4  # Number of parallel tasks
+num_workers = 2  # Number of parallel tasks
 try:
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         while True:

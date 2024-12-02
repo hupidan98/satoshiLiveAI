@@ -592,7 +592,7 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
     question_1_answer = completion_1.choices[0].message.content
 
     # Define the second question
-    question_2 = "What 5 high-level insights can you infer from the above statements not included in the information of the npc? Repeat your 3 recent goals and 3 long terms goals, and make a plan on how to achieve those goal."
+    question_2 = "What 5 high-level insights can you infer from the above statements not included in the information of the npc? Moreover, Repeat your 3 recent goals and 3 long terms goals, and make a plan on how to achieve those goal."
 
     # Step 2: Generate insights based on the high-level questions
     completion_2 = client.chat.completions.create(
