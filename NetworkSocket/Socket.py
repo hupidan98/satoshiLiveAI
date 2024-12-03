@@ -406,13 +406,17 @@ if __name__ == "__main__":
     if 'mysql' not in config:
         print("Error: 'mysql' section not found in config.ini")
         exit(1)
-        
+    
     # Access the config values
     ip_java = config['NetworkSocket']['ip_java']
     port_java = int(config['NetworkSocket']['port_java'])
 
     # Create socket and set to blocking mode (default mode)
     reconnect_socket(ip_java, port_java)
+
+    db_conn_temp = establish_sql_connection()
+    BhrDBJavaBuffer.mark_all_entries_as_processed(db_conn_temp)
+    close_sql_connection(db_conn_temp)
     
     # Initial command to execute before starting threads
     init_command = '''
