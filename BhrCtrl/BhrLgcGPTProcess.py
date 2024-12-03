@@ -618,7 +618,7 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
             '''}
         ]
     )
-
+    print("output reflections: ", completion_2.choices[0].message.content)
     # Return the generated insights
     return completion_2.choices[0].message.content
 
