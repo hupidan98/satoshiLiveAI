@@ -129,7 +129,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
             e.g. Bob ending conversation with Alice.
     '''
     completion = client.chat.completions.create(
-      model="gpt-4o",
+      model="gpt-4o-mini",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
         {"role": "user", "content":prompt
@@ -569,7 +569,7 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
 
     # Step 1: Generate high-level questions
     completion_1 = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a deep thinker and reflective analyst."},
             {"role": "user", "content": f'''
@@ -596,7 +596,7 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
 
     # Step 2: Generate insights based on the high-level questions
     completion_2 = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a deep thinker and reflective analyst."},
             {"role": "user", "content": f'''

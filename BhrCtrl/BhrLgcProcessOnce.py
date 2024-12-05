@@ -23,8 +23,8 @@ import re
 import pickle
 import hashlib
 
-def processOneInputGiveOneInstruction(db_conn):
-    # db_conn = DBCon.establish_sql_connection()
+def processOneInputGiveOneInstruction():
+    db_conn = DBCon.establish_sql_connection()
     input_from_java = BhrDBJavaBuffer.get_earliest_unprocessed_entry(db_conn)
     
     if input_from_java is None:

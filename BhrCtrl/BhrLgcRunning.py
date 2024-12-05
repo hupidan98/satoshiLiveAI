@@ -1,7 +1,7 @@
 import sys
 import os
 import time
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 
 # Import project-specific modules
 import DBConnect.DBCon as DBCon
@@ -69,16 +69,13 @@ try:
     while True:
         print(f"Processing step {n}")
         # Call the core processing function
-        BhrLgcProcessOnce.processOneInputGiveOneInstruction(db_conn)
+        BhrLgcProcessOnce.processOneInputGiveOneInstruction()
         print("\n" * 5)  # Add spacing between iterations for clarity
         time.sleep(2)  # Adjust the sleep interval as needed
         n += 1
 except KeyboardInterrupt:
     print("Loop terminated by user.")
 finally:
-    # Close the database connection
-    db_conn.close()
-    print("Database connection closed.")
     # Reset stdout and stderr to default
     sys.stdout.log.close()
     sys.stdout = sys.__stdout__

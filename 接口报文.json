@@ -418,21 +418,21 @@
           {
               "npcId": 10006,
               "status": "idle",
-              "info": {
-                  "name": "wSatoshi",
-                  "firstName": "wSatoshi",
-                  "lastName": "wSatoshi",
-                  "type": "Engineer",
-                  "age": 20,
-                  "height": 180,
-                  "weight": 60,
-                  "body_style": "fit and sturdy",
-                  "innate": "Visionary, Analytical, Persistent",
-                  "learned": "wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.",
-                  "lifestyle": "wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.",
-                  "living_area": "house",
-                  "property": "house"
-              },
+              // "info": {
+              //     "name": "wSatoshi",
+              //     "firstName": "wSatoshi",
+              //     "lastName": "wSatoshi",
+              //     "type": "Engineer",
+              //     "age": 20,
+              //     "height": 180,
+              //     "weight": 60,
+              //     "body_style": "fit and sturdy",
+              //     "innate": "Visionary, Analytical, Persistent",
+              //     "learned": "wSatoshi is a hardworking researcher and engineer who reading, thinking, and using computer all day long.",
+              //     "lifestyle": "wSatoshi spends his days reading, typing, thinking, and repairing the 小精灵, and he enjoy going out to meet other characters.",
+              //     "living_area": "house",
+              //     "property": "house"
+              // },
               "selling": [],
               "items": [],
               "action": {
@@ -459,6 +459,10 @@
                       }
                   ]
               },
+              "availableBuy": {
+                  "oid": "pepe",
+                  "canBuy": false,
+              }  ,
               "talk": {
                   "isTalking": true,
                   "talkingTo": [

@@ -3,8 +3,6 @@ import os
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-# Add the parent directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Import project-specific modules
 import DBConnect.DBCon as DBCon
@@ -50,7 +48,7 @@ global_db_conn = DBCon.establish_sql_connection()
 
 # Create or validate tables
 def initialize_database(db_conn):
-    BhrDBJavaBuffer.delete_database(db_conn, 'AITown')
+    # BhrDBJavaBuffer.delete_database(db_conn, 'AITown')
 
     if not BhrDBJavaBuffer.database_exists(db_conn):
         BhrDBJavaBuffer.create_database(db_conn)
@@ -71,20 +69,23 @@ def initialize_database(db_conn):
 # Call the database initialization function
 initialize_database(global_db_conn)
 
-# Define the function to process tasks
+# Define the function to process tasks with safe connection handling
 def process_task(task_id):
-    # Establish a new database connection for this thread
-    db_conn = DBCon.establish_sql_connection()
+    db_conn = None
     try:
         print(f"Processing task {task_id}")
-        BhrLgcProcessOnce.processOneInputGiveOneInstruction(db_conn)  # Pass connection explicitly
+        BhrLgcProcessOnce.processOneInputGiveOneInstruction()
         print(f"Task {task_id} completed.")
+    except Exception as e:
+        print(f"Error processing task {task_id}: {e}")
     finally:
-        db_conn.close()  # Ensure the database connection is closed after task completion
+        if db_conn:
+            print(f"Closing connection for task {task_id}")
+            db_conn.close()
 
 # Main loop to run tasks in parallel
 n = 0
-num_workers = 2  # Number of parallel tasks
+num_workers = 4  # Number of parallel tasks
 try:
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         while True:
