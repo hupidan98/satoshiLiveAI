@@ -1,9 +1,10 @@
 import sys
 import os
+# Add the base directory (one level up from the current directory)
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(base_dir)
 
-import DBConnect.DBCon as DBCon
-import DBConnect.DBCon as DBCon 
-
+from DBConnect import DBCon
 from DBConnect import BhrDBJavaBuffer
 from DBConnect import BhrDBInstruction
 from DBConnect import BhrDBReflectionTracer

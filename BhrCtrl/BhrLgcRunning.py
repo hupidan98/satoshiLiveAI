@@ -4,7 +4,7 @@ import time
 
 
 # Import project-specific modules
-import DBConnect.DBCon as DBCon
+from DBConnect import DBCon
 from DBConnect import BhrDBJavaBuffer
 from DBConnect import BhrDBInstruction
 from DBConnect import BhrDBReflectionTracer
