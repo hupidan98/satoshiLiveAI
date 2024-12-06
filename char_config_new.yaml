@@ -67,20 +67,24 @@ npcCharacters:
       description: You read books or research papers. Fill in the content of the book. Fill in action duration time.
       location: zhongbencongRead
       actionId: 116
-    - actionName: Buy Coffee
-      description: You purchase coffee from Pippin’s café.
-      location: satoshiBuycoffee
-      actionId: 103
     - actionName: Drink Coffee
       description: You enjoy coffee at Pippin’s café, do this action after you buy the coffee. Fill in action duration time.
       location: satoshiDrinkcoffee
       actionId: 126
+    - actionName: Buy Items
+      description: You purchase items from Pepe's store. 
+      location: pepeBuy
+      actionId: 103
+    - actionName: Buy Coffee
+      description: You purchase coffee from Pippin’s café.
+      location: pippinBuy
+      actionId: 103
+    - actionName: Buy Fish
+      description: You purchase Fish from Popcat fish store.
+      location: popcatBuy
+      actionId: 103
     - actionName: Go find another npc
       description: You interact with other NPCs. Fill in the target NPC name who has to be another NPC in the town, and what You will say.
-      location: <fill in the target npc>
-      actionId: 112
-    - actionName: Go find another NPC
-      description: You move and find another NPC to start a conversation. Fill in the target NPC name who has to be another NPC in the town.
       location: <fill in the target npc>
       actionId: 112
     - actionName: Speak to another NPC
@@ -164,18 +168,18 @@ npcCharacters:
       description: You rest to recover energy for another day of fishing. Fill in action duration time.
       location: popcatSleep
       actionId: 106
-    - actionName: Buy Items
-      description: You purchase items from Pepe's store. 
-      location: popcatBuy
-      actionId: 103
-    - actionName: Buy Coffee
-      description: You purchase coffee from Pippin’s café.
-      location: popcatBuycoffee
-      actionId: 103
     - actionName: Drink Coffee
       description: You enjoy coffee at Pippin’s café, do this action after you buy the coffee. Fill in action duration time.
       location: popcatDrinkcoffee
       actionId: 126
+    - actionName: Buy Items
+      description: You purchase items from Pepe's store. 
+      location: pepeBuy
+      actionId: 103
+    - actionName: Buy Coffee
+      description: You purchase coffee from Pippin’s café.
+      location: pippinBuy
+      actionId: 103
     - actionName: Go find another NPC
       description: You move and find another NPC to start a conversation. Fill in the target NPC name who has to be another NPC in the town.
       location: <fill in the target npc>
@@ -276,14 +280,22 @@ npcCharacters:
       description: You sell items in your store to customers. Fill in action duration time.
       location: pepeSale
       actionId: 102
-    - actionName: Buy Coffee
-      description: You purchase coffee from Pippin’s café.
-      location: pepeBuycoffee
-      actionId: 103
     - actionName: Drink Coffee
       description: You enjoy coffee at Pippin’s café, do this action after you buy the coffee. Fill in action duration time.
       location: pepeDrinkcoffee
       actionId: 126
+    - actionName: Buy Items
+      description: You purchase items from Pepe's store. 
+      location: pepeBuy
+      actionId: 103
+    - actionName: Buy Coffee
+      description: You purchase coffee from Pippin’s café.
+      location: pippinBuy
+      actionId: 103
+    - actionName: Buy Fish
+      description: You purchase Fish from Popcat fish store.
+      location: popcatBuy
+      actionId: 103
     - actionName: Go find another NPC
       description: You move and find another NPC to start a conversation. Fill in the target NPC name who has to be another NPC in the town.
       location: <fill in the target npc>
@@ -383,18 +395,22 @@ npcCharacters:
       description: You rest to recharge for another day of groundbreaking work. Fill in action duration time.
       location: muskSleep
       actionId: 106
-    - actionName: Buy items
-      description: You purchase items from Pepe's store. 
-      location: muskBuy
-      actionId: 103
-    - actionName: Buy Coffee
-      description: You purchase coffee from Pippin’s café.
-      location: muskBuycoffee
-      actionId: 103
     - actionName: Drink Coffee
       description: You enjoy coffee at Pippin’s café, do this action after you buy the coffee. Fill in action duration time.
       location: muskDrinkcoffee
       actionId: 126
+    - actionName: Buy Items
+      description: You purchase items from Pepe's store. 
+      location: pepeBuy
+      actionId: 103
+    - actionName: Buy Coffee
+      description: You purchase coffee from Pippin’s café.
+      location: pippinBuy
+      actionId: 103
+    - actionName: Buy Fish
+      description: You purchase Fish from Popcat fish store.
+      location: popcatBuy
+      actionId: 103
     - actionName: Go find another NPC
       description: You move and find another NPC to start a conversation. Fill in the target NPC name who has to be another NPC in the town.
       location: <fill in the target npc>
@@ -468,14 +484,18 @@ npcCharacters:
       description: You rest to recharge for another day of groundbreaking work. Fill in action duration time.
       location: pippinSleep
       actionId: 106
-    - actionName: Buy items
-      description: You purchase items from Pepe's store. 
-      location: pippinBuy
-      actionId: 103
     - actionName: Make Coffee and Sale Coffee
       description: You brew fresh coffee for customers and sale it to your customer. Fill in action duration time.
-      location: pippinMakecoffee
+      location: pippinSale
       actionId: 102
+    - actionName: Buy Items
+      description: You purchase items from Pepe's store. 
+      location: pepeBuy
+      actionId: 103
+    - actionName: Buy Fish
+      description: You purchase Fish from Popcat fish store.
+      location: popcatBuy
+      actionId: 103
     - actionName: Go find another NPC
       description: You move and find another NPC to start a conversation. Fill in the target NPC name who has to be another NPC in the town.
       location: <fill in the target npc>

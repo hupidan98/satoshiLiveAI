@@ -35,12 +35,12 @@ def processOneInputGiveOneInstruction():
         print('Processing the following input:')
         print(input_from_java)
 
-    npcId = input_from_java[2]
-    # AllEntryOfNPC, LatestEntryOfNpc = BhrDBJavaBuffer.get_unprocessed_entries_of_npc(db_conn, npcId)
-    # input_from_java = LatestEntryOfNpc
-
-    curTime = input_from_java[1]
     request_id = input_from_java[0]
+    curTime = input_from_java[1]
+    npcId = input_from_java[2]
+    talkingInfo = BhrLgcManualProcess.parse_talking_from_java(input_from_java[3])
+
+
     inputInHumanString = BhrLgcManualProcess.parse_npc_info(input_from_java[3])
 
     # Get Relevant Memory from Memory Stream
@@ -91,8 +91,6 @@ def processOneInputGiveOneInstruction():
     else:
         prior_reflection_str = 'No prior reflection yet!'
     
-    # print( 'Prior Reflection not str:')
-    # print(prior_reflection)
     print( 'Prior Reflection:')
     print(prior_reflection_str)
     print()
@@ -135,20 +133,6 @@ def processOneInputGiveOneInstruction():
         except Exception as e:
             print(f"Error occurred: {e}. Retrying...")
 
-    # instruction_to_give = BhrLgcGPTProcess.humanInstToJava(instruction_in_human, words_to_say).strip("```json").strip("```")
-    # print()
-    # print(print(instruction_to_give))
-    # print()
-    # # Parse the instruction into a JSON object
-    # instruction_json = json.loads(instruction_to_give)
-
-            
-
-    # Add unique ack
-    
-    # print(type(instruction_json))
-    # print(instruction_json)
-    # instruction_json['ack'] = hashlib.sha256(instruction_to_give.encode('utf-8')).hexdigest()
     print('Instruction to give:')
     print(instruction_json)
     print()
@@ -158,11 +142,7 @@ def processOneInputGiveOneInstruction():
 
     # Mark the buffer as processed
     BhrDBJavaBuffer.mark_entry_as_processed(db_conn, request_id)
-    # for row in AllEntryOfNPC:
-    #     request_id_to_mark = row[0]
-    #     BhrDBJavaBuffer.mark_entry_as_processed(db_conn, request_id_to_mark)
 
-    # Insert Input to Memory Stream, only talk needs to be inserted for now.
     
     data = json.loads(input_from_java[3])
     npcs = data.get('npcs', [])
@@ -179,9 +159,7 @@ def processOneInputGiveOneInstruction():
     BhrLgcToMemStre.InstToMemStreDB(input_from_java, "At "+str(curTime) + " ," + instruction_in_human)
     BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, instruction_in_human)
 
-    # Generate reflection if needed
-    # npcId = input_from_java[1]
-    # curTime = input_from_java[0]
+
     output = BhrDBReflectionTracer.retrieve_entry(db_conn, npcId)
     # print('Refelction Tracer Output: ', output)
     if output:

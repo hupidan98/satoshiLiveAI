@@ -1,7 +1,8 @@
 import sys
 import os
 import time
-
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(base_dir)
 
 # Import project-specific modules
 from DBConnect import DBCon

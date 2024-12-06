@@ -2,18 +2,20 @@ import json
 from datetime import datetime
 
 def parse_npc_info(json_input):
-    try:
-        # Load the JSON data
-        data = json.loads(json_input)
-    except json.JSONDecodeError as e:
-        return f"Error parsing JSON: {e}"
+
+    taling_info = parse_talking_from_java(json_input)
+    # try:
+    #     # Load the JSON data
+    #     data = json.loads(json_input)
+    # except json.JSONDecodeError as e:
+    #     return f"Error parsing JSON: {e}"
     
-    # Extract world time and convert from milliseconds to a readable format
-    world_time_ms = data.get('world', {}).get('time', 0)
-    try:
-        world_time = datetime.fromtimestamp(world_time_ms / 1000.0).strftime('%Y-%m-%d %H:%M:%S')
-    except (OSError, ValueError):
-        world_time = "Invalid world time"
+    # # Extract world time and convert from milliseconds to a readable format
+    # world_time_ms = data.get('world', {}).get('time', 0)
+    # try:
+    #     world_time = datetime.fromtimestamp(world_time_ms / 1000.0).strftime('%Y-%m-%d %H:%M:%S')
+    # except (OSError, ValueError):
+    #     world_time = "Invalid world time"
 
     # Extract map objects
     # map_objects = data.get('mapObj', [])
@@ -28,14 +30,14 @@ def parse_npc_info(json_input):
     #     ])
     
     # Extract NPC information
-    npcs = data.get('npcs', [])
-    if not npcs:
-        return "No NPCs found in the data."
+    # npcs = data.get('npcs', [])
+    # if not npcs:
+    #     return "No NPCs found in the data."
     
-    npc = npcs[0]  # Assuming we're interested in the first NPC
-    npc_info = npc.get('info', {})
-    first_name = npc_info.get('firstName', 'Unknown')
-    last_name = npc_info.get('lastName', 'Unknown')
+    # npc = npcs[0]  # Assuming we're interested in the first NPC
+    # npc_info = npc.get('info', {})
+    # first_name = npc_info.get('firstName', 'Unknown')
+    # last_name = npc_info.get('lastName', 'Unknown')
     
     # # Extract current action
     # cur_action = npc.get('curAction', {})
@@ -43,6 +45,67 @@ def parse_npc_info(json_input):
     # action_oid = cur_action.get('param', {}).get('oid', 'None')  # Default to 'None' if not present
 
     # NPC name mapping
+    # npc_names = {
+    #     10006: "Satoshi",
+    #     10007: "Popcat",
+    #     10008: "Pepe",
+    #     10009: "Musk"
+    # }
+    
+    # # Extract talking information
+    # talk_info = npc.get('talk', {})
+    # is_talking = talk_info.get('isTalking', False)
+    # talk_contents = talk_info.get('contents', [])
+    
+    # if is_talking and talk_contents:
+    #     talk_summary = "\n".join([
+    #         f"{npc_names.get(content.get('sender'), 'Unknown')} said to {npc_names.get(content.get('target'), 'Unknown')}: {content.get('content', 'None')} \n"
+    #         for content in talk_contents
+    #     ])
+    # else:
+    #     talk_summary = "No ongoing conversation."
+
+    # Compile the extracted information into a readable format
+    # output_text = (
+    #     f"Time now is: {world_time}\n\n"
+    #     # f"NPC Information:\n"
+    #     # f"  First Name: {first_name}\n"
+    #     # f"  Last Name: {last_name}\n\n"
+    #     # f"Map Objects:\n{map_details}\n\n"
+    #     # f"NPC Current Action:\n"
+    #     # f"  Action Name: {action_name}\n"
+    #     # f"  Target Object ID: {action_oid}\n\n"
+    #     f"Talking Information:\n{talk_summary}"
+    # )
+
+    # Compile the extracted information into a readable format
+    # output_text = (
+    #     f"Time now is: {world_time}, {talk_summary}"
+    # )
+    output_text = taling_info
+    return output_text
+
+def parse_talking_from_java(json_input):
+    try:
+        # Load the JSON data
+        data = json.loads(json_input)
+    except json.JSONDecodeError as e:
+        return f"Error parsing JSON: {e}"
+    
+    world_time_ms = data.get('world', {}).get('time', 0)
+    try:
+        world_time = datetime.fromtimestamp(world_time_ms / 1000.0).strftime('%Y-%m-%d %H:%M:%S')
+    except (OSError, ValueError):
+        world_time = "Invalid world time"
+
+    npcs = data.get('npcs', [])
+    if not npcs:
+        return "No NPCs found in the data."
+    
+    npc = npcs[0]  # Assuming we're interested in the first NPC
+    npc_info = npc.get('info', {})
+
+     # NPC name mapping
     npc_names = {
         10006: "Satoshi",
         10007: "Popcat",
@@ -63,26 +126,13 @@ def parse_npc_info(json_input):
         ])
     else:
         talk_summary = "No ongoing conversation."
-
-    # Compile the extracted information into a readable format
-    # output_text = (
-    #     f"Time now is: {world_time}\n\n"
-    #     # f"NPC Information:\n"
-    #     # f"  First Name: {first_name}\n"
-    #     # f"  Last Name: {last_name}\n\n"
-    #     # f"Map Objects:\n{map_details}\n\n"
-    #     # f"NPC Current Action:\n"
-    #     # f"  Action Name: {action_name}\n"
-    #     # f"  Target Object ID: {action_oid}\n\n"
-    #     f"Talking Information:\n{talk_summary}"
-    # )
-
-    # Compile the extracted information into a readable format
     output_text = (
         f"Time now is: {world_time}, {talk_summary}"
     )
     
     return output_text
+
+    return 
 
 
 def parse_npc_info_formemory(json_input):
