@@ -113,7 +113,6 @@ def parse_talking_from_java(json_input):
         10009: "Musk"
     }
     
-    
     # Extract talking information
     talk_info = npc.get('talk', {})
     is_talking = talk_info.get('isTalking', False)
@@ -130,9 +129,23 @@ def parse_talking_from_java(json_input):
         f"Time now is: {world_time}, {talk_summary}"
     )
     
-    return output_text
+    return output_text, is_talking
 
-    return 
+def parse_isIdling(json_input):
+    try:
+        # Load the JSON data
+        data = json.loads(json_input)
+    except json.JSONDecodeError as e:
+        return f"Error parsing JSON: {e}"
+    npcs = data.get('npcs', [])
+    return
+
+
+
+
+
+
+
 
 
 def parse_npc_info_formemory(json_input):
