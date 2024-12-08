@@ -340,7 +340,7 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     This is the way you speak, try to imitate the way you speak:
     {npc_way_of_speak}
 
-    From your perspective, write an engaging and insightful speech under 300 words. about the topic: {theme}.
+    From your perspective, write an engaging and insightful eassy under 300 words. about the topic: {theme}.
 
 
 
@@ -363,7 +363,7 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     speech = completion.choices[0].message.content
 
     prompt = f"""
-    Transform the following speech into multiple parts, each part under 40 words:
+    Transform the following eassy into multiple parts, each part under 40 words:
   
     
     Speech:
@@ -622,7 +622,7 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
     question_1_answer = completion_1.choices[0].message.content
 
     # Define the second question
-    question_2 = "What 5 high-level insights can you infer from the above statements not included in the information of the npc? Moreover, Repeat your 3 recent goals and 3 long terms goals, and make a plan on how to achieve those goal."
+    question_2 = "What 5 high-level insights can you infer from the above statements not included in the information of the npc?."
 
     # Step 2: Generate insights based on the high-level questions
     completion_2 = client.chat.completions.create(
@@ -651,60 +651,61 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
     question_2_answer = completion_2.choices[0].message.content
     # Return the generated insights
 
-    question_3 = "Given only the information above, What is your 3 recent short term goals, and how far are you there to achieving those goals? Feel free make adjustment."
+    # question_3 = "Given only the information above, What is your 3 recent short term goals, and how far are you there to achieving those goals? Feel free make adjustment."
 
-    # Step 1: Generate high-level questions
-    completion_3 = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a deep thinker and reflective analyst."},
-            {"role": "user", "content": f'''
-            You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    # # Step 1: Generate high-level questions
+    # completion_3 = client.chat.completions.create(
+    #     model="gpt-4o-mini",
+    #     messages=[
+    #         {"role": "system", "content": "You are a deep thinker and reflective analyst."},
+    #         {"role": "user", "content": f'''
+    #         You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-            Your context now:
-            {java_input_str}
+    #         Your context now:
+    #         {java_input_str}
 
-            Your memeories:
-            {memories_str}
+    #         Your memeories:
+    #         {memories_str}
 
-            Your prior reflections on past experiences and events:
-            {reflections_str}
+    #         Your prior reflections on past experiences and events:
+    #         {reflections_str}
 
-            {question_1}
-            '''}
-        ]
-    )
+    #         {question_1}
+    #         '''}
+    #     ]
+    # )
 
-    question_3_answer = completion_3.choices[0].message.content
+    # question_3_answer = completion_3.choices[0].message.content
 
-    question_4 = "Given only the information above, What is your 3 recent short term goals, and how far are you there to achieving those goals? Feel free make adjustment."
+    # question_4 = "Given only the information above, What is your 3 recent short term goals, and how far are you there to achieving those goals? Feel free make adjustment."
 
-    # Step 1: Generate high-level questions
-    completion_4 = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a deep thinker and reflective analyst."},
-            {"role": "user", "content": f'''
-            You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    # # Step 1: Generate high-level questions
+    # completion_4 = client.chat.completions.create(
+    #     model="gpt-4o-mini",
+    #     messages=[
+    #         {"role": "system", "content": "You are a deep thinker and reflective analyst."},
+    #         {"role": "user", "content": f'''
+    #         You are {npc_name}, {npc_description}, {npc_lifestyle}.
 
-            Your context now:
-            {java_input_str}
+    #         Your context now:
+    #         {java_input_str}
 
-            Your memeories:
-            {memories_str}
+    #         Your memeories:
+    #         {memories_str}
 
-            Your prior reflections on past experiences and events:
-            {reflections_str}
+    #         Your prior reflections on past experiences and events:
+    #         {reflections_str}
 
-            {question_1}
-            '''}
-        ]
-    )
+    #         {question_1}
+    #         '''}
+    #     ]
+    # )
 
-    question_4_answer = completion_4.choices[0].message.content
-    result = f'''Your Short Term Goals Update: {question_3_answer}
-                Your Long Term Goals Update: {question_4_answer}
-                You Key Insight Recently: {question_2_answer}'''
+    # question_4_answer = completion_4.choices[0].message.content
+    # result = f'''Your Short Term Goals Update: {question_3_answer}
+    #             Your Long Term Goals Update: {question_4_answer}
+    #             You Key Insight Recently: {question_2_answer}'''
+    result = question_2_answer
     return result
 
 
@@ -766,7 +767,7 @@ def generate_schedule(current_schedule, memories, reflections, npc_context,npcId
                     Your context:
                     {npc_context}
 
-                    Please create a new detailed schedule for the NPC for today, adapting to the current situation.
+                    Please create a new detailed schedule using 24-hour time format for the NPC for today, adapting to the current situation.
 
 
 
