@@ -92,41 +92,30 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     Here is some more information you should know.
         
     Your past memories and experiences:
-        ''' + memories_str + '''
+    ''' + memories_str + '''
     Your reflection past experiences and events: 
     ''' + reflections_str + ''' 
     Your calendar of the day, try to follow your schedule, but fill free to adjust to the current situation:
     ''' + schedule_str + '''
 
-    Your context:
+    Your context now:
     ''' + npc_context + '''
 
-    Tell me what the you should do next.
-
-    Available Actions:
+    Tell me what the you should do next ,choosing from available Actions:
     ''' + npc_action + '''
     You can only choose one of actions above to at the given location at a time:
     
     ''' + special_instruction + '''
     
-    For instruction that is not talking, the output instruction should in include your name, your next action using action name given above, location of the action given above, the duration of the action, and some details about the action.
+    The output instruction should in include your name, your next action using action name given above, location of the action given above, the duration of the action, and some details about the action.
     Only do a single action at a time.
     
-    For instruction that is talking, the output instruction should include your name, the target npc name, the one sentence of what you want to say next.
-    If you want to talk to another npc, only to one npc one sentence at a time, you need to provide the target npc name and one sentence you want to say. 
-    When you want to end an ongoing conversation, you need to say it explicitly telling that you are ending a converstaion with the target npc.
-    When someone talks to you, need to replying to he/her immediately,  but you can tell the other person that you are busy and will talk to him/her later, and end the conversation.
-    Please do not talk to other people all day long, end conversation if need to do other things on your calendar.
-
+    
     Output format and example:
-        If the action is not Chat, following the format below:
-        - <fill in user name, given in characters in the town section> <fill in action name, given in Available Actions> at <fill in action location, given in Available Actions section> for <fill in duration>. <fill in details>
+        - <fill in user name, given in characters in the town section> <fill in action name, given in Available Actions> at <fill in action location, given in Available Actions section> for <fill in duration if needed>. <fill in details>
             e.g. Bob using computer at the farm for 2 hours. He surf the internet for fishing tutorial.
-        If the action is Chat (including ending conversation), no need for "speak" section and "duratiomTime" in this case, follow the format below:
-        - <fill in user name, given in characters in the town section> talking to <fill in target npc name, given in characters in the town section>, "<fill in content>"
-            e.g. Bob talking to Alice, "Hello Alice, how are you doing today?"
-        - <fill in user name, given in characters in the towsn section> ending conversation with <fill in target npc name, given at characters in the town section>
-            e.g. Bob ending conversation with Alice.
+            e.g. Bob drink coffee at the coffee shop, he is writing a boot about the moon.
+            e,g. Bob went the the store, and he buy a cookie.
     '''
     completion = client.chat.completions.create(
       model="gpt-4o-mini",
@@ -140,6 +129,76 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     print("This is prompt for processing next step: ")
     print(prompt)
     print("This is next action for next step: ")
+    print(completion.choices[0].message.content)
+    return completion.choices[0].message.content
+
+def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcId, isFinding, special_instruction = ''):
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+    npc_description = npc['description']
+    npc_lifestyle = npc['lifestyle']
+    npc_way_of_speak= npc['announcements']
+
+    finder_instruction = ""
+    if isFinding:
+        finder_instruction = ''' Your calendar of the day, try to follow your schedule, but fill free to adjust to the current situation: 
+                            ''' + schedule_str + ''' Try to wrap up the conversation if you need to do other things on your calendar.'''
+
+    prompt = f'''
+    You are a npc character in a simulated town.
+    Characters in the town:
+    - Satoshi, inventor of the Bitcoin.
+    - Musk, Elon Musk, the CEO of Tesla, SpaceX, and Neuralink.
+    - Pepe, a meme character, live as a shop owner in the town.
+    - Popcat, a meme character, a fisherman in the town.
+        
+    You are {npc_name}, {npc_description}, {npc_lifestyle}.
+
+    Your are talking to someone, here is some more information you should know.
+        
+    Your past memories and experiences:
+    ''' + memories_str + '''
+    Your reflection past experiences and events: 
+    ''' + reflections_str + '''
+    ''' + finder_instruction + '''
+    Your context now:
+    ''' + npc_context + '''
+    
+    ''' + special_instruction + '''
+
+    The output should include your name, only one target npc name, only one sentence of what you want to say next.
+    When you want to end an ongoing conversation, you need to say it explicitly telling that you are ending a converstaion with the target npc.
+    Please do not talk to other people all day long, end conversation if need to do other things on your calendar.
+
+    Here is the way you speak, try to imitate the way you speak:
+    ''' + npc_way_of_speak + '''
+
+    Only output what you going to say next, do not provide any other information.
+
+    Output format and example:
+        - <fill in user name, given in characters in the town section> talking to <fill in target npc name, given in characters in the town section>, "<fill in content>"
+            e.g. Bob talking to Alice, "Hello Alice, how are you doing today?"
+        - <fill in user name, given in characters in the towsn section> ending conversation with <fill in target npc name, given at characters in the town section>
+            e.g. Bob ending conversation with Alice.
+    output:
+        {npc_name} talking to <fill in target npc name>, "<fill in content>"
+    '''
+    completion = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[
+        {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
+        {"role": "user", "content":prompt
+        }
+      ] 
+    )
+
+    print("This is prompt for processing your words: ")
+    print(prompt)
+    print("This is next words you say: ")
     print(completion.choices[0].message.content)
     return completion.choices[0].message.content
 
@@ -235,6 +294,7 @@ def generateTheme(memories, reflections, npc_context, npc_action, npcId, special
     {special_instruction if special_instruction else ''}
 
     Choose an intriguing topic for today's discussion, incorporating additional relevant details, adding depth and insight to the conversation.
+    If the topic has been covered extensively, provide a fresh perspective or a new angle to explore.
    
     """
 
@@ -266,6 +326,7 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     npc_name = npc['name']
     npc_description = npc['description']
     npc_lifestyle = npc['lifestyle']
+    npc_way_of_speak= npc['announcements']
 
     prompt = f"""
     You are {npc_name}, {npc_description}, {npc_lifestyle}.
@@ -275,8 +336,13 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
 
     Your Reflection on past experiences and events: 
     {reflections}
-    
-    From your perspective, write an engaging  and insightful speech under 300 words. about the topic: {theme}.
+
+    This is the way you speak, try to imitate the way you speak:
+    {npc_way_of_speak}
+
+    From your perspective, write an engaging and insightful speech under 300 words. about the topic: {theme}.
+
+
 
     """
     
@@ -297,10 +363,8 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     speech = completion.choices[0].message.content
 
     prompt = f"""
-    Transform the following speech into three parts, each part under 100 words:
-    - At the beginning of the action.
-    - In the middle of the action.
-    - At the end of the action.
+    Transform the following speech into multiple parts, each part under 40 words:
+  
     
     Speech:
     {speech}
@@ -351,9 +415,8 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
     npc_name = npc['name']
     npc_description = npc['description']
     npc_lifestyle = npc['lifestyle']
-        # Constructing the prompt dynamically
+    npc_way_of_speak= npc['announcements']
 
-    # First determine if this topic would like to go deep. 
 
     prompt = f"""
     You are {npc_name}, {npc_description}, {npc_lifestyle}.
@@ -372,9 +435,13 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
 
     You needs to say something at the beginning of the action, in the middle of the action, and at the end of the action.
 
+    This is the way you speak, try to imitate the way you speak:
+    {npc_way_of_speak}
+    
+
     {special_instruction if special_instruction else ''}
 
-    Please generate three sentences for the you to say: 
+    Please generate three sentences for the you to say, each sentence under 40 words: 
     - At the beginning of the action.
     - In the middle of the action.
     - At the end of the action.
@@ -397,47 +464,6 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
     return completion.choices[0].message.content
 
 
-
-#    •	zhongbencongFix
-# 	•	zhongbencongRead
-	# •	zhongbencongThink
-	# •	zhongbencongType
-	# •	pepeSleep
-	# •	pepeEat
-	# •	pepeRead
-	# •	pepeThink
-	# •	pepeCook
-	# •	pepeGetItem
-	# •	pepeCleanItem
-	# •	popcatSleep
-	# •	popcatEat
-	# •	popcatRead
-	# •	popcatThink
-	# •	popcatCook
-	# •	popcatFish_up_1
-	# •	popcatFish_right_1
-	# •	popcatFish_right_2
-	# •	popcatFish_right_3
-	# •	popcatFish_right_4
-	# •	popcatFish_right_5
-	# •	popcatFish_right_6
-	# •	popcatFish_down_1
-	# •	popcatFish_left_1
-	# •	popcatFish_left_2
-
-    # •	114: Repair Robot, needs location by filling in oid, needs duration time.
-	# •	113: Use Computer, needs location by filling in oid, needs duration time.
-	# •	123: Analyze Data, needs location by filling in oid, needs duration time.
-	# •	124: Attend Meetings, needs location by filling in oid, needs duration time.
-	# •	120: Restock Items, needs location by filling in oid, needs duration time.
-	# •	121: Organize Store, needs location by filling in oid, needs duration time.
-	# •	119: Go Fishing, needs location by filling in oid, needs duration time.
-	# •	115: Think Deeply, needs location by filling in oid, needs duration time.
-	# •	116: Read material, needs location by filling in oid, needs duration time.
-	# •	104: Cook a meal, needs location by filling in oid, needs duration time.
-	# •	105: Eat a meal, nee location by filling in oid, needs duration time.
-	# •	106: Sleep, needs location by filling in oid, needs duration time.
-	# •	118: Talk to another npc, needs the target npcId by filling in oid, needs the content of the chat. 
 
 def humanInstToJava(instruction_in_human, words_to_say, npcId):
     """
@@ -485,6 +511,7 @@ def humanInstToJava(instruction_in_human, words_to_say, npcId):
     10007 : Popcat
     10008 : Pepe
     10009 : Musk
+    10010 : Pippin
     
     {npc_name} initiate the action.
 
@@ -510,9 +537,12 @@ def humanInstToJava(instruction_in_human, words_to_say, npcId):
         "durationTime": <fill in, action duration time in milliseconds>,  
         "speak": [
             <fill in, things to say at the beginning of the action>, 
+            <fill in, things to say during the action>,
+            ...
+            <fill in, things to say during the action>,
             <fill in, things to say during the action>, 
             <fill in, things to say at the end of the action>
-        ]  
+        ]  # Depend on how many sentences you want to say during the action, you can add more or less.
     }}
 
     If the action is Chat (including ending conversation), no need for "speak" section and "duratiomTime" in this case, follow the format below:
@@ -618,9 +648,64 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
             '''}
         ]
     )
-    print("output reflections: ", completion_2.choices[0].message.content)
+    question_2_answer = completion_2.choices[0].message.content
     # Return the generated insights
-    return completion_2.choices[0].message.content
+
+    question_3 = "Given only the information above, What is your 3 recent short term goals, and how far are you there to achieving those goals? Feel free make adjustment."
+
+    # Step 1: Generate high-level questions
+    completion_3 = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a deep thinker and reflective analyst."},
+            {"role": "user", "content": f'''
+            You are {npc_name}, {npc_description}, {npc_lifestyle}.
+
+            Your context now:
+            {java_input_str}
+
+            Your memeories:
+            {memories_str}
+
+            Your prior reflections on past experiences and events:
+            {reflections_str}
+
+            {question_1}
+            '''}
+        ]
+    )
+
+    question_3_answer = completion_3.choices[0].message.content
+
+    question_4 = "Given only the information above, What is your 3 recent short term goals, and how far are you there to achieving those goals? Feel free make adjustment."
+
+    # Step 1: Generate high-level questions
+    completion_4 = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a deep thinker and reflective analyst."},
+            {"role": "user", "content": f'''
+            You are {npc_name}, {npc_description}, {npc_lifestyle}.
+
+            Your context now:
+            {java_input_str}
+
+            Your memeories:
+            {memories_str}
+
+            Your prior reflections on past experiences and events:
+            {reflections_str}
+
+            {question_1}
+            '''}
+        ]
+    )
+
+    question_4_answer = completion_4.choices[0].message.content
+    result = f'''Your Short Term Goals Update: {question_3_answer}
+                Your Long Term Goals Update: {question_4_answer}
+                You Key Insight Recently: {question_2_answer}'''
+    return result
 
 
 
@@ -666,6 +751,9 @@ def generate_schedule(current_schedule, memories, reflections, npc_context,npcId
 
                     You are living in a simulated world. 
 
+                    This is a example typical schedule for you, you can adjust it to the current situation:
+                    {npc_schedule}
+
                     Your prior schedule:
                     {current_schedule}
 
@@ -675,10 +763,12 @@ def generate_schedule(current_schedule, memories, reflections, npc_context,npcId
                     Your reflections on past experiences and events:
                     {reflections}
 
-                    Please create a new schedule for the NPC for today, adapting to the current situation.
+                    Your context:
+                    {npc_context}
 
-                    Example Schedule, use this as a referance, do not follow it strictly:
-                    {npc_schedule}
+                    Please create a new detailed schedule for the NPC for today, adapting to the current situation.
+
+
 
                     """
                 )
@@ -732,11 +822,14 @@ def need_new_schedule(current_schedule, memories, reflections, npc_context, npcI
                         Your prior schedule:
                         {current_schedule}
 
-                        Your past memeories:
+                        Your memeories:
                         {memories}
 
                         Your reflections on past experiences and events:
                         {reflections}
+
+                        Your context:
+                        {npc_context}
 
                         Based on the above, do need a new schedule for the rest of the day? 
                         Respond only with 'yes' or 'no'.

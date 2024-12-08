@@ -38,10 +38,12 @@ def processOneInputGiveOneInstruction():
     request_id = input_from_java[0]
     curTime = input_from_java[1]
     npcId = input_from_java[2]
-    talkingInfo = BhrLgcManualProcess.parse_talking_from_java(input_from_java[3])
 
+    talkingInfo, is_talking = BhrLgcManualProcess.parse_talking_from_java(input_from_java[3])
+    is_idling = BhrLgcManualProcess.parse_isIdling(input_from_java[3])
+    
 
-    inputInHumanString = BhrLgcManualProcess.parse_npc_info(input_from_java[3])
+    inputInHumanString = BhrLgcManualProcess.parse_npc_info_for_nextaction(input_from_java[3])
 
     # Get Relevant Memory from Memory Stream
     BufferRowEmbedding = BhrLgcGPTProcess.get_embedding(inputInHumanString)
@@ -78,7 +80,7 @@ def processOneInputGiveOneInstruction():
         memories_str = 'No memory yet'
     if memories_str == '':
         memories_str = 'No memory yet'
-    print('Memories:')
+    print('Relevent Memeories:')
     print(memories_str)
     print()
 
@@ -109,36 +111,68 @@ def processOneInputGiveOneInstruction():
     print('Current Schedule:')
     print(cur_schedule)
     print()
-
     
-    # Process this information, and give instruction in human language
-    instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId)
+    last_action_is_finding = BhrLgcManualProcess.parse_isFindingPeopletoTalk(input_from_java[3]) # Last action is finding people to talk
+    if is_talking or last_action_is_finding:
+        instruction_in_human = BhrLgcGPTProcess.talkToSomeone(memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, last_action_is_finding)
+        words_to_say = ''
 
-    # Generate sentences for the NPC to say during the action
-    if BhrLgcGPTProcess.needDeepTalk(memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId):
-        theme_for_generation = BhrLgcGPTProcess.generateTheme(memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId, special_instruction='')
-        words_to_say = BhrLgcGPTProcess.generate_new_Announcement(memories_str, prior_reflection_str, theme_for_generation, npcId)
-    else:
-        words_to_say = BhrLgcGPTProcess.generateThreeSentencesForAction(memories_str, prior_reflection_str, cur_schedule_str, instruction_in_human, npcId)
+        while True:
+            try:
+                # Convert the instruction into JSON format
+                instruction_to_give = BhrLgcGPTProcess.humanInstToJava(instruction_in_human, words_to_say, npcId).strip("```json").strip("```")
+                # Parse the instruction into a JSON object
+                instruction_json = json.loads(instruction_to_give)
+                
+                # If no error occurs, break the loop
+                break
+            except Exception as e:
+                print(f"Error occurred: {e}. Retrying...")
 
-    while True:
-        try:
-            # Convert the instruction into JSON format
-            instruction_to_give = BhrLgcGPTProcess.humanInstToJava(instruction_in_human, words_to_say, npcId).strip("```json").strip("```")
-            # Parse the instruction into a JSON object
-            instruction_json = json.loads(instruction_to_give)
-            
-            # If no error occurs, break the loop
-            break
-        except Exception as e:
-            print(f"Error occurred: {e}. Retrying...")
+        print('Instruction to give:')
+        print(instruction_json)
+        print()
 
-    print('Instruction to give:')
-    print(instruction_json)
-    print()
+        # Add to instruction db
+        BhrDBInstruction.insert_into_instruction_table(db_conn, curTime, npcId, instruction_to_give)
 
-    # Add to instruction db
-    BhrDBInstruction.insert_into_instruction_table(db_conn, curTime, npcId, instruction_to_give)
+        # Insert instruction to Memory Stream
+        BhrLgcToMemStre.InstToMemStreDB(input_from_java, "At "+str(curTime) + " ," + instruction_in_human)
+        BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, instruction_in_human)
+
+    is_idling = BhrLgcManualProcess.parse_isIdling(input_from_java[3])
+    if is_idling:
+        # Process this information, and give instruction in human language
+        instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId)
+        # Generate sentences for the NPC to say during the action
+        if BhrLgcGPTProcess.needDeepTalk(memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId):
+            theme_for_generation = BhrLgcGPTProcess.generateTheme(memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId, special_instruction='')
+            words_to_say = BhrLgcGPTProcess.generate_new_Announcement(memories_str, prior_reflection_str, theme_for_generation, npcId)
+        else:
+            words_to_say = BhrLgcGPTProcess.generateThreeSentencesForAction(memories_str, prior_reflection_str, cur_schedule_str, instruction_in_human, npcId)
+
+        while True:
+            try:
+                # Convert the instruction into JSON format
+                instruction_to_give = BhrLgcGPTProcess.humanInstToJava(instruction_in_human, words_to_say, npcId).strip("```json").strip("```")
+                # Parse the instruction into a JSON object
+                instruction_json = json.loads(instruction_to_give)
+                
+                # If no error occurs, break the loop
+                break
+            except Exception as e:
+                print(f"Error occurred: {e}. Retrying...")
+
+        print('Instruction to give:')
+        print(instruction_json)
+        print()
+
+        # Add to instruction db
+        BhrDBInstruction.insert_into_instruction_table(db_conn, curTime, npcId, instruction_to_give)
+
+        # Insert instruction to Memory Stream
+        BhrLgcToMemStre.InstToMemStreDB(input_from_java, "At "+str(curTime) + " ," + instruction_in_human)
+        BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, instruction_in_human)
 
     # Mark the buffer as processed
     BhrDBJavaBuffer.mark_entry_as_processed(db_conn, request_id)
@@ -154,10 +188,6 @@ def processOneInputGiveOneInstruction():
             input_for_mem = BhrLgcManualProcess.parse_npc_info_formemory(input_from_java[3])
             BhrLgcToMemStre.InputToMemStreDB(input_from_java, input_for_mem)
             BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, input_for_mem)
-        
-    # Insert instruction to Memory Stream
-    BhrLgcToMemStre.InstToMemStreDB(input_from_java, "At "+str(curTime) + " ," + instruction_in_human)
-    BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, instruction_in_human)
 
 
     output = BhrDBReflectionTracer.retrieve_entry(db_conn, npcId)

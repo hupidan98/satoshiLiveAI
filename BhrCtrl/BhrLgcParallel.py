@@ -50,7 +50,7 @@ global_db_conn = DBCon.establish_sql_connection()
 
 # Create or validate tables
 def initialize_database(db_conn):
-    # BhrDBJavaBuffer.delete_database(db_conn, 'AITown')
+    BhrDBJavaBuffer.delete_database(db_conn, 'AITown')
 
     if not BhrDBJavaBuffer.database_exists(db_conn):
         BhrDBJavaBuffer.create_database(db_conn)
@@ -87,7 +87,7 @@ def process_task(task_id):
 
 # Main loop to run tasks in parallel
 n = 0
-num_workers = 5  # Number of parallel tasks
+num_workers = 10  # Number of parallel tasks
 try:
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         while True:
