@@ -59,8 +59,60 @@ def get_importance(mem_single_str):
     )
     return completion.choices[0].message.content
 
+def onlyMostRecentSchedule(npc_context, schedule_str):
+    prompt = f'''
+    You are a NPC character in a simulated town.
+    You are given the current context of the NPC and the schedule for the day.
+    
+    Your context now:
+    {npc_context}
+    
+    Your calendar of the day:
+    {schedule_str}
+    
+    Please provide only the most recent schedule item from the calendar that are relevent to the context, and are need for making decision about what to do next.
+    '''
+    completion = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[
+        {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information given to you and give instruction."},
+        {"role": "user", "content":prompt
+        }
+      ] 
+    )
+    return completion.choices[0].message.content
 
-def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_context, npcId, special_instruction = ''):
+def condenseMemoriesAndReflections(npc_name, npc_description, npc_context, recent_schedule_str, memories_str, reflections_str):
+    prompt = f'''
+    You are a NPC character in a simulated town.
+    You are {npc_name}, {npc_description}.
+
+    Your context now:
+    {npc_context}
+    
+    Your calendar of the day:
+    {recent_schedule_str}
+
+    You are given the memories and reflections of the NPC.
+    Your past memories and experiences:
+    {memories_str}
+    Your reflection past experiences and events: 
+    {reflections_str}
+    Please provide a condensed version of the memories and reflections, focusing on the most important and relevant details that will be used to make decision on next action.
+
+    '''
+    completion = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[
+        {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information given to you and give instruction."},
+        {"role": "user", "content":prompt
+        }
+      ] 
+    )
+    return completion.choices[0].message.content
+
+
+def processInputGiveWhatToDo_new(memories_str, reflections_str, schedule_str, npc_context, npcId, special_instruction = ''):
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
         raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
@@ -68,57 +120,48 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    npc_lifestyle = npc['lifestyle']
+    
     npc_action = ""
     available_actions = npc.get('availableActions', [])
 
     for action in available_actions:
         npc_action += (
-            f"- Action Name: {action['actionName']}. "
-            f"  Action description: {action['description']} ."
-            f"  Action needs to happend at this location, use it as name to include in the output: {action['location']}.\n"
+            f"- **{action['actionName']}**: {action['description']} (location: {action['location']})\n"
         )
 
+    # recent_schedule_str = onlyMostRecentSchedule(npc_context, schedule_str) # extract from schedule_str
+    # most_relevent_mem = condenseMemoriesAndReflections(npc_name, npc_description, npc_context, recent_schedule_str, memories_str, reflections_str)
     prompt = f'''
-    You are a npc character in a simulated town.
-    Characters in the town:
+    You are {npc_name}, {npc_description}.
+    You are one of the characters in the town, here are all the characters in the town:
     - Satoshi, inventor of the Bitcoin.
     - Musk, Elon Musk, the CEO of Tesla, SpaceX, and Neuralink.
     - Pepe, a meme character, live as a shop owner in the town.
     - Popcat, a meme character, a fisherman in the town.
-        
-    You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    - Pippin, a meme character, a coffee maker in the town.
 
-    Here is some more information you should know.
-        
-    Your past memories and experiences:
-    ''' + memories_str + '''
-    Your reflection past experiences and events: 
-    ''' + reflections_str + ''' 
-    Your calendar of the day, try to follow your schedule, but fill free to adjust to the current situation:
-    ''' + schedule_str + '''
+    Your recent schedule:
+      {schedule_str}
 
-    Your context now:
-    ''' + npc_context + '''
+    Current time and information: {npc_context}
 
-    Tell me what the you should do next ,choosing from available Actions:
-    ''' + npc_action + '''
-    You can only choose one of actions above to at the given location at a time:
-    
-    ''' + special_instruction + '''
-    
-    The output instruction should in include your name, your next action using action name given above, location of the action given above, the duration of the action, and some details about the action.
-    Only do a single action at a time.
-    
-    
-    Output format and example:
-        - <fill in user name, given in characters in the town section> <fill in action name, given in Available Actions> at <fill in action location, given in Available Actions section> for <fill in duration if needed>. <fill in details>
-            e.g. Bob using computer at the farm for 2 hours. He surf the internet for fishing tutorial.
-            e.g. Bob drink coffee at the coffee shop, he is writing a boot about the moon.
-            e,g. Bob went the the store, and he buy a cookie.
+    Your relevent memeories:
+    {memories_str}
+
+    Your reflections:
+    {reflections_str}
+
+    Tell me what the you should do next, choosing one (include the location) from available Actions:
+    {npc_action}
+    {special_instruction if special_instruction else ''}
+    What should you do next? Choose a single action. Provide your name, action name, location, duration, and a short explanation.
+    output format and example:
+        - {npc_name} <fill in action name, given in Available Actions> at <fill in action location or a single another npc name> for <fill in duration>. <fill in details>
+            e.g. Bob using computer at the computer desk for 2 hours. He surf the internet for fishing tutorial.
+
     '''
     completion = client.chat.completions.create(
-      model="gpt-4o-mini",
+      model="gpt-4o",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
         {"role": "user", "content":prompt
@@ -140,8 +183,8 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
     # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    npc_lifestyle = npc['lifestyle']
-    npc_way_of_speak= npc['announcements']
+    
+    npc_way_of_speak= npc['replies']
 
     finder_instruction = ""
     if isFinding:
@@ -155,8 +198,9 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
     - Musk, Elon Musk, the CEO of Tesla, SpaceX, and Neuralink.
     - Pepe, a meme character, live as a shop owner in the town.
     - Popcat, a meme character, a fisherman in the town.
+    - Pippin, a meme character, a coffee maker in the town.
         
-    You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    You are {npc_name}, {npc_description}, .
 
     Your are talking to someone, here is some more information you should know.
         
@@ -188,7 +232,7 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
         {npc_name} talking to <fill in target npc name>, "<fill in content>"
     '''
     completion = client.chat.completions.create(
-      model="gpt-4o-mini",
+      model="gpt-4o",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
         {"role": "user", "content":prompt
@@ -212,7 +256,7 @@ def needDeepTalk(memories, reflections, npc_context, npc_action, npcId):
     # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    npc_lifestyle = npc['lifestyle']
+    
 
     prompt = f"""
     
@@ -220,7 +264,7 @@ def needDeepTalk(memories, reflections, npc_context, npc_action, npcId):
 
     Based on the following details, determine if the You should deliver a meaningful speech:
 
-    You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    You are {npc_name}, {npc_description}, .
     
     Your past memories and experiences:
     {memories}
@@ -268,14 +312,14 @@ def generateTheme(memories, reflections, npc_context, npc_action, npcId, special
     # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    npc_lifestyle = npc['lifestyle']
+    
         # Constructing the prompt dynamically
 
     # First determine if this topic would like to go deep. 
 
     prompt = f"""
 
-    You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    You are {npc_name}, {npc_description}, .
     
     Your past memeories and experiences:
     {memories}
@@ -325,11 +369,11 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    npc_lifestyle = npc['lifestyle']
+    
     npc_way_of_speak= npc['announcements']
 
     prompt = f"""
-    You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    You are {npc_name}, {npc_description}, .
 
     your past memeories and experiences:
     {memories}
@@ -414,12 +458,12 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
     # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    npc_lifestyle = npc['lifestyle']
+    
     npc_way_of_speak= npc['announcements']
 
 
     prompt = f"""
-    You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    You are {npc_name}, {npc_description}, .
 
     Your past memeories and experiences:
     {memories}
@@ -465,7 +509,7 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
 
 
 
-def humanInstToJava(instruction_in_human, words_to_say, npcId):
+def humanInstToJava_action(instruction_in_human, words_to_say, npcId):
     """
     Translates a natural language instruction into a structured JSON format suitable for NPC actions.
 
@@ -500,20 +544,20 @@ def humanInstToJava(instruction_in_human, words_to_say, npcId):
     You are an instruction translator in a simulated virtual world. Your task is to convert a natural language instruction 
     into a structured JSON format suitable for NPC behavior.
 
+    
+    {npc_name} initiate the action.
+
     Follow these steps:
-    1. Identify the npcId from the instruction.
-    2. Determine the actionId using the action list below.
-    3. Extract any required object or location information from the instruction and place it in the `data` field as `oid`.
+    1. Determine the actionId using the action list below.
+    2. Extract any required object or location information from the instruction and place it in the `data` field as `oid`.
     4. Use the provided words to fill in the sentences to say at the beginning, during, and after the action.
 
-    ### NPC ID List and Character Names (for npcId field below):
+    ### NPC ID List and Character Names (for oid field below, if the npc is finding someone to talk):
     10006 : Satoshi
     10007 : Popcat
     10008 : Pepe
     10009 : Musk
     10010 : Pippin
-    
-    {npc_name} initiate the action.
 
     ### Action ID and Corresponding Actions (for actionId field below):
     {ava_npc_action}
@@ -527,9 +571,8 @@ def humanInstToJava(instruction_in_human, words_to_say, npcId):
     {words_to_say}
 
     Please convert the instruction into a structured JSON format with the following fields, It is very important that your output can be loaded with json.loads().
-    If the action is not Chat, following the format below:
     {{
-        "npcId": <fill in, the NPC Id of whom is initiating the action>,
+        "npcId": {npcId},
         "actionId": <fill in, the Action Id of what the npc is doing>,
         "data": {{
             "oid": <fill in, the Object ID of where the npc conducting the action>
@@ -545,9 +588,76 @@ def humanInstToJava(instruction_in_human, words_to_say, npcId):
         ]  # Depend on how many sentences you want to say during the action, you can add more or less.
     }}
 
-    If the action is Chat (including ending conversation), no need for "speak" section and "duratiomTime" in this case, follow the format below:
+    You only give one instruction at a time, not multiple instruction.
+    """
+
+
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a detailed instruction translator and JSON formatter."
+            },
+            {
+                "role": "user",
+                "content": prompt.strip()
+            }
+        ]
+    )
+    outputinst = completion.choices[0].message.content
+    print("Instruction translation prompt :", prompt)
+    print("Machine Instruction: ", outputinst)
+    return outputinst
+
+
+def humanInstToJava_talk(instruction_in_human, words_to_say, npcId):
+
+    # Constructing the prompt dynamically
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+
+    # Extract name and description
+    npc_name = npc['name']
+
+    available_actions = npc.get('availableActions', [])
+    ava_npc_action = ""
+    for action in available_actions:
+        ava_npc_action += (
+            f"- {action['actionId']} : {action['actionName']}, {action['description']} .\n"
+        )
+    available_locations = ""
+    for action in available_actions:
+        available_locations += (
+            f"{action['location']},"
+        )
+
+    prompt = f"""
+    You are an instruction translator in a simulated virtual world. Your task is to convert a natural language instruction 
+    into a structured JSON format suitable for NPC behavior.
+
+    {npc_name} talks to someone.
+
+    Follow these steps:
+    1. Extract target npcId from the instruction and place it in the `data` field as `npcId`.
+    2. Use the provided words to fill in the sentences to say, and place in in the 'data' field as 'content'.
+    3. If the conversation is ending, set `endingTalk` to 1.
+
+    ### NPC ID List and Character Names (for npcId field below):
+    10006 : Satoshi
+    10007 : Popcat
+    10008 : Pepe
+    10009 : Musk
+    10010 : Pippin
+
+    Instruction for the NPC:
+    {instruction_in_human}
+
+    Please convert the instruction into a structured JSON format with the following fields, It is very important that your output can be loaded with json.loads().
+    Output format:
     {{
-        "npcId": <fill in, the NPC id of whom is talking>,
+        "npcId": {npcId},
         "actionId": 118,
         "data": {{
             "npcId": <fill in, the npcid of the target npc who will receive the talk message, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk>,
@@ -555,8 +665,6 @@ def humanInstToJava(instruction_in_human, words_to_say, npcId):
             “endingTalk” : <fill in 0 or 1, 1 if the npc is ending the conversation now, 0 if continue conversation>
         }},
     }}
-
-
     You only give one instruction at a time, not multiple instruction.
     """
 
@@ -593,17 +701,17 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
     # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    npc_lifestyle = npc['lifestyle']
+    
     # Define the first question
     question_1 = "Given only the information above, what are 5 most salient high-level questions we can answer about the subjects in the statements during the daily life not included in the npc current information?  Moreover, what is your 3 recent goals, and 3 long terms goals? Do you want to make adjustment to your goals, and how far are you there to achieving those goals?"
 
     # Step 1: Generate high-level questions
     completion_1 = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": "You are a deep thinker and reflective analyst."},
             {"role": "user", "content": f'''
-            You are {npc_name}, {npc_description}, {npc_lifestyle}.
+            You are {npc_name}, {npc_description}, .
 
             Your context now:
             {java_input_str}
@@ -626,11 +734,11 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
 
     # Step 2: Generate insights based on the high-level questions
     completion_2 = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": "You are a deep thinker and reflective analyst."},
             {"role": "user", "content": f'''
-           You are {npc_name}, {npc_description}, {npc_lifestyle}.
+           You are {npc_name}, {npc_description}, .
 
             Your context now:
             {java_input_str}
@@ -659,7 +767,7 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
     #     messages=[
     #         {"role": "system", "content": "You are a deep thinker and reflective analyst."},
     #         {"role": "user", "content": f'''
-    #         You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    #         You are {npc_name}, {npc_description}, .
 
     #         Your context now:
     #         {java_input_str}
@@ -685,7 +793,7 @@ def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId
     #     messages=[
     #         {"role": "system", "content": "You are a deep thinker and reflective analyst."},
     #         {"role": "user", "content": f'''
-    #         You are {npc_name}, {npc_description}, {npc_lifestyle}.
+    #         You are {npc_name}, {npc_description}, .
 
     #         Your context now:
     #         {java_input_str}
@@ -731,11 +839,11 @@ def generate_schedule(current_schedule, memories, reflections, npc_context,npcId
     # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    npc_lifestyle = npc['lifestyle']
+    
     npc_schedule = npc.get('schedule', [])
 
     completion = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[
             {
                 "role": "system",
@@ -748,7 +856,7 @@ def generate_schedule(current_schedule, memories, reflections, npc_context,npcId
                 "role": "user",
                 "content": (
                     f"""
-                    You are {npc_name}, {npc_description}, {npc_lifestyle}.
+                    You are {npc_name}, {npc_description} .
 
                     You are living in a simulated world. 
 
@@ -800,7 +908,7 @@ def need_new_schedule(current_schedule, memories, reflections, npc_context, npcI
         # Extract name and description
         npc_name = npc['name']
         npc_description = npc['description']
-        npc_lifestyle = npc['lifestyle']
+        
         
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
@@ -816,7 +924,7 @@ def need_new_schedule(current_schedule, memories, reflections, npc_context, npcI
                     "role": "user",
                     "content": (
                         f"""
-                        You are {npc_name}, {npc_description}, {npc_lifestyle}.
+                        You are {npc_name}, {npc_description}, .
 
                         You are living in a simulated world. 
 

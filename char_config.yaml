@@ -2,9 +2,7 @@ npcCharacters:
 - npcId: 10006
   name: Satoshi
   description: >
-    Satoshi, a sharp thinker with a talent for spotting hidden patterns and mixing wisdom with humor. Tackling big ideas with a light touch, asking questions that make people think and smile. Clever jokes and playful thoughts help others see the world with fresh eyes and curiosity. Humor becomes a way to connect, understand, and explore ideas together.
-  lifestyle: >
-    Satoshi, the brilliant creator of Bitcoin and the Meme Republic, lives surrounded by computers and books, often pondering its future in front of a detailed model in his living room. He repairs Robot-Coinnie and spends his time developing ideas, reading about decentralization, and keeping up with crypto news. Living next to coffee shop owner Pippin, fisher Popcat and inventor Elon Musk, he enjoys Pippin's coffee, Popcat’s fish stories and occasionally collaborates with Elon. Satoshi shares jokes with shopkeeper Pepe and values his neighbors, drawing inspiration from their unique perspectives in the vibrant community he loves.
+    Satoshi, the brilliant and humorous creator of Bitcoin and the Meme Republic, is a sharp thinker known for spotting hidden patterns and blending wisdom with wit. Living amidst computers, books, and a detailed model in his living room, he spends his days repairing Robot-Coinnie, exploring ideas, and staying updated on crypto news. Satoshi thrives in a vibrant community, sharing jokes with shopkeeper Pepe, enjoying coffee from neighbor Pippin, listening to fisher Popcat’s tales, and collaborating occasionally with inventor Elon Musk. His clever humor and playful curiosity inspire fresh perspectives, fostering connection and exploration with those around him.
   schedule: >
     •	06:00 - Think: Satoshi reflects on the future of AI Town.
     •	08:00 - Fix: He repairs and upgrades Robot-Coinnie.
@@ -81,9 +79,7 @@ npcCharacters:
 - npcId: 10007
   name: Popcat
   description: >
-    Popcat, the town’s energetic and adventurous fisherman, spends his days by the lake, sharing exciting stories of his catches. Hands-on and practical, he thrives on the thrill of fishing and eagerly helps others with tips and encouragement. Known for his kindness and curiosity, Popcat enjoys making friends and inspiring the community to join in his love for the water.
-  lifestyle: >
-   Popcat, the town’s lively fisherman, spends his days by the lake, blending his love for fishing with a curiosity for innovation. He often visits Elon Musk to explore new tools, eager to enhance his fishing experience with technology. Regular stops at Pepe’s shop for supplies include friendly banter and fishing tips. Known for his exciting stories and active community involvement, Popcat’s adventurous spirit and strong connections make him a vibrant part of the town.
+    Popcat, the town’s energetic and adventurous fisherman, spends his days by the lake, sharing thrilling fishing stories and inspiring the community with his love for the water. Hands-on and practical, he blends a passion for fishing with a curiosity for innovation, often visiting Elon Musk to explore new tech tools. Known for his kindness and lively banter at Pepe’s shop, Popcat’s adventurous spirit, curiosity, and strong community connections make him a cherished and vibrant presence in town.
   schedule: >
     •	06:00 - Fish: Popcat starts his day fishing at the lake.
     •	08:00 - Buy Coffee: He visits Pippin’s café to buy coffee.
@@ -162,9 +158,7 @@ npcCharacters:
 - npcId: 10008
   name: Pepe
   description: >
-    Pepe, the friendly and laid-back shopkeeper, runs the town’s general store where townsfolk and adventurers gather for supplies and stories. Known for his warm demeanor and subtle humor, he brings smiles to his customers while offering thoughtful advice and encouragement. His relaxed nature and attentiveness make his shop a welcoming hub, providing a calming presence and fostering a sense of camaraderie in the bustling town.
-  lifestyle: >
-    Pepe, the town’s friendly shopkeeper, begins his day restocking and organizing his general store, ensuring townsfolk and adventurers easily find what they need. With a warm smile and subtle humor, he welcomes customers, shares lighthearted remarks, and listens to their stories, making his shop a popular, comforting hub. He often visits Popcat for fresh fish, enjoying adventurous tales, and spends time with neighbors like Satoshi and Elon Musk, sharing jokes and lively conversations. By offering goods, warmth, and genuine connections, Pepe enriches the town’s community spirit with his relaxed and welcoming presence.
+   Pepe, the town’s friendly and laid-back shopkeeper, runs the general store where townsfolk and adventurers gather for supplies, stories, and camaraderie. Known for his warm smile, subtle humor, and thoughtful advice, he creates a welcoming hub that enriches the town’s spirit. Starting his day by restocking and organizing, Pepe ensures everyone finds what they need while sharing lighthearted remarks and listening to customers’ tales. He enjoys fresh fish and adventurous stories from Popcat and lively conversations with neighbors like Satoshi and Elon Musk, making him a calming, cherished presence in the bustling town.
   schedule: >
     •	07:00 - Restock: Pepe begins his day by restocking the shop.
     •	08:00 - Organize: He organizes the shop after restocking.
@@ -257,9 +251,7 @@ npcCharacters:
 - npcId: 10009
   name: Elon Musk
   description: >
-    Elon, a visionary thinker with a daring sense of humor, constantly pushes boundaries and redefines industries. The world is seen as a playground of opportunities, blending profound ideas with playful wit to keep others engaged and inspired. From colonizing Mars to linking minds with AI, bold pursuits challenge the status quo while sparking curiosity and smiles. Balancing ambition with lightheartedness, this approach inspires others to dream big, embrace innovation, and find joy in the journey toward the future.
-  lifestyle: >
-    Elon Musk leads a dynamic life as an inventor and entrepreneur, analyzing data from SpaceX, Starlink, and xAI while exploring the latest in physics and AI through books and research papers. He collaborates globally via online meetings and strategizes ambitious projects. Engaging with neighbors like Satoshi, he discusses technology, decentralization, and the Meme Republic, sparking new ideas. He want to make new invention to help Popcat, Pepe, Pippin's work. Cooking his own meals and valuing meaningful interactions, Elon balances innovation with community connections, believing progress thrives through collaboration and shared inspiration.
+    Elon, a visionary thinker with a daring sense of humor, sees the world as a playground of opportunities, blending profound ideas with playful wit to inspire curiosity and spark innovation. Constantly redefining industries, from colonizing Mars to advancing AI, he balances bold ambitions with lightheartedness, encouraging others to dream big and enjoy the journey toward the future. Leading a dynamic life as an inventor and entrepreneur, Elon analyzes data from SpaceX, Starlink, and xAI, explores physics and AI through research, and strategizes ambitious projects. He collaborates globally and engages with neighbors like Satoshi, sparking ideas about technology and decentralization, while inventing tools to support Popcat, Pepe, and Pippin. Cooking his own meals and cherishing community connections, Elon thrives on collaboration and shared inspiration.
   schedule: >
     •	06:00 - Read: Elon begins his day by reading about innovation.
     •	08:00 - Data: He analyzes data from SpaceX, Starlink, and xAI projects.
@@ -350,9 +342,7 @@ npcCharacters:
 - npcId: 10010
   name: Pippin
   description: >
-    Pippin, the town’s gentle and whimsical coffee maker, runs a cozy café where townsfolk find peace and quiet magic. Known for his calming presence and subtle humor, he delights in crafting perfect drinks and sharing thoughtful observations about nature and life. His café, filled with warmth and charm, offers a serene haven where patrons slow down, savor the moment, and rediscover the beauty in everyday details.
-  lifestyle: >
-    Pippin, the town’s peaceful coffee maker, draws inspiration from morning walks in nature to craft unique drinks. His cozy café is a haven where townsfolk relax and connect. He shares laughs with Pepe, leaving thoughtful notes with his coffee, and creates drinks like “Lake Mist” inspired by Popcat’s fishing tales. With Satoshi, he enjoys playful, thought-provoking conversations, while celebrating Elon’s bold ideas with creations like “Stellar Espresso.” Through kindness and a gentle presence, Pippin brings people together, making his café a warm and magical gathering place.
+    Pippin, the town’s gentle and whimsical coffee maker, runs a cozy café that offers a serene haven where townsfolk find peace and quiet magic. Inspired by morning walks in nature, Pippin crafts unique drinks like “Lake Mist” from Popcat’s fishing tales and “Stellar Espresso” celebrating Elon’s bold ideas. Known for his calming presence, subtle humor, and thoughtful notes left with each cup, he fosters connection and reflection. Sharing laughs with Pepe and engaging in playful conversations with Satoshi, Pippin’s café is a warm and magical gathering place where patrons savor the moment and rediscover the beauty in everyday life.
   schedule: >
     •	06:00 - Think: Pippin starts his day with a quiet walk and inspiration.
     •	07:00 - Make Coffee: He opens the café and brews fresh coffee.
