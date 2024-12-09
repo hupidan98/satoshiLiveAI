@@ -1,6 +1,5 @@
 import mysql.connector
 from mysql.connector import Error
-
 import configparser
 import os
 
@@ -24,23 +23,27 @@ def create_instruction_table(connection):
         npcId INT NOT NULL,
         instruction LONGTEXT,
         isProcessed BOOLEAN NOT NULL DEFAULT FALSE,
+        requestId BIGINT NOT NULL,
         PRIMARY KEY (time, npcId)
     )
     """
     cursor.execute(create_table_query)
     print("Table 'behavior_instruction_buffer' checked/created successfully.")
 
-def insert_into_instruction_table(connection, time, npcId, instruction, isProcessed=False):
+def insert_into_instruction_table(connection, time, npcId, instruction, requestId, isProcessed=False):
     cursor = connection.cursor()
     cursor.execute("USE AITown") 
     insert_query = """
-    INSERT INTO behavior_instruction_buffer (time, npcId, instruction, isProcessed)
-    VALUES (%s, %s, %s, %s)
-    ON DUPLICATE KEY UPDATE instruction = VALUES(instruction), isProcessed = VALUES(isProcessed)
+    INSERT INTO behavior_instruction_buffer (time, npcId, instruction, isProcessed, requestId)
+    VALUES (%s, %s, %s, %s, %s)
+    ON DUPLICATE KEY UPDATE 
+        instruction = VALUES(instruction), 
+        isProcessed = VALUES(isProcessed), 
+        requestId = VALUES(requestId)
     """
-    cursor.execute(insert_query, (time, npcId, instruction, isProcessed))
+    cursor.execute(insert_query, (time, npcId, instruction, isProcessed, requestId))
     connection.commit()
-    print(f"Instruction inserted successfully: time={time}, npcId={npcId}, instruction length={len(instruction)}, isProcessed={isProcessed}")
+    print(f"Instruction inserted successfully: time={time}, npcId={npcId}, instruction length={len(instruction)}, isProcessed={isProcessed}, requestId={requestId}")
 
 def delete_instruction_table(connection):
     cursor = connection.cursor()
@@ -70,7 +73,7 @@ def get_earliest_unprocessed_instruction(connection):
     cursor.execute(query)
     result = cursor.fetchone()
     if result:
-        print(f"Earliest unprocessed instruction: time={result[0]}, npcId={result[1]}, instruction={result[2]}")
+        print(f"Earliest unprocessed instruction: time={result[0]}, npcId={result[1]}, instruction={result[2]}, requestId={result[4]}")
         return result
     else:
         print("No unprocessed instructions found.")
@@ -101,7 +104,7 @@ def get_all_unprocessed_instructions(connection):
     if results:
         print("Unprocessed instructions:")
         for result in results:
-            print(f"time={result[0]}, npcId={result[1]}, instruction length={len(result[2])}")
+            print(f"time={result[0]}, npcId={result[1]}, instruction length={len(result[2])}, requestId={result[4]}")
         return results
     else:
         print("No unprocessed instructions found.")
@@ -127,7 +130,8 @@ def instruction_table_exists(connection):
 # Usage examples:
 # connection = establish_sql_connection()
 # create_instruction_table(connection)
-# insert_into_instruction_table(connection, '2024-09-09 12:00:00', 1, 'Some instruction content')
+# requestId = 1123413412341234
+# insert_into_instruction_table(connection, '2024-09-09 12:00:00', 1, 'Some instruction content', requestId)
 # get_earliest_unprocessed_instruction(connection)
 # mark_instruction_as_processed(connection, '2024-09-09 12:00:00', 1)
 # get_all_unprocessed_instructions(connection)

@@ -43,7 +43,7 @@ db_conn = DBCon.establish_sql_connection()
 # Initialize the database by creating required tables
 def initialize_database(db_conn):
     print("Initializing database...")
-    BhrDBJavaBuffer.delete_database(db_conn, 'AITown')
+    # BhrDBJavaBuffer.delete_database(db_conn, 'AITown')
 
     if not BhrDBJavaBuffer.database_exists(db_conn):
         BhrDBJavaBuffer.create_database(db_conn)

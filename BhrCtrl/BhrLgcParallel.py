@@ -87,7 +87,7 @@ def process_task(task_id):
 
 # Main loop to run tasks in parallel
 n = 0
-num_workers = 10  # Number of parallel tasks
+num_workers = 5  # Number of parallel tasks
 try:
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         while True:
