@@ -22,25 +22,6 @@ import json
 import re
 import pickle
 
-# Define a Logger class for dual output
-class Logger:
-    def __init__(self, filename):
-        self.terminal = sys.stdout
-        self.log = open(filename, "w")
-
-    def write(self, message):
-        self.terminal.write(message)  # Write to console
-        self.log.write(message)       # Write to file
-
-    def flush(self):
-        self.terminal.flush()
-        self.log.flush()
-
-# Redirect output to both console and file
-log_file_path = os.path.join(os.path.dirname(__file__), "output_log.txt")
-sys.stdout = Logger(log_file_path)
-sys.stderr = sys.stdout  # Capture any errors as well
-
 # Add the base directory (one level up)
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(base_dir)
@@ -87,7 +68,7 @@ def process_task(task_id):
 
 # Main loop to run tasks in parallel
 n = 0
-num_workers = 15 # Number of parallel tasks
+num_workers = 15  # Number of parallel tasks
 try:
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         while True:
@@ -99,8 +80,5 @@ try:
 except KeyboardInterrupt:
     print("Loop terminated by user.")
 finally:
-    # Close the global database connection and reset stdout/stderr
+    # Close the global database connection
     global_db_conn.close()
-    sys.stdout.log.close()
-    sys.stdout = sys.__stdout__
-    sys.stderr = sys.__stderr__

@@ -84,7 +84,7 @@ def condenseMemoriesAndReflections(npc_name, npc_description, npc_context, recen
     Please provide a condensed version of the memories and reflections, focusing on the most important and relevant details that will be used to make decision on next action.
     '''
     completion = client.chat.completions.create(
-      model="gpt-4o-mini",
+      model="gpt-4o",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information given to you and give instruction."},
         {"role": "user", "content": prompt}
@@ -440,7 +440,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     print("\n\n")
     return output
 
-def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcId, isFinding, special_instruction = ''):
+def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcId, isFinding, targetNPC = None, special_instruction = ''):
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
         raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
@@ -466,7 +466,7 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
         
     You are {npc_name}, {npc_description}.
 
-    Your are talking to someone, here is some more information you should know.
+    Your are talking to {targetNPC if targetNPC else 'someone'}, here is some more information you should know.
         
     Your past memories and experiences:
     {memories_str}
@@ -535,7 +535,7 @@ def generateTheme(memories, reflections, npc_context, npc_action, npcId, special
     Your upcoming Action:
     {npc_action}
 
-    You need to say something at the beginning of the action, in the middle of the action, and at the end of the action.
+    You need to say something during the action.
 
     {special_instruction if special_instruction else ''}
 
@@ -662,7 +662,7 @@ def generateMultipleSentencesForAction(memories, reflections, npc_context, npc_a
     What you are doing next:
     {npc_action}
 
-    You need to say something at the beginning of the action, in the middle of the action, and at the end of the action.
+    You need to say something during the action.
 
     This is the way you speak, try to imitate the way you speak:
     {npc_way_of_speak}
@@ -737,7 +737,7 @@ def isTheInstructionFindingSomeone(instruction_in_human, words_to_say, npcId):
     Tell me if the actionid should be 112? If yes, return "True", if not, return "False".
     """
     completion = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",

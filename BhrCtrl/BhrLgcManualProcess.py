@@ -165,20 +165,27 @@ def parse_isBuying(json_input):
     except json.JSONDecodeError as e:
         result = f"Error parsing JSON: {e}"
         print("Method: parse_isBuying | Description: Checks if NPC is currently buying | Result:", result, "\n")
-        return result
+        return result, None
     
     npcs = data.get('npcs', [])
     if not npcs:
         result = False
         print("Method: parse_isBuying | Description: Checks if NPC is currently buying | Result:", result, "\n")
-        return result
+        return result, None
     
     npc = npcs[0]
     cur_action = npc.get('action', {})
     action_id = cur_action.get('actionId', '0')
     result = (int(action_id) == 103)
+    targetShopOid = cur_action.get('"param"', {}).get('oid', None)
+    counter_to_owner = {
+        "popcatBuy": 10007,
+        "pepeBuy": 10008,
+        "pippinBuy": 10010,
+    }
+    targetNPCId = counter_to_owner.get(targetShopOid, None)
     print("Method: parse_isBuying | Description: Checks if NPC is currently buying (actionId=103) | Result:", result, "\n")
-    return result
+    return result, targetNPCId
 
 
 def parse_isFindingPeopletoTalk(json_input):
@@ -191,20 +198,25 @@ def parse_isFindingPeopletoTalk(json_input):
     except json.JSONDecodeError as e:
         result = f"Error parsing JSON: {e}"
         print("Method: parse_isFindingPeopletoTalk | Description: Checks if NPC is looking for people to talk (actionId=112) | Result:", result, "\n")
-        return result
+        return result, None
     
     npcs = data.get('npcs', [])
     if not npcs:
         result = False
         print("Method: parse_isFindingPeopletoTalk | Description: Checks if NPC is looking for people to talk | Result:", result, "\n")
-        return result
+        return result, None
     
     npc = npcs[0]
     cur_action = npc.get('action', {})
     action_id = cur_action.get('actionId', '0')
-    result = (int(action_id) == 112)
+    targetNPCId = cur_action.get('"param"', {}).get('npcId', None)
+    if targetNPCId:
+        result = False
+    else:
+        result = (int(action_id) == 112)
     print("Method: parse_isFindingPeopletoTalk | Description: Checks if NPC is looking for people to talk | Result:", result, "\n")
-    return result
+
+    return result, targetNPCId
 
 
 def parse_isIdling(json_input):
