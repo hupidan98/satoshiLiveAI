@@ -227,10 +227,10 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
     Only output what you going to say next, do not provide any other information.
 
     Output format and example:
-        - <fill in user name, given in characters in the town section> talking to <fill in target npc name, given in characters in the town section>, "<fill in content>"
-            e.g. Bob talking to Alice, "Hello Alice, how are you doing today?"
-        - <fill in user name, given in characters in the towsn section> ending conversation with <fill in target npc name, given at characters in the town section>
-            e.g. Bob ending conversation with Alice.
+        - <fill in user name, given in characters in the town section> talking to <fill in target npc name, given in characters in the town section>, "<fill in content>". 
+            e.g. Bob talking to Alice, "Hello Alice, how are you doing today?" 
+        - <fill in user name, given in characters in the town section> talking to <fill in target npc name, given in characters in the town section>, "<fill in content>". <fill in user name, given in characters in the towsn section> ending conversation with <fill in target npc name, given at characters in the town section>
+            e.g. Bob talking to Alice, "Bye Alice, see you later?". Bob ending conversation with Alice.
     output:
         {npc_name} talking to <fill in target npc name>, "<fill in content>"
     '''
@@ -389,8 +389,7 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
 
     From your perspective, write an engaging and insightful eassy under 300 words. about the topic: {theme}.
 
-
-
+    No Emoji.
     """
     
     completion = client.chat.completions.create(
@@ -488,7 +487,7 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
 
     {special_instruction if special_instruction else ''}
 
-    Please generate three sentences for the you to say, each sentence under 40 words: 
+    Please generate three sentences for the you to say, each sentence under 40 words, no Emoji: 
     - At the beginning of the action.
     - In the middle of the action.
     - At the end of the action.

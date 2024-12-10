@@ -1,12 +1,9 @@
 import mysql.connector
 from mysql.connector import Error
-
 import threading
 
 # Create a global lock
 lock = threading.Lock()
-
-
 
 def check_connection(connection):
     if connection.is_connected():
@@ -61,6 +58,7 @@ def create_table(connection):
         content LONGTEXT,
         isProcessed BOOLEAN NOT NULL DEFAULT FALSE,
         isBeingProcessed BOOLEAN NOT NULL DEFAULT FALSE,
+        isFullyProcessed BOOLEAN NOT NULL DEFAULT FALSE,
         PRIMARY KEY (requestId, time)
     )
     """
@@ -120,25 +118,6 @@ def delete_all_content_in_buffer(connection):
     connection.commit()  # Commit the changes
     print("All content in the 'behavior_java_buffer' table has been deleted successfully.")
 
-# def get_earliest_unprocessed_entry(connection):
-#     cursor = connection.cursor()
-#     cursor.execute("USE AITown")
-#     query = """
-#     SELECT * FROM behavior_java_buffer 
-#     WHERE isProcessed = FALSE AND isBeingProcessed = FALSE
-#     ORDER BY time ASC 
-#     LIMIT 1
-#     """
-#     cursor.execute(query)
-#     result = cursor.fetchone()
-#     if result:
-#         print(f"Earliest unprocessed entry: time={result[1]}, npcId={result[2]}, content={result[3]}")
-#         return result
-#     else:
-#         print("No unprocessed entries found.")
-#         return None
-
-
 def get_earliest_unprocessed_entry(connection):
     with lock:  # Acquire the lock
         cursor = connection.cursor()
@@ -175,8 +154,7 @@ def get_earliest_unprocessed_entry(connection):
         else:
             print("No unprocessed entries found.")
             return None
-        
-        
+
 def get_unprocessed_entries_of_npc(connection, npcId):
     cursor = connection.cursor()
     cursor.execute("USE AITown")
@@ -265,3 +243,15 @@ def mark_all_entries_as_processed(connection):
     cursor.execute(update_query)
     connection.commit()
     print("All entries have been marked as processed, keeping 'isBeingProcessed' unchanged.")
+
+def mark_entry_as_fullyprocessed(connection, requestId):
+    cursor = connection.cursor()
+    cursor.execute("USE AITown")
+    update_query = """
+    UPDATE behavior_java_buffer
+    SET isFullyProcessed = TRUE
+    WHERE requestId = %s
+    """
+    cursor.execute(update_query, (requestId,))
+    connection.commit()
+    print(f"Entry with requestId={requestId} marked as fully processed.")

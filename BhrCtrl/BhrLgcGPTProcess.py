@@ -22,66 +22,48 @@ if 'OpenAI' not in config:
 openai_key = config['OpenAI']['key']
 client = OpenAI(api_key=openai_key)
 
-
 yaml_path = os.path.join(base_dir, 'char_config.yaml')
 
 # Load the YAML file
-
 with open(yaml_path, 'r') as file:
     char_config = yaml.safe_load(file)
     print("YAML content loaded successfully.")
 
 
+############################################
+# Memory and Reflection Related Functions
+############################################
+
 def get_embedding(text, model="text-embedding-3-small"):
-   text = str(text.replace("\n", " "))
-   print(text)
-   return client.embeddings.create(input = text, model=model).data[0].embedding
-
-
+    text = str(text.replace("\n", " "))
+    return client.embeddings.create(input = text, model=model).data[0].embedding
 
 def get_importance(mem_single_str):
-    completion = client.chat.completions.create(
-      model="gpt-4o-mini",
-      messages=[
-        {"role": "system", "content": "You are a good instruction-to-language translator. You will process the information given to you and give instruction in a fixed format."},
-        {"role": "user", "content": f'''
-        On the scale of 1 to 10, where 1 is purely mundane (e.g., brushing teeth, making bed) and 10 is extremely poignant (e.g., a breakup, college acceptance), rate the likely poignancy of the following piece of memory.
-        
-        Memory:
-        {mem_single_str}
-        
-        Rating: <fill in>
-
-        Just give me a number with no extra txt.
-        '''
-        }
-      ]
-    )
-    return completion.choices[0].message.content
-
-
-def onlyMostRecentSchedule(npc_context, schedule_str):
     prompt = f'''
-    You are a NPC character in a simulated town.
-    You are given the current context of the NPC and the schedule for the day.
-    
-    Your context now:
-    {npc_context}
-    
-    Your calendar of the day:
-    {schedule_str}
-    
-    Please provide only the most recent schedule item from the calendar that are relevent to the context, and are need for making decision about what to do next.
+    On the scale of 1 to 10, where 1 is purely mundane (e.g., brushing teeth, making bed) and 10 is extremely poignant (e.g., a breakup, college acceptance), rate the likely poignancy of the following piece of memory.
+
+    Memory:
+    {mem_single_str}
+
+    Rating: <fill in>
+
+    Just give me a number with no extra txt.
     '''
     completion = client.chat.completions.create(
       model="gpt-4o-mini",
       messages=[
-        {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information given to you and give instruction."},
-        {"role": "user", "content":prompt
-        }
-      ] 
+        {"role": "system", "content": "You are a good instruction-to-language translator. You will process the information given to you and give instruction in a fixed format."},
+        {"role": "user", "content": prompt}
+      ]
     )
-    return completion.choices[0].message.content
+    output = completion.choices[0].message.content
+    print("Function: get_importance")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(output)
+    print("\n\n")
+    return output
 
 def condenseMemoriesAndReflections(npc_name, npc_description, npc_context, recent_schedule_str, memories_str, reflections_str):
     prompt = f'''
@@ -90,49 +72,330 @@ def condenseMemoriesAndReflections(npc_name, npc_description, npc_context, recen
 
     Your context now:
     {npc_context}
-    
+
     Your calendar of the day:
     {recent_schedule_str}
 
     You are given the memories and reflections of the NPC.
     Your past memories and experiences:
     {memories_str}
-    Your reflection past experiences and events: 
+    Your reflection past experiences and events:
     {reflections_str}
     Please provide a condensed version of the memories and reflections, focusing on the most important and relevant details that will be used to make decision on next action.
-
     '''
     completion = client.chat.completions.create(
       model="gpt-4o-mini",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information given to you and give instruction."},
-        {"role": "user", "content":prompt
-        }
-      ] 
+        {"role": "user", "content": prompt}
+      ]
     )
-    return completion.choices[0].message.content
+    output = completion.choices[0].message.content
+    print("Function: condenseMemoriesAndReflections")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(output)
+    print("\n\n")
+    return output
+
+def needDeepTalk(memories, reflections, npc_context, npc_action, npcId):
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
+
+    npc_name = npc['name']
+    npc_description = npc['description']
+
+    prompt = f"""
+    You are an expert in determining narrative significance for NPC dialogues.
+
+    Based on the following details, determine if You should deliver a meaningful speech:
+
+    You are {npc_name}, {npc_description}.
+
+    Your past memories and experiences:
+    {memories}
+
+    Reflections of you:
+    {reflections}
+
+    Your current Context:
+    {npc_context}
+
+    Your upcoming Action:
+    {npc_action}
+
+    Please return "True" if a meaningful speech is warranted (e.g., when you reading, thinking, analyzing, dreaming, etc.), 
+    or "False" if not.
+    """
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an assistant designed to analyze narrative elements and make decisions."
+            },
+            {
+                "role": "user",
+                "content": prompt.strip()
+            }
+        ]
+    )
+    output = completion.choices[0].message.content.strip()
+    print("Function: needDeepTalk")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(output)
+    print("\n\n")
+    if output.lower() == "true":
+        return True
+    elif output.lower() == "false":
+        return False
+    else:
+        return False
+
+def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId):
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
+
+    npc_name = npc['name']
+    npc_description = npc['description']
+
+    question_1 = "Given only the information above, what are 5 most salient high-level questions we can answer about the subjects in the statements during the daily life not included in the npc current information? Moreover, what is your 3 recent goals, and 3 long terms goals? Do you want to make adjustment to your goals, and how far are you there to achieving those goals?"
+
+    prompt_1 = f'''
+    You are {npc_name}, {npc_description}, .
+
+    Your context now:
+    {java_input_str}
+
+    Your memeories:
+    {memories_str}
+
+    Your prior reflections on past experiences and events:
+    {reflections_str}
+
+    {question_1}
+    '''
+    completion_1 = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a deep thinker and reflective analyst."},
+            {"role": "user", "content": prompt_1.strip()}
+        ]
+    )
+    question_1_answer = completion_1.choices[0].message.content
+
+    question_2 = "What 5 high-level insights can you infer from the above statements not included in the information of the npc?."
+    prompt_2 = f'''
+    You are {npc_name}, {npc_description}, .
+
+    Your context now:
+    {java_input_str}
+
+    Your memeories:
+    {memories_str}
+
+    Your prior reflections on past experiences and events:
+    {reflections_str}
+
+    {question_2} in the following directions:
+    {question_1_answer}
+
+    Just give me the insights, do not provide explanations or any other information.
+    '''
+    completion_2 = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a deep thinker and reflective analyst."},
+            {"role": "user", "content": prompt_2.strip()}
+        ]
+    )
+    question_2_answer = completion_2.choices[0].message.content
+    print("Function: generate_reflection_new (Step 1)")
+    print("Prompt:")
+    print(prompt_1)
+    print("Output (Step 1):")
+    print(question_1_answer)
+    print("\n\n")
+    print("Function: generate_reflection_new (Step 2)")
+    print("Prompt:")
+    print(prompt_2)
+    print("Output (Step 2):")
+    print(question_2_answer)
+    print("\n\n")
+    return question_2_answer
 
 
+############################################
+# Scheduling Related Functions
+############################################
+
+def onlyMostRecentSchedule(npc_context, schedule_str):
+    prompt = f'''
+    You are a NPC character in a simulated town.
+    You are given the current context of the NPC and the schedule for the day.
+
+    Your context now:
+    {npc_context}
+
+    Your calendar of the day:
+    {schedule_str}
+
+    Please provide only the most recent schedule item from the calendar that are relevent to the context, and are need for making decision about what to do next.
+    '''
+    completion = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[
+        {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information given to you and give instruction."},
+        {"role": "user", "content": prompt}
+      ]
+    )
+    output = completion.choices[0].message.content
+    print("Function: onlyMostRecentSchedule")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(output)
+    print("\n\n")
+    return output
+
+def generate_schedule(current_schedule, memories, reflections, npc_context, npcId):
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
+
+    npc_name = npc['name']
+    npc_description = npc['description']
+    npc_schedule = npc.get('schedule', [])
+
+    prompt = f"""
+    You are {npc_name}, {npc_description}.
+
+    You are living in a simulated world. 
+
+    This is a example typical schedule for you, you can adjust it to the current situation:
+    {npc_schedule}
+
+    Your prior schedule:
+    {current_schedule}
+
+    Your past memeories:
+    {memories}
+
+    Your reflections on past experiences and events:
+    {reflections}
+
+    Your context:
+    {npc_context}
+
+    Please create a new detailed schedule using 24-hour time format for the NPC for today, adapting to the current situation.
+    """
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a good instruction-to-language translator. You will process the information given to you and give instructions in a fixed format."
+            },
+            {
+                "role": "user",
+                "content": prompt.strip()
+            }
+        ]
+    )
+    output = completion.choices[0].message.content
+    print("Function: generate_schedule")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(output)
+    print("\n\n")
+    return output
+
+def need_new_schedule(current_schedule, memories, reflections, npc_context, npcId):
+    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
+    if not npc:
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
+
+    npc_name = npc['name']
+    npc_description = npc['description']
+
+    prompt = f"""
+    You are {npc_name}, {npc_description}, .
+
+    You are living in a simulated world. 
+
+    Your prior schedule:
+    {current_schedule}
+
+    Your memeories:
+    {memories}
+
+    Your reflections on past experiences and events:
+    {reflections}
+
+    Your context:
+    {npc_context}
+
+    Based on the above, do need a new schedule for the rest of the day? 
+    Respond only with 'yes' or 'no'.
+    """
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You are an assistant designed to determine whether the NPC needs a new schedule. "
+                    "Analyze the provided information and respond with 'yes' if a new schedule is needed or 'no' otherwise."
+                )
+            },
+            {
+                "role": "user",
+                "content": prompt.strip()
+            }
+        ]
+    )
+    response = completion.choices[0].message.content.strip().lower()
+    print("Function: need_new_schedule")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(response)
+    print("\n\n")
+    if response == 'yes':
+        return True
+    elif response == 'no':
+        return False
+    else:
+        return False
+
+
+############################################
+# Action Decision Functions
+############################################
 
 def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_context, npcId, special_instruction = ''):
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
 
-    # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    
-    npc_action = ""
     available_actions = npc.get('availableActions', [])
 
+    npc_action = ""
     for action in available_actions:
         npc_action += (
             f"- **{action['actionName']}**: {action['description']} (location: {action['location']})\n"
         )
 
-    recent_schedule_str = onlyMostRecentSchedule(npc_context, schedule_str) # extract from schedule_str
-    # most_relevent_mem = condenseMemoriesAndReflections(npc_name, npc_description, npc_context, recent_schedule_str, memories_str, reflections_str)
+    recent_schedule_str = onlyMostRecentSchedule(npc_context, schedule_str)
+    
     prompt = f'''
     You are {npc_name}, {npc_description}.
     You are one of the characters in the town, here are all the characters in the town:
@@ -153,39 +416,37 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     Your reflections:
     {reflections_str}
 
-    Tell me what the you should do next, choosing one (include the location) from available Actions:
+    Tell me what you should do next, choosing one (include the location) from available Actions:
     {npc_action}
     {special_instruction if special_instruction else ''}
+
     What should you do next? Choose a single action. Provide your name, action name, location, duration(needs to be over 30 minutes at least, if time not allow, jump to next action on schedule), and a short explanation.
     output format and example:
-        - {npc_name} <fill in action name, given in Available Actions> at <fill in action location or a single another npc name> for <fill in duration>. <fill in details>
-            e.g. Bob using computer at the computer desk for 2 hours. He surf the internet for fishing tutorial.
-
+        - {npc_name} using computer at the computer desk for 2 hours. He surf the internet for fishing tutorial.
     '''
     completion = client.chat.completions.create(
       model="gpt-4o",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
-        {"role": "user", "content":prompt
-        }
-      ] 
+        {"role": "user", "content": prompt}
+      ]
     )
-
-    print("This is prompt for processing next step: ")
+    output = completion.choices[0].message.content
+    print("Function: processInputGiveWhatToDo")
+    print("Prompt:")
     print(prompt)
-    print("This is next action for next step: ")
-    print(completion.choices[0].message.content)
-    return completion.choices[0].message.content
+    print("Output:")
+    print(output)
+    print("\n\n")
+    return output
 
 def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcId, isFinding, special_instruction = ''):
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
 
-    # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    
     npc_way_of_speak= npc['replies']
     recent_schedule_str = onlyMostRecentSchedule(npc_context, schedule_str)
 
@@ -203,148 +464,84 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
     - Popcat, a meme character, a fisherman in the town.
     - Pippin, a meme character, a coffee maker in the town.
         
-    You are {npc_name}, {npc_description}, .
+    You are {npc_name}, {npc_description}.
 
     Your are talking to someone, here is some more information you should know.
         
     Your past memories and experiences:
-    ''' + memories_str + '''
+    {memories_str}
     Your reflection past experiences and events: 
-    ''' + reflections_str + '''
-    ''' + finder_instruction + '''
+    {reflections_str}
+    {finder_instruction}
     Your context now:
-    ''' + npc_context + '''
+    {npc_context}
     
-    ''' + special_instruction + '''
+    {special_instruction if special_instruction else ''}
 
     The output should include your name, only one target npc name, only one sentence of what you want to say next.
     When you want to end an ongoing conversation, you need to say it explicitly telling that you are ending a converstaion with the target npc.
     Please do not talk to other people all day long, end conversation if need to do other things on your calendar.
 
     Here is the way you speak, try to imitate the way you speak:
-    ''' + npc_way_of_speak + '''
+    {npc_way_of_speak}
 
     Only output what you going to say next, do not provide any other information.
 
     Output format and example:
-        - <fill in user name, given in characters in the town section> talking to <fill in target npc name, given in characters in the town section>, "<fill in content>"
-            e.g. Bob talking to Alice, "Hello Alice, how are you doing today?"
-        - <fill in user name, given in characters in the towsn section> ending conversation with <fill in target npc name, given at characters in the town section>
-            e.g. Bob ending conversation with Alice.
-    output:
-        {npc_name} talking to <fill in target npc name>, "<fill in content>"
+        - {npc_name} talking to <fill in target npc name>, "<fill in content>"
+        - {npc_name} talking to <fill in target npc name>, "<fill in content>". {npc_name} ending conversation with <fill in target npc name>
     '''
     completion = client.chat.completions.create(
       model="gpt-4o",
       messages=[
         {"role": "system", "content": "You are a great schedule planner and instruction giver. You will process the information give to you and give instruction."},
-        {"role": "user", "content":prompt
-        }
-      ] 
+        {"role": "user", "content": prompt}
+      ]
     )
-
-    print("This is prompt for processing your words: ")
+    output = completion.choices[0].message.content
+    print("Function: talkToSomeone")
+    print("Prompt:")
     print(prompt)
-    print("This is next words you say: ")
-    print(completion.choices[0].message.content)
-    return completion.choices[0].message.content
+    print("Output:")
+    print(output)
+    print("\n\n")
+    return output
 
-def needDeepTalk(memories, reflections, npc_context, npc_action, npcId):
-    
 
-    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
-    if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
-
-    # Extract name and description
-    npc_name = npc['name']
-    npc_description = npc['description']
-    
-
-    prompt = f"""
-    
-    You are an expert in determining narrative significance for NPC dialogues.
-
-    Based on the following details, determine if the You should deliver a meaningful speech:
-
-    You are {npc_name}, {npc_description}, .
-    
-    Your past memories and experiences:
-    {memories}
-    
-    Reflections of you:
-    {reflections}
-    
-    Your current Context:
-    {npc_context}
-    
-    Your upcoming Action:
-    {npc_action}
-    
-    Please return "True" if a meaningful speech is warranted (e.g., when you reading, thinking, analyzing, dreaming, etc.), 
-    or "False" if not.
-    """
-    
-    # Call GPT model
-    completion = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": "You are an assistant designed to analyze narrative elements and make decisions."
-            },
-            {
-                "role": "user",
-                "content": prompt.strip()
-            }
-        ]
-    )
-    
-    # Parse GPT output
-    response = completion.choices[0].message.content.strip()
-    if response.lower() == "true":
-        return True
-    elif response.lower() == "false":
-        return False
+############################################
+# Content Generation Functions
+############################################
 
 def generateTheme(memories, reflections, npc_context, npc_action, npcId, special_instruction=''):
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
 
-    # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    
-        # Constructing the prompt dynamically
-
-    # First determine if this topic would like to go deep. 
 
     prompt = f"""
+    You are {npc_name}, {npc_description}.
 
-    You are {npc_name}, {npc_description}, .
-    
     Your past memeories and experiences:
     {memories}
-    
+
     Reflections of you:
     {reflections}
-    
+
     Your current Context:
     {npc_context}
-    
+
     Your upcoming Action:
     {npc_action}
 
-    You needs to say something at the beginning of the action, in the middle of the action, and at the end of the action.
+    You need to say something at the beginning of the action, in the middle of the action, and at the end of the action.
 
     {special_instruction if special_instruction else ''}
 
     Choose an intriguing topic for today's discussion, incorporating additional relevant details, adding depth and insight to the conversation.
     If the topic has been covered extensively, provide a fresh perspective or a new angle to explore.
-   
     """
-
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -358,25 +555,27 @@ def generateTheme(memories, reflections, npc_context, npc_action, npcId, special
             }
         ]
     )
-    
-    return completion.choices[0].message.content
-
+    output = completion.choices[0].message.content
+    print("Function: generateTheme")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(output)
+    print("\n\n")
+    return output
 
 
 def generate_new_Announcement(memories, reflections, theme, npcId):
-    # Find the NPC details by npcId
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
 
-    # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    
     npc_way_of_speak= npc['announcements']
 
     prompt = f"""
-    You are {npc_name}, {npc_description}, .
+    You are {npc_name}, {npc_description} .
 
     your past memeories and experiences:
     {memories}
@@ -387,12 +586,10 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     This is the way you speak, try to imitate the way you speak:
     {npc_way_of_speak}
 
-    From your perspective, write an engaging and insightful eassy under 300 words. about the topic: {theme}.
+    From your perspective, write an engaging and insightful eassy over 400 words. about the topic: {theme}.
 
-
-
+    No Emoji.
     """
-    
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -406,22 +603,15 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
             }
         ]
     )
-    
     speech = completion.choices[0].message.content
 
-    prompt = f"""
-    Transform the following eassy into multiple parts, each part under 40 words:
+    prompt_transform = f"""
+    Transform the following eassy into over 10 parts , each part under 40 words:
   
-    
     Speech:
     {speech}
-    
-
-
-
     """
-    
-    completion = client.chat.completions.create(
+    completion_2 = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {
@@ -430,43 +620,35 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
             },
             {
                 "role": "user",
-                "content": prompt
+                "content": prompt_transform
             }
         ]
     )
-    
-    # Clean and validate the response
-    result = completion.choices[0].message.content.strip("```json").strip("```")
-    
-    return result
+    output = completion_2.choices[0].message.content.strip()
+    print("Function: generate_new_Announcement")
+    print("Prompt:")
+    print(prompt)
+    print("Output (speech):")
+    print(speech)
+    print("Prompt (transform speech):")
+    print(prompt_transform)
+    print("Output (transformed):")
+    print(output)
+    print("\n\n")
+    return output
 
-def generateThreeSentencesForAction(memories, reflections, npc_context, npc_action, npcId, special_instruction=''):
-    """
-    Generates three sentences for an NPC to say during an action: at the beginning, middle, and end.
 
-    Args:
-        memories (str): A description of the NPC's memories.
-        reflections (str): A description of the NPC's reflections on past experiences.
-        npc_context (str): Current context of the NPC.
-        npc_action (str): The action the NPC is performing next.
-        special_instruction (str, optional): Any additional instructions to guide the output.
-
-    Returns:
-        str: The generated three sentences for the NPC.
-    """
+def generateMultipleSentencesForAction(memories, reflections, npc_context, npc_action, npcId, special_instruction=''):
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
 
-    # Extract name and description
     npc_name = npc['name']
     npc_description = npc['description']
-    
     npc_way_of_speak= npc['announcements']
 
-
     prompt = f"""
-    You are {npc_name}, {npc_description}, .
+    You are {npc_name}, {npc_description} .
 
     Your past memeories and experiences:
     {memories}
@@ -480,20 +662,18 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
     What you are doing next:
     {npc_action}
 
-    You needs to say something at the beginning of the action, in the middle of the action, and at the end of the action.
+    You need to say something at the beginning of the action, in the middle of the action, and at the end of the action.
 
     This is the way you speak, try to imitate the way you speak:
     {npc_way_of_speak}
     
-
     {special_instruction if special_instruction else ''}
 
-    Please generate three sentences for the you to say, each sentence under 40 words: 
-    - At the beginning of the action.
-    - In the middle of the action.
-    - At the end of the action.
+    Please generate at least 10 sentences for you to say, each sentence under 40 words, no Emoji: 
+    - One the beginning of the action.
+    - Multiple sentences in the middle of the action.
+    - One the end of the action.
     """
-    
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -507,27 +687,25 @@ def generateThreeSentencesForAction(memories, reflections, npc_context, npc_acti
             }
         ]
     )
+    output = completion.choices[0].message.content
+    print("Function: generateThreeSentencesForAction")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(output)
+    print("\n\n")
+    return output
 
-    return completion.choices[0].message.content
+
+############################################
+# Instruction Translation Functions
+############################################
 
 def isTheInstructionFindingSomeone(instruction_in_human, words_to_say, npcId):
-    """
-    Determines if the provided instruction is related to finding someone to talk (actionId 112).
-
-    Args:
-        instruction_in_human (str): The instruction in natural language.
-        words_to_say (str): The sentences the NPC should say before, during, and after the action.
-        npcId (int): The NPC ID performing the action.
-
-    Returns:
-        bool: True if the action ID should be 112, False otherwise.
-    """
-    # Fetch NPC configuration
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
 
-    # Extract NPC details
     npc_name = npc['name']
     available_actions = npc.get('availableActions', [])
     ava_npc_action = "\n".join(
@@ -535,7 +713,6 @@ def isTheInstructionFindingSomeone(instruction_in_human, words_to_say, npcId):
         for action in available_actions
     )
 
-    # Create the prompt
     prompt = f"""
     You are an instruction translator in a simulated virtual world. Your task is to convert a natural language instruction 
     into a structured JSON format suitable for NPC behavior.
@@ -559,8 +736,6 @@ def isTheInstructionFindingSomeone(instruction_in_human, words_to_say, npcId):
 
     Tell me if the actionid should be 112? If yes, return "True", if not, return "False".
     """
-
-    # GPT Completion
     completion = client.chat.completions.create(
         model="gpt-4o",
         messages=[
@@ -574,29 +749,26 @@ def isTheInstructionFindingSomeone(instruction_in_human, words_to_say, npcId):
             }
         ]
     )
-    response = completion.choices[0].message.content.strip()
-
-    print("Instruction validation prompt:", prompt)
-    print("GPT response:", response)
-
-    # Convert GPT response to Boolean
-    if response == "True":
+    output = completion.choices[0].message.content.strip()
+    print("Function: isTheInstructionFindingSomeone")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(output)
+    print("\n\n")
+    if output == "True":
         return True
-    elif response == "False":
+    elif output == "False":
         return False
     else:
-        raise ValueError(f"Unexpected response from GPT: {response}")
+        raise ValueError(f"Unexpected response from GPT: {output}")
+
 
 def humanInstToJava_action_112(instruction_in_human, words_to_say, npcId):
-    """
-    Handles the case where the action is finding someone to talk (actionId 112).
-    """
-    # Fetch NPC configuration
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
 
-    # Extract NPC details
     npc_name = npc['name']
     available_actions = npc.get('availableActions', [])
     ava_npc_action = "\n".join(
@@ -605,7 +777,6 @@ def humanInstToJava_action_112(instruction_in_human, words_to_say, npcId):
         if action['actionId'] == 112
     )
 
-    # Create prompt specific to actionId 112
     prompt = f"""
     You are an instruction translator in a simulated virtual world. Your task is to convert a natural language instruction 
     into a structured JSON format suitable for NPC behavior.
@@ -636,7 +807,7 @@ def humanInstToJava_action_112(instruction_in_human, words_to_say, npcId):
         "npcId": {npcId},
         "actionId": 112,
         "data": {{
-            "npcId": <target NPC id, 10006 for Satoshi, 10007 for Popcat, 10008 for Pepe, 10009 for Musk, 10010, for Pippin>
+            "npcId": <target NPC id, 10006 for Satoshi, 10007 for Popcat, 10008 for Pepe, 10009 for Musk, 10010 for Pippin>
         }},
         "durationTime": <fill in, action duration time in milliseconds>,
         "speak": [
@@ -647,8 +818,6 @@ def humanInstToJava_action_112(instruction_in_human, words_to_say, npcId):
         ]
     }}
     """
-
-    # GPT Completion
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -663,41 +832,37 @@ def humanInstToJava_action_112(instruction_in_human, words_to_say, npcId):
         ]
     )
     outputinst = completion.choices[0].message.content
-
-    # Debugging and validation
-    print("Instruction translation prompt for 112:", prompt)
-    print("Machine Instruction:", outputinst)
+    print("Function: humanInstToJava_action_112")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(outputinst)
+    print("\n\n")
     return outputinst
 
+
 def humanInstToJava_action_other(instruction_in_human, words_to_say, npcId):
-    """
-    Handles all other cases where the action is not finding someone to talk (actionId is not 112),
-    and includes the `oid` field for object/location identification.
-    """
-    # Fetch NPC configuration
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
 
-    # Extract NPC details
     npc_name = npc['name']
     available_actions = npc.get('availableActions', [])
     ava_npc_action = ""
+    available_locations = ""
     for action in available_actions:
         if action['actionId'] != 112:
             ava_npc_action += (
                 f"- {action['actionId']} : {action['actionName']}, {action['description']}.\n"
             )
-    available_locations = ",".join(action['location'] for action in available_actions)
+        available_locations += f"{action['location']},"
 
-    # Create prompt specific to non-112 actions
     prompt = f"""
     You are an instruction translator in a simulated virtual world. Your task is to convert a natural language instruction 
     into a structured JSON format suitable for NPC behavior.
 
     {npc_name} initiates the action.
 
-    
     - Use `oid` to indicate the object or location where the action is performed.
 
     ### NPC ID List and Character Names:
@@ -736,8 +901,6 @@ def humanInstToJava_action_other(instruction_in_human, words_to_say, npcId):
         ]
     }}
     """
-
-    # GPT Completion
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -752,11 +915,14 @@ def humanInstToJava_action_other(instruction_in_human, words_to_say, npcId):
         ]
     )
     outputinst = completion.choices[0].message.content
-
-    # Debugging and validation
-    print("Instruction translation prompt for other actions:", prompt)
-    print("Machine Instruction:", outputinst)
+    print("Function: humanInstToJava_action_other")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(outputinst)
+    print("\n\n")
     return outputinst
+
 
 def humanInstToJava_action(instruction_in_human, words_to_say, npcId):
     if isTheInstructionFindingSomeone(instruction_in_human, words_to_say, npcId):
@@ -764,16 +930,13 @@ def humanInstToJava_action(instruction_in_human, words_to_say, npcId):
     else:
         return humanInstToJava_action_other(instruction_in_human, words_to_say, npcId)
 
-def humanInstToJava_talk(instruction_in_human, words_to_say, npcId):
 
-    # Constructing the prompt dynamically
+def humanInstToJava_talk(instruction_in_human, words_to_say, npcId):
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
+        raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
 
-    # Extract name and description
     npc_name = npc['name']
-
     available_actions = npc.get('availableActions', [])
     ava_npc_action = ""
     for action in available_actions:
@@ -781,11 +944,7 @@ def humanInstToJava_talk(instruction_in_human, words_to_say, npcId):
             ava_npc_action += (
                 f"- {action['actionId']} : {action['actionName']}, {action['description']}.\n"
             )
-    available_locations = ""
-    for action in available_actions:
-        available_locations += (
-            f"{action['location']},"
-        )
+    available_locations = ",".join(action['location'] for action in available_actions)
 
     prompt = f"""
     You are an instruction translator in a simulated virtual world. Your task is to convert a natural language instruction 
@@ -816,13 +975,11 @@ def humanInstToJava_talk(instruction_in_human, words_to_say, npcId):
         "data": {{
             "npcId": <fill in, the npcid of the target npc who will receive the talk message, here is the npc id list 10006 satoshi, 10007 popocat, 10008 pepe, 10009 musk, 10010 pippin>,
             "content": <fill in, the content of the chat, what the npc says.>,
-            “endingTalk” : <fill in 0 or 1, 1 if the npc is ending the conversation now, 0 if continue conversation>
+            "endingTalk" : <fill in 0 or 1, 1 if the npc is ending the conversation now, 0 if continue conversation>
         }},
     }}
     You only give one instruction at a time, not multiple instruction.
     """
-
-
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -837,280 +994,10 @@ def humanInstToJava_talk(instruction_in_human, words_to_say, npcId):
         ]
     )
     outputinst = completion.choices[0].message.content
-    print("Instruction translation prompt :", prompt)
-    print("Machine Instruction: ", outputinst)
+    print("Function: humanInstToJava_talk")
+    print("Prompt:")
+    print(prompt)
+    print("Output:")
+    print(outputinst)
+    print("\n\n")
     return outputinst
-
-
-
-
-def generate_reflection_new(memories_str, reflections_str, java_input_str, npcId):
-    """
-    Generate reflections by first identifying high-level questions and then deriving insights.
-    """
-    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
-    if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
-
-    # Extract name and description
-    npc_name = npc['name']
-    npc_description = npc['description']
-    
-    # Define the first question
-    question_1 = "Given only the information above, what are 5 most salient high-level questions we can answer about the subjects in the statements during the daily life not included in the npc current information?  Moreover, what is your 3 recent goals, and 3 long terms goals? Do you want to make adjustment to your goals, and how far are you there to achieving those goals?"
-
-    # Step 1: Generate high-level questions
-    completion_1 = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "You are a deep thinker and reflective analyst."},
-            {"role": "user", "content": f'''
-            You are {npc_name}, {npc_description}, .
-
-            Your context now:
-            {java_input_str}
-
-            Your memeories:
-            {memories_str}
-
-            Your prior reflections on past experiences and events:
-            {reflections_str}
-
-            {question_1}
-            '''}
-        ]
-    )
-
-    question_1_answer = completion_1.choices[0].message.content
-
-    # Define the second question
-    question_2 = "What 5 high-level insights can you infer from the above statements not included in the information of the npc?."
-
-    # Step 2: Generate insights based on the high-level questions
-    completion_2 = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "You are a deep thinker and reflective analyst."},
-            {"role": "user", "content": f'''
-           You are {npc_name}, {npc_description}, .
-
-            Your context now:
-            {java_input_str}
-
-            Your memeories:
-            {memories_str}
-
-            Your prior reflections on past experiences and events:
-            {reflections_str}
-
-            {question_2} in the following directions:
-            {question_1_answer}
-
-            Just give me the insights, do not provide explanations or any other information.
-            '''}
-        ]
-    )
-    question_2_answer = completion_2.choices[0].message.content
-    # Return the generated insights
-
-    # question_3 = "Given only the information above, What is your 3 recent short term goals, and how far are you there to achieving those goals? Feel free make adjustment."
-
-    # # Step 1: Generate high-level questions
-    # completion_3 = client.chat.completions.create(
-    #     model="gpt-4o-mini",
-    #     messages=[
-    #         {"role": "system", "content": "You are a deep thinker and reflective analyst."},
-    #         {"role": "user", "content": f'''
-    #         You are {npc_name}, {npc_description}, .
-
-    #         Your context now:
-    #         {java_input_str}
-
-    #         Your memeories:
-    #         {memories_str}
-
-    #         Your prior reflections on past experiences and events:
-    #         {reflections_str}
-
-    #         {question_1}
-    #         '''}
-    #     ]
-    # )
-
-    # question_3_answer = completion_3.choices[0].message.content
-
-    # question_4 = "Given only the information above, What is your 3 recent short term goals, and how far are you there to achieving those goals? Feel free make adjustment."
-
-    # # Step 1: Generate high-level questions
-    # completion_4 = client.chat.completions.create(
-    #     model="gpt-4o-mini",
-    #     messages=[
-    #         {"role": "system", "content": "You are a deep thinker and reflective analyst."},
-    #         {"role": "user", "content": f'''
-    #         You are {npc_name}, {npc_description}, .
-
-    #         Your context now:
-    #         {java_input_str}
-
-    #         Your memeories:
-    #         {memories_str}
-
-    #         Your prior reflections on past experiences and events:
-    #         {reflections_str}
-
-    #         {question_1}
-    #         '''}
-    #     ]
-    # )
-
-    # question_4_answer = completion_4.choices[0].message.content
-    # result = f'''Your Short Term Goals Update: {question_3_answer}
-    #             Your Long Term Goals Update: {question_4_answer}
-    #             You Key Insight Recently: {question_2_answer}'''
-    result = question_2_answer
-    return result
-
-
-
-def generate_schedule(current_schedule, memories, reflections, npc_context,npcId):
-    """
-    Generates a schedule for an NPC based on current context, memories, and reflections.
-    
-    Args:
-        current_schedule (str): String containing the NPC's current schedule or other related info.
-        memories (str): String containing the NPC's past memories.
-        reflections (str): String containing reflections relevant to the NPC.
-        npc_context (str): String containing the current context and information of the NPC.
-
-    Returns:
-        str: Generated schedule in the specified format.
-    """
-
-    npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
-    if not npc:
-        raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
-
-    # Extract name and description
-    npc_name = npc['name']
-    npc_description = npc['description']
-    
-    npc_schedule = npc.get('schedule', [])
-
-    completion = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You are a good instruction-to-language translator. "
-                    "You will process the information given to you and give instructions in a fixed format."
-                )
-            },
-            {
-                "role": "user",
-                "content": (
-                    f"""
-                    You are {npc_name}, {npc_description} .
-
-                    You are living in a simulated world. 
-
-                    This is a example typical schedule for you, you can adjust it to the current situation:
-                    {npc_schedule}
-
-                    Your prior schedule:
-                    {current_schedule}
-
-                    Your past memeories:
-                    {memories}
-
-                    Your reflections on past experiences and events:
-                    {reflections}
-
-                    Your context:
-                    {npc_context}
-
-                    Please create a new detailed schedule using 24-hour time format for the NPC for today, adapting to the current situation.
-
-
-
-                    """
-                )
-            }
-        ]
-    )
-    return completion.choices[0].message.content
-
-
-def need_new_schedule(current_schedule, memories, reflections, npc_context, npcId):
-    """
-    Determines if a new schedule is needed for the next behavior.
-    
-    Args:
-        current_schedule (str): String containing the NPC's current schedule.
-        memories (str): String containing the NPC's past memories.
-        reflections (str): String containing reflections relevant to the NPC.
-        npc_context (str): String containing the current context and information of the NPC.
-
-    Returns:
-        bool: True if a new schedule is needed, False otherwise.
-    """
-    try:
-        npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
-        if not npc:
-            raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
-
-        # Extract name and description
-        npc_name = npc['name']
-        npc_description = npc['description']
-        
-        
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are an assistant designed to determine whether the NPC needs a new schedule. "
-                        "Analyze the provided information and respond with 'yes' if a new schedule is needed or 'no' otherwise."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": (
-                        f"""
-                        You are {npc_name}, {npc_description}, .
-
-                        You are living in a simulated world. 
-
-                        Your prior schedule:
-                        {current_schedule}
-
-                        Your memeories:
-                        {memories}
-
-                        Your reflections on past experiences and events:
-                        {reflections}
-
-                        Your context:
-                        {npc_context}
-
-                        Based on the above, do need a new schedule for the rest of the day? 
-                        Respond only with 'yes' or 'no'.
-                        """
-                    )
-                }
-            ]
-        )
-        # Extract the response content
-        response = completion.choices[0].message.content.strip().lower()
-        # Interpret the response as boolean
-        if response == 'yes':
-            return True
-        elif response == 'no':
-            return False
-        else:
-            raise ValueError("Unexpected response from GPT-4 mini: " + response)
-    except Exception as e:
-        # Handle errors gracefully
-        print(f"Error while determining the need for a new schedule: {e}")
-        return False  # Default to False in case of error

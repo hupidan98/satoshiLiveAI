@@ -299,6 +299,8 @@ def receive_data():
                 try:
                     requestId = data['requestId']
                     npcInputSingle = data['data']
+                    if "mapObj" in npcInputSingle:
+                        del npcInputSingle["mapObj"] # No need for data mapObj now, distraction
                     dt_object = datetime.datetime.fromtimestamp(npcInputSingle['world']['time'] / 1000.0)
                     time_stamp = dt_object.strftime('%Y-%m-%d %H:%M:%S')  # Format to MySQL datetime format
                     npcId = npcInputSingle['npcs'][0]['npcId']
@@ -420,7 +422,7 @@ if __name__ == "__main__":
     
     # Initial command to execute before starting threads
     init_command = '''
-    {"command": 10102, "data": {}}
+    {"command": 10102, "data": {"init": true}}
     '''
     header_number = 10102
 
@@ -445,17 +447,17 @@ if __name__ == "__main__":
     # Keep the main thread alive
     try:
         while True:
-            time.sleep(180)  
+            time.sleep(40)  
             db_conn_temp = establish_sql_connection()
             BhrDBJavaBuffer.mark_all_entries_as_processed(db_conn_temp)
             close_sql_connection(db_conn_temp)
             init_command = '''
-            {"command": 10102, "data": {}}
+            {"command": 10102, "data": {"init": false}}
             '''
             header_number = 10102
             execute_instruction(init_command, header_number)
             
-            time.sleep(1)# Keep main thread alive to allow threads to run
+            # time.sleep(1)# Keep main thread alive to allow threads to run
     except KeyboardInterrupt:
         print("Interrupted, closing socket.")
         if sock:
