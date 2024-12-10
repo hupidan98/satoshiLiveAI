@@ -28,6 +28,7 @@ import BhrLgcToMemStre
 
 config = configparser.ConfigParser()
 # Adjust path to look for config.ini in AImodule regardless of the current directory
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 config_path = os.path.join(base_dir, 'config.ini')
 config.read(config_path)
 
@@ -37,6 +38,7 @@ yaml_path = os.path.join(base_dir, 'char_config.yaml')
 with open(yaml_path, 'r') as file:
     char_config = yaml.safe_load(file)
     print("YAML content loaded successfully.")
+
 
 def processOneInputGiveOneInstruction():
     """
@@ -49,8 +51,15 @@ def processOneInputGiveOneInstruction():
         if input_from_java is None:
             print('Nothing to process so far')
             return 0
-
+        
         request_id = input_from_java[0]
+        
+        
+
+        # Now all print statements go into f
+        print('Processing the following input:')
+        print(input_from_java)
+
         curTime = input_from_java[1]
         npcId = input_from_java[2]
         java_json = input_from_java[3]
@@ -107,7 +116,7 @@ def processOneInputGiveOneInstruction():
         if memories_str == '':
             memories_str = 'No memory yet'
 
-        print('Relevent Memories:')
+        print('Relevent Memeories:')
         print(memories_str)
         print()
 
@@ -127,6 +136,7 @@ def processOneInputGiveOneInstruction():
         if cur_schedule is not None:
             cur_schedule_str = str(cur_schedule['schedule'])
         else:
+            # If no schedule is found in DB, fallback to char_config.yaml
             npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
             if not npc:
                 raise ValueError(f"NPC with npcId {npcId} not found in char.yaml")
@@ -144,70 +154,203 @@ def processOneInputGiveOneInstruction():
 
         # Determine next action based on current states
         if is_findingToTalk:
+            print('Last action is finding people to talk, next action should be talking')
             target_sleeping, sleep_target_name = BhrLgcManualProcess.parse_target_sleeping(java_json)
             target_talking, talk_target_name = BhrLgcManualProcess.parse_target_talking(java_json)
 
             if target_sleeping or target_talking:
+                # Target is not available for conversation
+                print('Target is sleeping or talking, choose another action')
                 instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(
                     memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId
                 )
+                if BhrLgcGPTProcess.needDeepTalk(
+                    memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId
+                ):
+                    theme_for_generation = BhrLgcGPTProcess.generateTheme(
+                        memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId
+                    )
+                    words_to_say = BhrLgcGPTProcess.generate_new_Announcement(
+                        memories_str, prior_reflection_str, theme_for_generation, npcId
+                    )
+                else:
+                    words_to_say = BhrLgcGPTProcess.generateMultipleSentencesForAction(
+                        memories_str, prior_reflection_str, cur_schedule_str, instruction_in_human, npcId
+                    )
+                target_name = sleep_target_name if sleep_target_name else (talk_target_name if talk_target_name else 'Unknown')
+                instruction_in_human += f" I went to the {target_name} but he is not available, going to do something else now."
+                is_talk_instruction = False
             else:
+                print('Start Talking to the person')
                 instruction_in_human = BhrLgcGPTProcess.talkToSomeone(
                     memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk, targetNPCId
                 )
+                words_to_say = ''
                 is_talk_instruction = True
 
         elif is_buying:
+            print('I am buying something, next action should be talking for buying stuff')
             shop_target_present, shopowner_target_name = BhrLgcManualProcess.parse_target_oid_owner_at_shop(java_json)
 
             if not shop_target_present:
+                # Shop owner not present
+                print('Shop owner not present, choose another action')
                 instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(
                     memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId
                 )
+                if BhrLgcGPTProcess.needDeepTalk(
+                    memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId
+                ):
+                    theme_for_generation = BhrLgcGPTProcess.generateTheme(
+                        memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId
+                    )
+                    words_to_say = BhrLgcGPTProcess.generate_new_Announcement(
+                        memories_str, prior_reflection_str, theme_for_generation, npcId
+                    )
+                else:
+                    words_to_say = BhrLgcGPTProcess.generateMultipleSentencesForAction(
+                        memories_str, prior_reflection_str, cur_schedule_str, instruction_in_human, npcId
+                    )
+                instruction_in_human += f" I went to {shopowner_target_name}'s store to buy but he is not there, purchase failed, doing something else now."
+                is_talk_instruction = False
             else:
+                print('Start Talking to the shop owner')
                 instruction_in_human = BhrLgcGPTProcess.talkToSomeone(
                     memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk, shopownerNPCId
                 )
+                words_to_say = ''
                 is_talk_instruction = True
 
         elif is_talking:
+            # NPC currently talking
             instruction_in_human = BhrLgcGPTProcess.talkToSomeone(
                 memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk
             )
+            words_to_say = ''
             is_talk_instruction = True
 
         elif is_idling:
+            # NPC is idling, decide next action
+            print('Is idling, decide next action')
             instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(
                 memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId
             )
+            if BhrLgcGPTProcess.needDeepTalk(
+                memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId
+            ):
+                theme_for_generation = BhrLgcGPTProcess.generateTheme(
+                    memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId
+                )
+                words_to_say = BhrLgcGPTProcess.generate_new_Announcement(
+                    memories_str, prior_reflection_str, theme_for_generation, npcId
+                )
+            else:
+                words_to_say = BhrLgcGPTProcess.generateMultipleSentencesForAction(
+                    memories_str, prior_reflection_str, cur_schedule_str, instruction_in_human, npcId
+                )
+            is_talk_instruction = False
 
         # Generate final instruction JSON
         if instruction_in_human != '':
-            retry = 0
-            while retry < 3:
-                try:
-                    instruction_to_give = BhrLgcGPTProcess.humanInstToJava_action(
-                        instruction_in_human, "", npcId
-                    ).strip("```json").strip("```")
-                    instruction_json = json.loads(instruction_to_give)
-                    instruction_json['requestId'] = request_id
-                    instruction_to_give = json.dumps(instruction_json)
-                    break
-                except Exception as e:
-                    retry += 1
-                    if retry == 3:
-                        return 0
+            if is_talk_instruction:
+                retry = 0
+                while retry < 3:
+                    try:
+                        instruction_to_give = BhrLgcGPTProcess.humanInstToJava_talk(
+                            instruction_in_human, words_to_say, npcId
+                        ).strip("```json").strip("```")
+                        instruction_json = json.loads(instruction_to_give)
+                        instruction_json['requestId'] = request_id
+                        # Re-serialize the JSON after adding requestId
+                        instruction_to_give = json.dumps(instruction_json)
+                        break
+                    except Exception as e:
+                        print(f"Error occurred: {e}. Retrying...")
+                        retry += 1
+                        if retry == 3:
+                            return 0
+            else:
+                retry = 0
+                while retry < 3:
+                    try:
+                        instruction_to_give = BhrLgcGPTProcess.humanInstToJava_action(
+                            instruction_in_human, words_to_say, npcId
+                        ).strip("```json").strip("```")
+                        instruction_json = json.loads(instruction_to_give)
+                        instruction_json['requestId'] = request_id
+                        # Re-serialize after adding requestId
+                        instruction_to_give = json.dumps(instruction_json)
+                        break
+                    except Exception as e:
+                        print(f"Error occurred: {e}. Retrying...")
+                        retry += 1
+                        if retry == 3:
+                            return 0
 
             print('Instruction to give:')
             print(instruction_json)
             print()
 
+            # Add to instruction db
             BhrDBInstruction.insert_into_instruction_table(db_conn, curTime, npcId, instruction_to_give, request_id)
 
+        # Mark the buffer as processed
         BhrDBJavaBuffer.mark_entry_as_processed(db_conn, request_id)
+
+        # If we produced an instruction
+        if instruction_in_human != '':
+            # Check if a new schedule is needed
+            if BhrLgcGPTProcess.need_new_schedule(cur_schedule_str, memories_str, prior_reflection_str, inputInHumanString, npcId):
+                cur_schedule_str = BhrLgcGPTProcess.generate_schedule(
+                    cur_schedule_str, memories_str, prior_reflection_str, inputInHumanString, npcId
+                )
+                BhrDBSchedule.insert_into_table(db_conn, npcId, curTime, cur_schedule_str)
+
+            print('Current Schedule:')
+            print(cur_schedule)
+            print()
+
+            data = json.loads(java_json)
+            npcs = data.get('npcs', [])
+            if len(npcs) > 0:
+                npc = npcs[0]
+                talk_info = npc.get('talk', {})
+                is_talking = talk_info.get('isTalking', False)
+                if is_talking:
+                    input_for_mem = BhrLgcManualProcess.parse_npc_info_formemory(java_json)
+                    BhrLgcToMemStre.InputToMemStreDB(input_from_java, input_for_mem)
+                    BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, input_for_mem)
+
+            # Insert instruction to Memory Stream
+            BhrLgcToMemStre.InstToMemStreDB(input_from_java, "At "+str(curTime) + " ," + instruction_in_human)
+            BhrLgcToMemStre.InstImportancetoReflectionTracer(input_from_java, instruction_in_human)
+
+            # Check reflection importance
+            output = BhrDBReflectionTracer.retrieve_entry(db_conn, npcId)
+            if output:
+                output_importance, output_starttime, output_endtime = output[0], output[1], output[2]
+                if output_importance > 100:
+                    # Time for reflection
+                    memories = BhrDBMemStre.retrieve_entries_between_time(db_conn, npcId, output_starttime, output_endtime)
+                    prior_reflection = BhrDBReflection.retrieve_last_entry_before_time(db_conn, npcId, output_endtime)
+                    if prior_reflection is not None:
+                        prior_reflection_str = prior_reflection[2]
+                    else:
+                        prior_reflection_str = 'No prior reflections'
+                    memories_str = str(memories['Content']) if memories is not None else 'No prior memories'
+
+                    new_reflection = BhrLgcGPTProcess.generate_reflection_new(prior_reflection_str, memories_str, inputInHumanString, npcId)
+                    print("New Reflection: ", new_reflection)
+
+                    BhrDBReflection.insert_into_table(db_conn, npcId, curTime, new_reflection)
+                    # Reset the importance tracer
+                    BhrDBReflectionTracer.insert_into_table(db_conn, npcId, 0, curTime, curTime)
+
+        BhrDBJavaBuffer.mark_entry_as_fullyprocessed(db_conn, request_id)
 
         return 1
 
     except Exception as e:
+        # If the function throws an error, print the traceback as well
         traceback.print_exc()
         return 0
