@@ -12,7 +12,7 @@ from DBConnect import BhrDBReflectionTracer
 from DBConnect import BhrDBMemStre
 from DBConnect import BhrDBReflection
 from DBConnect import BhrDBSchedule
-import BhrCtrl.BhrLgcProcessOnce as BhrLgcProcessOnce
+import satoshiLiveAI.BhrCtrl.BhrLgcProcessOnce_NoLogin as BhrLgcProcessOnce_NoLogin
 
 # Establish a database connection
 db_conn = DBCon.establish_sql_connection()
@@ -47,7 +47,7 @@ try:
     while True:
         print(f"Processing step {n}")
         # Call the core processing function
-        BhrLgcProcessOnce.processOneInputGiveOneInstruction()
+        BhrLgcProcessOnce_NoLogin.processOneInputGiveOneInstruction()
         print("\n" * 5)  # Add spacing between iterations for clarity
         time.sleep(2)  # Adjust the sleep interval as needed
         n += 1

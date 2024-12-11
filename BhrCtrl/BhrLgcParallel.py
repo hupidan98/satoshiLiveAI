@@ -2,10 +2,13 @@ import sys
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor
+import logging
+from logging.handlers import RotatingFileHandler
 
 # Add the base directory (one level up from the current directory)
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(base_dir)
+
 # Import project-specific modules
 from DBConnect import DBCon
 from DBConnect import BhrDBJavaBuffer
@@ -21,10 +24,6 @@ import numpy as np
 import json
 import re
 import pickle
-
-# Add the base directory (one level up)
-base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(base_dir)
 
 # Initialize the database
 global_db_conn = DBCon.establish_sql_connection()
@@ -52,19 +51,35 @@ def initialize_database(db_conn):
 # Call the database initialization function
 initialize_database(global_db_conn)
 
+# Setup a global logger with RotatingFileHandler
+logger = logging.getLogger("ParallelLogger")
+logger.setLevel(logging.INFO)
+
+# Define log file path
+log_file_path = os.path.join(base_dir, 'BhrCtrl', 'parallel.log')
+
+# Create RotatingFileHandler: 5MB per file, keep 5 backups
+handler = RotatingFileHandler(log_file_path, maxBytes=5*1024*1024, backupCount=5, encoding='utf-8')
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# Add handler to the logger
+if not logger.handlers:
+    logger.addHandler(handler)
+
+# Also add StreamHandler to output logs to stdout
+stream_handler = logging.StreamHandler(sys.stdout)
+stream_handler.setFormatter(formatter)
+logger.addHandler(stream_handler)
+
 # Define the function to process tasks with safe connection handling
 def process_task(task_id):
-    db_conn = None
     try:
-        print(f"Processing task {task_id}")
+        logger.info(f"Processing task {task_id}")
         BhrLgcProcessOnce.processOneInputGiveOneInstruction()
-        print(f"Task {task_id} completed.")
+        logger.info(f"Task {task_id} completed.")
     except Exception as e:
-        print(f"Error processing task {task_id}: {e}")
-    finally:
-        if db_conn:
-            print(f"Closing connection for task {task_id}")
-            db_conn.close()
+        logger.error(f"Error processing task {task_id}: {e}", exc_info=True)
 
 # Main loop to run tasks in parallel
 n = 0
@@ -78,7 +93,11 @@ try:
             n += num_workers
             time.sleep(2)  # Adjust sleep interval to control task submission rate
 except KeyboardInterrupt:
-    print("Loop terminated by user.")
+    logger.info("Loop terminated by user.")
+except Exception as e:
+    logger.error("An unexpected error occurred in the main loop.", exc_info=True)
 finally:
     # Close the global database connection
-    global_db_conn.close()
+    if global_db_conn:
+        global_db_conn.close()
+        logger.info("Global database connection closed.")
