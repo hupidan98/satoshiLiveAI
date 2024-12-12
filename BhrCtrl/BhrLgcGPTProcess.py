@@ -734,7 +734,7 @@ def isTheInstructionFindingSomeone(instruction_in_human, words_to_say, npcId):
     Instruction for the NPC:
     {instruction_in_human}
 
-    Tell me if the actionid should be 112? If yes, return "True", if not, return "False".
+    Tell me if the actionid should be 112? If yes, return "True", if not, return "False". Don't include any other information.
     """
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -756,12 +756,11 @@ def isTheInstructionFindingSomeone(instruction_in_human, words_to_say, npcId):
     print("Output:")
     print(output)
     print("\n\n")
-    if output == "True":
+    if "True" in output:
         return True
-    elif output == "False":
-        return False
     else:
-        raise ValueError(f"Unexpected response from GPT: {output}")
+        return False
+
 
 
 def humanInstToJava_action_112(instruction_in_human, words_to_say, npcId):
@@ -786,7 +785,7 @@ def humanInstToJava_action_112(instruction_in_human, words_to_say, npcId):
     ActionId is 112 for finding someone to talk.
     - Use `npcId` for the target NPC being interacted with.
 
-    ### NPC ID List and Character Names:
+    ### NPC ID and Corresponding Character Names:
     10006 : Satoshi
     10007 : Popcat
     10008 : Pepe
@@ -807,7 +806,7 @@ def humanInstToJava_action_112(instruction_in_human, words_to_say, npcId):
         "npcId": {npcId},
         "actionId": 112,
         "data": {{
-            "npcId": <target NPC id, 10006 for Satoshi, 10007 for Popcat, 10008 for Pepe, 10009 for Musk, 10010 for Pippin>
+            "npcId": <target NPC id, 10006 for Satoshi, 10007 for Popcat, 10008 for Pepe, 10009 for Musk, 10010 for Pippin, only the id please>
         }},
         "durationTime": <fill in, action duration time in milliseconds>,
         "speak": [
@@ -863,19 +862,11 @@ def humanInstToJava_action_other(instruction_in_human, words_to_say, npcId):
 
     {npc_name} initiates the action.
 
-    - Use `oid` to indicate the object or location where the action is performed.
-
-    ### NPC ID List and Character Names:
-    10006 : Satoshi
-    10007 : Popcat
-    10008 : Pepe
-    10009 : Musk
-    10010 : Pippin
 
     ### Action ID and Corresponding Actions:
     {ava_npc_action}
 
-    ### Object ID List as Location:
+    ### Object ID List as Location(oid),  Use `oid` to indicate the object or location where the action is performed:
     {available_locations}
 
     Instruction for the NPC:
@@ -889,7 +880,7 @@ def humanInstToJava_action_other(instruction_in_human, words_to_say, npcId):
         "npcId": {npcId},
         "actionId": <fill in, the Action Id of what the npc is doing>,
         "data": {{
-            "oid": <fill in, the Object ID of where the action is performed>
+            "oid": <fill in, the Object ID of where the action is performed, only use the given oid>
         }},
         "durationTime": <fill in, action duration time in milliseconds>,
         "speak": [
@@ -902,7 +893,7 @@ def humanInstToJava_action_other(instruction_in_human, words_to_say, npcId):
     }}
     """
     completion = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[
             {
                 "role": "system",
