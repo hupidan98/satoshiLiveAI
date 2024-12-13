@@ -447,7 +447,7 @@ if __name__ == "__main__":
     # Keep the main thread alive
     try:
         while True:
-            time.sleep(30)
+            time.sleep(40)
             # time.sleep(300) 
             db_conn_temp = establish_sql_connection()
             BhrDBJavaBuffer.mark_all_entries_as_processed(db_conn_temp)

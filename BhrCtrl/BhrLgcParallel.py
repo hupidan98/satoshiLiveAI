@@ -59,7 +59,7 @@ def process_task(task_id):
     result = BhrLgcProcessOnce.processOneInputGiveOneInstruction()
     # If result == 0, means no job. That's not an error, just continue.
 
-num_workers = 25
+num_workers = 10
 n = 0
 
 with ThreadPoolExecutor(max_workers=num_workers) as executor:

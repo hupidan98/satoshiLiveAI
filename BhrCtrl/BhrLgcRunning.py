@@ -82,24 +82,40 @@ import sys
 import os
 import time
 
-# Redirect all print statements to output.txt
+# Create a Tee class that duplicates writes to multiple streams
+class Tee:
+    def __init__(self, *files):
+        self.files = files
+    
+    def write(self, data):
+        for f in self.files:
+            f.write(data)
+            f.flush()
+    
+    def flush(self):
+        for f in self.files:
+            f.flush()
+
+# Add the base directory (one level up from the current directory)
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(base_dir)
+
+# Import project-specific modules
+from DBConnect import DBCon
+from DBConnect import BhrDBJavaBuffer
+from DBConnect import BhrDBInstruction
+from DBConnect import BhrDBReflectionTracer
+from DBConnect import BhrDBMemStre
+from DBConnect import BhrDBReflection
+from DBConnect import BhrDBSchedule
+import BhrCtrl.BhrLgcProcessOnce as BhrLgcProcessOnce
+
+# Open output file and set up tee for printing
 log_file = os.path.join(os.path.dirname(__file__), 'output.txt')
 with open(log_file, 'w') as f:
-    sys.stdout = f
-
-    # Add the base directory (one level up from the current directory)
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    sys.path.append(base_dir)
-
-    # Import project-specific modules
-    from DBConnect import DBCon
-    from DBConnect import BhrDBJavaBuffer
-    from DBConnect import BhrDBInstruction
-    from DBConnect import BhrDBReflectionTracer
-    from DBConnect import BhrDBMemStre
-    from DBConnect import BhrDBReflection
-    from DBConnect import BhrDBSchedule
-    import BhrCtrl.BhrLgcProcessOnce as BhrLgcProcessOnce
+    # Create a tee that writes to both stdout and the file
+    tee = Tee(sys.stdout, f)
+    sys.stdout = tee
 
     # Function to delete all files in the BhrCtrl/printout folder
     def clear_printout_folder():

@@ -1,0 +1,4 @@
+Current working directory: /Users/jackhan/Desktop/AITown/satoshiLive/satoshiLiveAI
+Config sections found: ['mysql', 'Paths', 'OpenAI', 'NetworkSocket']
+Connected to MySQL server successfully
+Initializing database...

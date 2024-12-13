@@ -44,6 +44,8 @@ def processOneInputGiveOneInstruction():
     """
     Process one input from the Java buffer and generate one instruction for the NPC.
     """
+    # log_file = os.path.join(os.path.dirname(__file__), 'BhrCtrl', 'printout', 'output.txt')
+    # with open(log_file, 'w') as f:
     try:
         db_conn = DBCon.establish_sql_connection()
         input_from_java = BhrDBJavaBuffer.get_earliest_unprocessed_entry(db_conn)

@@ -209,12 +209,16 @@ def parse_isFindingPeopletoTalk(json_input):
     npc = npcs[0]
     cur_action = npc.get('action', {})
     action_id = cur_action.get('actionId', '0')
-    targetNPCId = cur_action.get('"param"', {}).get('npcId', None)
+    targetNPCId = cur_action.get('param', {}).get('npcId', None)
     if targetNPCId:
-        result = False
-    else:
         result = (int(action_id) == 112)
+    else:
+        result = False
     print("Method: parse_isFindingPeopletoTalk | Description: Checks if NPC is looking for people to talk | Result:", result, "\n")
+
+    # Only able to start converstation when status is free
+    idling = npc.get('status', '')
+    result = (result  and idling == "free")
 
     return result, targetNPCId
 
@@ -308,7 +312,7 @@ def parse_target_talking(json_input):
     except json.JSONDecodeError as e:
         print("Method: parse_target_talking | Description: Checks if target NPC is talking | Result:", (False, None), "\n")
         return False, None
-
+    # look for my action, is 112?
     npcs = data.get('npcs', [])
     if not npcs:
         print("Method: parse_target_talking | Description: Checks if target NPC is talking | Result:", (False, None), "\n")
@@ -363,7 +367,7 @@ def parse_target_oid_owner_at_shop(json_input):
         return False, None
 
     npc = npcs[0]
-    action = npc.get('curAction', {})
+    action = npc.get('action', {})
     params = action.get('param', None)
     if not params:
         print("Method: parse_target_oid_owner_at_shop | Description: Checks if OID owner NPC is at shop | Result:", (False, None), "\n")
@@ -375,13 +379,13 @@ def parse_target_oid_owner_at_shop(json_input):
         return False, None
 
     store_to_owner = {
-        "popcatSale": 10007,
-        "pepeSale": 10008,
-        "pippinSale": 10010,
+        "popcatBuy": 10007,
+        "pepeBuy": 10008,
+        "pippinBuy": 10010,
     }
 
     target_npc_id = store_to_owner.get(target_oid, None)
-    if not target_npc_id:
+    if target_npc_id:
         print("Method: parse_target_oid_owner_at_shop | Description: Checks if OID owner NPC is at shop | Result:", (False, None), "\n")
         return False, None
 

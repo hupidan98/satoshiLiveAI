@@ -447,11 +447,7 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
 
     npc_name = npc['name']
     npc_description = npc['description']
-    npc_way_of_speak= npc['announcements']
-    # format_instructions = npc_way_of_speak.get('Format', '')
-    tone_instructions = npc_way_of_speak.get('Tone', '')
-    # talk_examples = npc_way_of_speak.get('Talk', '')
-
+    npc_way_of_speak= npc['replies']
     recent_schedule_str = onlyMostRecentSchedule(npc_context, schedule_str)
 
     finder_instruction = ""
@@ -486,14 +482,14 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
     When you want to end an ongoing conversation, you need to say it explicitly telling that you are ending a converstaion with the target npc.
     Please do not talk to other people all day long, end conversation if need to do other things on your calendar.
 
-    Your Tone is:
-    {tone_instructions}
+    Here is the way you speak, try to imitate the way you speak:
+    {npc_way_of_speak}
 
-    Only output the next sentence you going to say next, do not provide any other information. You will expecting replies from the target npc, unless you end the conversation. If you don't want to end the talk yet, just output the next sentence.
+    Only output what you going to say next, do not provide any other information.
 
     Output format and example:
-        {npc_name} talking to <fill in target npc name>, "<fill in content>". # Only next one sentence you say
-         {npc_name} ending conversation with <fill in target npc name>  #only include this if you are are ending the talk after saying this one sentence. Otherwise doe not include this line. 
+        - {npc_name} talking to <fill in target npc name>, "<fill in content>"
+        - {npc_name} talking to <fill in target npc name>, "<fill in content>". {npc_name} ending conversation with <fill in target npc name>
     '''
     completion = client.chat.completions.create(
       model="gpt-4o",
@@ -577,9 +573,6 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     npc_name = npc['name']
     npc_description = npc['description']
     npc_way_of_speak= npc['announcements']
-    # format_instructions = npc_way_of_speak.get('Format', '')
-    tone_instructions = npc_way_of_speak.get('Tone', '')
-    # talk_examples = npc_way_of_speak.get('Talk', '')
 
     prompt = f"""
     You are {npc_name}, {npc_description} .
@@ -591,9 +584,7 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     {reflections}
 
     This is the way you speak, try to imitate the way you speak:
-
-    Your Tone is :
-    {tone_instructions}
+    {npc_way_of_speak}
 
     From your perspective, write an engaging and insightful eassy over 400 words. about the topic: {theme}.
 
@@ -646,6 +637,7 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     print("\n\n")
     return output
 
+
 def generateMultipleSentencesForAction(memories, reflections, npc_context, npc_action, npcId, special_instruction=''):
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
@@ -654,9 +646,6 @@ def generateMultipleSentencesForAction(memories, reflections, npc_context, npc_a
     npc_name = npc['name']
     npc_description = npc['description']
     npc_way_of_speak= npc['announcements']
-    # format_instructions = npc_way_of_speak.get('Format', '')
-    tone_instructions = npc_way_of_speak.get('Tone', '')
-    # talk_examples = npc_way_of_speak.get('Talk', '')
 
     prompt = f"""
     You are {npc_name}, {npc_description} .
@@ -676,9 +665,7 @@ def generateMultipleSentencesForAction(memories, reflections, npc_context, npc_a
     You need to say something during the action.
 
     This is the way you speak, try to imitate the way you speak:
-
-    Your Tone is:
-    {tone_instructions}
+    {npc_way_of_speak}
     
     {special_instruction if special_instruction else ''}
 
@@ -708,6 +695,7 @@ def generateMultipleSentencesForAction(memories, reflections, npc_context, npc_a
     print(output)
     print("\n\n")
     return output
+
 
 ############################################
 # Instruction Translation Functions
