@@ -147,15 +147,25 @@ def processOneInputGiveOneInstruction():
         instruction_in_human = ''
 
         # Check states: finding people to talk, idling, talking, buying
-        is_findingToTalk, targetNPCId = BhrLgcManualProcess.parse_isFindingPeopletoTalk(java_json)
+        is_findingToTalk, FindTalktargetNPCId = BhrLgcManualProcess.parse_isFindingPeopletoTalk(java_json)
         is_idling = BhrLgcManualProcess.parse_isIdling(java_json)
         is_talking = BhrLgcManualProcess.parse_isTalking(java_json)
         is_buying, shopownerNPCId = BhrLgcManualProcess.parse_isBuying(java_json)
+        is_talk_target = BhrLgcManualProcess.parse_is_talk_target(java_json)
 
         is_talk_instruction = False
+        talkInst_target_npcid = None
+
+        npcId_to_Name = {
+            10006: 'Satoshi',
+            10007: 'Popcat',
+            10008: 'Pepe',
+            10009: 'Elon Musk',
+            10010: 'Pippin',
+        }
 
         # Determine next action based on current states
-        if is_findingToTalk:
+        if is_findingToTalk and is_idling and (not is_talking): 
             print('Last action is finding people to talk, next action should be talking')
             target_sleeping, sleep_target_name = BhrLgcManualProcess.parse_target_sleeping(java_json)
             target_talking, talk_target_name = BhrLgcManualProcess.parse_target_talking(java_json)
@@ -164,7 +174,7 @@ def processOneInputGiveOneInstruction():
                 # Target is not available for conversation
                 print('Target is sleeping or talking, choose another action')
                 instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(
-                    memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId
+                    memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, "Your next action can't be go find him to talk again, the target is not available"
                 )
                 if BhrLgcGPTProcess.needDeepTalk(
                     memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId
@@ -184,21 +194,27 @@ def processOneInputGiveOneInstruction():
                 is_talk_instruction = False
             else:
                 print('Start Talking to the person')
+                FindTalktargetNPCName= npcId_to_Name[FindTalktargetNPCId]
+                talkInst_target_npcid = FindTalktargetNPCId
                 instruction_in_human = BhrLgcGPTProcess.talkToSomeone(
-                    memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk, targetNPCId
+                    memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk, FindTalktargetNPCName
                 )
+                shouldConversationEnd = BhrLgcGPTProcess.shoudConversationEnd(
+                    memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk, FindTalktargetNPCId, instruction_in_human
+                )
+                instruction_in_human +=  ". " + shouldConversationEnd
                 words_to_say = ''
                 is_talk_instruction = True
 
-        elif is_buying:
+        elif is_buying and is_idling and (not is_talking): 
             print('I am buying something, next action should be talking for buying stuff')
             shop_target_present, shopowner_target_name = BhrLgcManualProcess.parse_target_oid_owner_at_shop(java_json)
 
-            if not shop_target_present:
+            if not shop_target_present: # Shop owner will have status sale, if he is not talking, so this also indicate that shop owner is not talking
                 # Shop owner not present
                 print('Shop owner not present, choose another action')
                 instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(
-                    memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId
+                    memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, "Your next action can't be buying, the shop owner is not present"
                 )
                 if BhrLgcGPTProcess.needDeepTalk(
                     memories_str, prior_reflection_str, inputInHumanString, instruction_in_human, npcId
@@ -217,21 +233,33 @@ def processOneInputGiveOneInstruction():
                 is_talk_instruction = False
             else:
                 print('Start Talking to the shop owner')
+                shopownerNPCname = npcId_to_Name[shopownerNPCId]
+                talkInst_target_npcid = shopownerNPCId
                 instruction_in_human = BhrLgcGPTProcess.talkToSomeone(
-                    memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk, shopownerNPCId
+                    memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk, shopownerNPCname
                 )
+                shouldConversationEnd = BhrLgcGPTProcess.shoudConversationEnd(
+                    memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk, shopownerNPCId, instruction_in_human
+                )
+                instruction_in_human +=  ". " + shouldConversationEnd
                 words_to_say = ''
                 is_talk_instruction = True
 
-        elif is_talking:
+        elif is_talking and is_talk_target:
             # NPC currently talking
+            talk_target_name, talk_target_npcid =  BhrLgcManualProcess.parse_current_converstation(java_json)
+            talkInst_target_npcid = talk_target_npcid
             instruction_in_human = BhrLgcGPTProcess.talkToSomeone(
-                memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk
+                memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk, 
             )
+            shouldConversationEnd = BhrLgcGPTProcess.shoudConversationEnd(
+                    memories_str, prior_reflection_str, cur_schedule_str, inputInHumanString, npcId, is_findingToTalk, talk_target_npcid, instruction_in_human
+                )
+            instruction_in_human +=  ". " + shouldConversationEnd
             words_to_say = ''
             is_talk_instruction = True
 
-        elif is_idling:
+        elif is_idling and (not is_talking): 
             # NPC is idling, decide next action
             print('Is idling, decide next action')
             instruction_in_human = BhrLgcGPTProcess.processInputGiveWhatToDo(
@@ -260,7 +288,7 @@ def processOneInputGiveOneInstruction():
                 try:
                     if is_talk_instruction:
                         instruction_to_give = BhrLgcGPTProcess.humanInstToJava_talk(
-                            instruction_in_human, words_to_say, npcId
+                            instruction_in_human, words_to_say, npcId, talkInst_target_npcid
                         ).strip("```json").strip("```")
                     else:
                         instruction_to_give = BhrLgcGPTProcess.humanInstToJava_action(

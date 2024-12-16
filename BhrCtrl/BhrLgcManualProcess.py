@@ -140,19 +140,52 @@ def parse_isTalking(json_input):
     except json.JSONDecodeError as e:
         result = f"Error parsing JSON: {e}"
         print("Method: parse_isTalking | Description: Checks if NPC is currently talking | Result:", result, "\n")
-        return result
+        return False
     
     npcs = data.get('npcs', [])
     if not npcs:
         result = False
         print("Method: parse_isTalking | Description: Checks if NPC is currently talking | Result:", result, "\n")
         return result
-    
+
     npc = npcs[0]
     talk_info = npc.get('talk', {})
     is_talking = talk_info.get('isTalking', False)
+    return is_talking
+        
+    
+
+def parse_is_talk_target(json_input):
+    """
+    Checks if the needs to response now.
+    Returns True if need to response, False otherwise.
+    """
+    try:
+        data = json.loads(json_input)
+    except json.JSONDecodeError as e:
+        result = f"Error parsing JSON: {e}"
+        print("Method: parse_isTalking | Description: Checks if NPC is currently talking | Result:", result, "\n")
+        return False
+    
+    npcs = data.get('npcs', [])
+    if not npcs:
+        result = False
+        print("Method: parse_isTalking | Description: Checks if NPC is currently talking | Result:", result, "\n")
+        return result
+
+    npc = npcs[0]
+    npcId = npc.get('npcId', 'Unknown')
+    talk_info = npc.get('talk', {})
+    is_talking = talk_info.get('isTalking', False)
+    if is_talking:
+        talk_contents = talk_info.get('contents', [])
+        content = talk_contents[0] if talk_contents else {}
+        target_id = content.get('target', None)
+        if target_id != npcId:
+            is_talking = False
     print("Method: parse_isTalking | Description: Checks if NPC is currently talking | Result:", is_talking, "\n")
     return is_talking
+
 
 
 def parse_isBuying(json_input):
@@ -177,12 +210,13 @@ def parse_isBuying(json_input):
     cur_action = npc.get('action', {})
     action_id = cur_action.get('actionId', '0')
     result = (int(action_id) == 103)
-    targetShopOid = cur_action.get('"param"', {}).get('oid', None)
+    targetShopOid = cur_action.get('param', {}).get('oid', None)
     counter_to_owner = {
         "popcatBuy": 10007,
         "pepeBuy": 10008,
         "pippinBuy": 10010,
     }
+    
     targetNPCId = counter_to_owner.get(targetShopOid, None)
     print("Method: parse_isBuying | Description: Checks if NPC is currently buying (actionId=103) | Result:", result, "\n")
     return result, targetNPCId
@@ -190,14 +224,14 @@ def parse_isBuying(json_input):
 
 def parse_isFindingPeopletoTalk(json_input):
     """
-    Checks if the NPC is currently performing actionId = 112 (finding people to talk).
+    Checks if the NPC is currently performing actionId = 127 (finding people to talk).
     Returns True if yes, False otherwise.
     """
     try:
         data = json.loads(json_input)
     except json.JSONDecodeError as e:
         result = f"Error parsing JSON: {e}"
-        print("Method: parse_isFindingPeopletoTalk | Description: Checks if NPC is looking for people to talk (actionId=112) | Result:", result, "\n")
+        print("Method: parse_isFindingPeopletoTalk | Description: Checks if NPC is looking for people to talk (actionId=127) | Result:", result, "\n")
         return result, None
     
     npcs = data.get('npcs', [])
@@ -211,7 +245,7 @@ def parse_isFindingPeopletoTalk(json_input):
     action_id = cur_action.get('actionId', '0')
     targetNPCId = cur_action.get('param', {}).get('npcId', None)
     if targetNPCId:
-        result = (int(action_id) == 112)
+        result = (int(action_id) == 127)
     else:
         result = False
     print("Method: parse_isFindingPeopletoTalk | Description: Checks if NPC is looking for people to talk | Result:", result, "\n")
@@ -312,7 +346,6 @@ def parse_target_talking(json_input):
     except json.JSONDecodeError as e:
         print("Method: parse_target_talking | Description: Checks if target NPC is talking | Result:", (False, None), "\n")
         return False, None
-    # look for my action, is 112?
     npcs = data.get('npcs', [])
     if not npcs:
         print("Method: parse_target_talking | Description: Checks if target NPC is talking | Result:", (False, None), "\n")
@@ -349,7 +382,6 @@ def parse_target_talking(json_input):
     print("Method: parse_target_talking | Description: Checks if target NPC is talking | Result:", (False, None), "\n")
     return False, None
 
-
 def parse_target_oid_owner_at_shop(json_input):
     """
     Checks if the owner NPC of a given OID (store) is present and in 'sale' status.
@@ -385,7 +417,8 @@ def parse_target_oid_owner_at_shop(json_input):
     }
 
     target_npc_id = store_to_owner.get(target_oid, None)
-    if target_npc_id:
+    print('target_npc_id:', target_npc_id)
+    if not target_npc_id:
         print("Method: parse_target_oid_owner_at_shop | Description: Checks if OID owner NPC is at shop | Result:", (False, None), "\n")
         return False, None
 
@@ -408,7 +441,37 @@ def parse_target_oid_owner_at_shop(json_input):
     print("Method: parse_target_oid_owner_at_shop | Description: Checks if OID owner NPC is at shop | Result:", (False, None), "\n")
     return False, None
 
+def parse_current_converstation(json_input):
+    try:
+        data = json.loads(json_input)
+    except json.JSONDecodeError as e:
+        print("Method: parse_target_oid_owner_at_shop | Description: Checks if OID owner NPC is at shop | Result:", (False, None), "\n")
+        return False, None
 
+    npcs = data.get('npcs', [])
+    if not npcs:
+        print("Method: parse_target_oid_owner_at_shop | Description: Checks if OID owner NPC is at shop | Result:", (False, None), "\n")
+        return False, None
+
+    npc = npcs[0]
+
+    talk_info = npc.get('talk', {})
+    contents = talk_info.get('contents', [])
+    content = contents[0] if contents else {}
+    senderId = content.get('sender', None)
+    npcId_to_Name = {
+            10006: 'Satoshi',
+            10007: 'Popcat',
+            10008: 'Pepe',
+            10009: 'Elon Musk',
+            10010: 'Pippin',
+        }
+    if senderId:
+        senderName = npcId_to_Name.get(senderId, 'Unknown')
+        return senderName, senderId
+    else:
+        return None, None
+   
 ############################################
 # Utility Function
 ############################################

@@ -440,7 +440,7 @@ def processInputGiveWhatToDo(memories_str, reflections_str, schedule_str, npc_co
     print("\n\n")
     return output
 
-def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcId, isFinding, targetNPC = None, special_instruction = '', max_tokens=20):
+def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcId, isFinding, targetNPC = None, special_instruction = '', max_tokens=50):
     npc = next((npc for npc in char_config['npcCharacters'] if npc['npcId'] == npcId), None)
     if not npc:
         raise ValueError(f"NPC with npcId {npcId} not found in char_config.yaml")
@@ -448,9 +448,9 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
     npc_name = npc['name']
     npc_description = npc['description']
     npc_way_of_speak = npc['announcements']
-    format_instructions = npc_way_of_speak.get('Format', '').lstrip('> ').strip()
-    tone_instructions = npc_way_of_speak.get('Tone', '').lstrip('> ').strip() 
-    talk_examples = npc_way_of_speak.get('Talk', '').lstrip('> ').strip()
+    format_instructions = npc_way_of_speak.get('Format', '')
+    tone_instructions = npc_way_of_speak.get('Tone', '')
+    talk_examples = npc_way_of_speak.get('Talk', '')
 
     recent_schedule_str = onlyMostRecentSchedule(npc_context, schedule_str)
 
@@ -458,50 +458,6 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
     if isFinding:
         finder_instruction = ''' Your calendar of the day, try to follow your schedule, but fill free to adjust to the current situation: 
                             ''' + recent_schedule_str + ''' Try to wrap up the conversation if you need to do other things on your calendar.'''
-
-    # Split the format instructions into individual parts
-    format_parts = []
-    current_text = format_instructions
-    for i in range(1, 5):
-        if f"{i}." in current_text:
-            part = current_text.split(f"{i}.")[1]
-            if f"{i+1}." in part:
-                part = part.split(f"{i+1}.")[0]
-            format_parts.append(part.strip())
-            current_text = current_text.split(f"{i}.")[1]
-
-    # Determine which format to use based on context
-    prompt_format_selection = f'''
-    Based on the following context, determine which conversation format (1-4) is most appropriate:
-
-    Speaking to: {targetNPC if targetNPC else 'someone'}
-    Current context: {npc_context}
-    Special instruction: {special_instruction}
-
-    Format options:
-    1. {format_parts[0]} (Use for: Starting conversations, introductions)
-    2. {format_parts[1]} (Use for: Responding to others, continuing dialogue)
-    3. {format_parts[2]} (Use for: Deep discussions, sharing insights)
-    4. {format_parts[3]} (Use for: Concluding conversations, making final points)
-
-    Return only the number (1-4) of the most appropriate format.
-    '''
-
-    # Get the appropriate format number
-    format_selection = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a conversation flow analyst. Select the most appropriate conversation format based on context."},
-            {"role": "user", "content": prompt_format_selection}
-        ]
-    )
-    
-    try:
-        format_number = int(format_selection.choices[0].message.content.strip()) - 1
-        chosen_format = format_parts[format_number]
-    except (ValueError, IndexError):
-        # Fallback to format 1 if there's any error
-        chosen_format = format_parts[0]
 
     prompt = f'''
     You are a npc character in a simulated town.
@@ -526,8 +482,8 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
     
     {special_instruction if special_instruction else ''}
 
-    Your speaking style should follow this format:
-    {chosen_format}
+    Your speaking style should follow this specific format:
+    {format_instructions}
 
     Your tone should be:
     {tone_instructions}
@@ -535,32 +491,31 @@ def talkToSomeone(memories_str, reflections_str, schedule_str, npc_context, npcI
     Here are examples of your speaking style:
     {talk_examples}
 
-    Please keep your response concise, with a maximum of 20 words.
+    Based on the format instructions above, structure your response in exactly 4 parts:
+    1. {format_instructions.split('1.')[1].split('2.')[0].strip()}
+    2. {format_instructions.split('2.')[1].split('3.')[0].strip()}
+    3. {format_instructions.split('3.')[1].split('4.')[0].strip()}
+    4. {format_instructions.split('4.')[1].strip()}
 
     Output format:
-    - {npc_name} talking to <target npc name>, "<your response following the chosen format>"
+    - {npc_name} talking to <target npc name>, "<your response following the 4-part structure above>"
     '''
     completion = client.chat.completions.create(
       model="gpt-4o",
       messages=[
-        {"role": "system", "content": "You are a great conversationalist who can adapt your speaking style to match different personalities and formats. Follow the given format structure precisely and you say less than 20 words."},
+        {"role": "system", "content": "You are a great conversationalist who can adapt your speaking style to match different personalities and formats. Follow the given format structure precisely."},
         {"role": "user", "content": prompt}
       ],
-      max_tokens=max_tokens
+      max_tokens=50
     )
     output = completion.choices[0].message.content
-
-    # Post-process to ensure each part is concise
-    parts = output.split('\n')
-    concise_output = '\n'.join(part[:20] for part in parts)  # Truncate each part to 20 words
-
     print("Function: talkToSomeone")
     print("Prompt:")
     print(prompt)
     print("Output:")
-    print(concise_output)
+    print(output)
     print("\n\n")
-    return concise_output
+    return output
 
 def shoudConversationEnd(memories_str, reflections_str, schedule_str, npc_context, npcId, isFinding, targetNPC = None, things_you_say = None, special_instruction = ''):
     
@@ -666,7 +621,7 @@ def generateTheme(memories, reflections, npc_context, npc_action, npcId, special
         messages=[
             {
                 "role": "system",
-                "content": "You are a knowledgeable and inspiring thinker, and you are talking to yourself."
+                "content": "You are a knowledgeable thinker and inspiring speaker."
             },
             {
                 "role": "user",
@@ -692,13 +647,9 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
     npc_name = npc['name']
     npc_description = npc['description']
     npc_way_of_speak = npc['announcements']
-    # Extract speaking style instructions from YAML
-    # The .get() method works fine for accessing the values, but YAML block indicators ('>')
-    # are included in the strings, which could affect prompt formatting
-    # .lstrip('> ').strip() removes the YAML block indicator and any extra whitespace
-    format_instructions = npc_way_of_speak.get('Format', '').lstrip('> ').strip()
-    tone_instructions = npc_way_of_speak.get('Tone', '').lstrip('> ').strip() 
-    talk_examples = npc_way_of_speak.get('Talk', '').lstrip('> ').strip()
+    format_instructions = npc_way_of_speak.get('Format', '')
+    tone_instructions = npc_way_of_speak.get('Tone', '')
+    talk_examples = npc_way_of_speak.get('Talk', '')
 
     prompt = f"""
     You are {npc_name}, {npc_description}.
@@ -720,7 +671,7 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
 
     Please generate an announcement about this topic: {theme}
     Follow the format instructions carefully, maintaining your unique speaking style and tone.
-    Keep each section under 30 words.
+    Keep each section under 40 words.
     No emojis.
     """
 
@@ -729,7 +680,7 @@ def generate_new_Announcement(memories, reflections, theme, npcId):
         messages=[
             {
                 "role": "system", 
-                "content": "You are a knowledgeable and inspiring thinker, and you are talking to yourself."
+                "content": "You are a skilled speech writer who can perfectly mimic speaking styles."
             },
             {
                 "role": "user",
@@ -754,9 +705,9 @@ def generateMultipleSentencesForAction(memories, reflections, npc_context, npc_a
     npc_name = npc['name']
     npc_description = npc['description']
     npc_way_of_speak = npc['announcements']
-    format_instructions = npc_way_of_speak.get('Format', '').lstrip('> ').strip()
-    tone_instructions = npc_way_of_speak.get('Tone', '').lstrip('> ').strip() 
-    talk_examples = npc_way_of_speak.get('Talk', '').lstrip('> ').strip()
+    format_instructions = npc_way_of_speak.get('Format', '')
+    tone_instructions = npc_way_of_speak.get('Tone', '')
+    talk_examples = npc_way_of_speak.get('Talk', '')
 
     prompt = f"""
     You are {npc_name}, {npc_description}.
@@ -799,7 +750,7 @@ def generateMultipleSentencesForAction(memories, reflections, npc_context, npc_a
         messages=[
             {
                 "role": "system",
-                "content": "You are a knowledgeable and inspiring thinker, and you are talking to yourself."
+                "content": "You are a skilled speech writer who can perfectly mimic speaking styles."
             },
             {
                 "role": "user",
